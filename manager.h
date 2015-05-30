@@ -1,7 +1,7 @@
 #ifndef MANAGER
 #define MANAGER
 
-#include<string>
+#include<QString>
 #include<iostream>
 #include<QString>
 #include <vector>
@@ -11,16 +11,16 @@ using namespace std;
 namespace TIME {
 
     class CalendarException{
-        string info;
+        QString info;
     public:
-        CalendarException(const string& message) :info(message){}
-        string getInfo() const { return info; }
+        CalendarException(const QString& message) :info(message){}
+        QString getInfo() const { return info; }
     };
 
     class TacheUnitaire;
 
     class Tache{
-        string titre;
+        QString titre;
         Date dispo;
         Date ech;
         Duree duree;
@@ -30,7 +30,7 @@ namespace TIME {
 
     public:
         //constructuer et destruceur
-        Tache(const string& t, const Date& d, const Date& e, const Duree& du) :titre(t), dispo(d), ech(e), duree(du){
+        Tache(const QString& t, const Date& d, const Date& e, const Duree& du) :titre(t), dispo(d), ech(e), duree(du){
             precede.reserve(10);
             std::cout << "Construction Tache" << this << "\n";
         }
@@ -39,17 +39,17 @@ namespace TIME {
         }
 
         //accesseurs
-        const string& getTitre()const{ return titre; }
+        const QString& getTitre()const{ return titre; }
         const Date& getDispo()const { return dispo; }
         const Date& getEch()const { return ech; }
         const Duree& getDuree()const { return duree; }
-        void setTitre(const string& a){ titre = a; }
+        void setTitre(const QString& a){ titre = a; }
         void setDispo(const Date& b){ dispo = b; }
         void setEch(const Date& c){ ech = c; }
         void setDuree(const Duree& d){ duree = d; }
 
         //methodes
-        void Tache::afficher(ostream& f);
+       // void Tache::afficher(ostream& f);
         virtual void extensionAffiche(ostream& f) = 0;
         void ajouterTacheUniPrec(TacheUnitaire& t){
             cout << "je rajoute une tache qui precede a cette tache" << "\n\n";
@@ -62,7 +62,7 @@ namespace TIME {
         bool preempte;
     public:
         //constructeur et destructeur
-        TacheUnitaire(const string& t, const Date& d, const Date& e, const Duree& du, bool p) :Tache(t, d, e, du), preempte(p){
+        TacheUnitaire(const QString& t, const Date& d, const Date& e, const Duree& du, bool p) :Tache(t, d, e, du), preempte(p){
             std::cout << "Construction TacheUnitaire" << this << "\n";
         }
         virtual ~TacheUnitaire(){
@@ -81,7 +81,7 @@ namespace TIME {
         com compose;
       public:
         //constructeur et destructeur
-        TacheComposite(const string& t, const Date& d, const Date& e, const Duree& du):Tache(t, d, e, du){
+        TacheComposite(const QString& t, const Date& d, const Date& e, const Duree& du):Tache(t, d, e, du){
             compose.reserve(10);
             std::cout << "Construction TacheComposite" << this << "\n";
         }
@@ -98,7 +98,7 @@ namespace TIME {
 
 
     class Projet{
-        string titre;
+        QString titre;
         Date dispo;
         Date ech;
 
@@ -129,7 +129,7 @@ namespace TIME {
 
     public:
         //acceseurs en lecture
-        const string& getTitre()const{ return titre; }
+        const QString& getTitre()const{ return titre; }
         const Date& getDispo()const { return dispo; }
         const Date& getEch()const { return ech; }
 
