@@ -1,5 +1,6 @@
 #include "manager.h"
 #include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 #include <QDate>
 #include <QDebug>
 #include <QFile>
