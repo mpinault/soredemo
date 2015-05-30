@@ -1,9 +1,5 @@
 #include "manager.h"
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
-#include <QDate>
-#include <QDebug>
-#include <QFile>
+
 using namespace TIME;
 using namespace std;
 
@@ -15,13 +11,18 @@ using namespace std;
     f << "disponiblite=" << dispo << ",écheance=" << ech << ",duree=" << duree << "\n";
     extensionAffiche(f);
     if (precede.size()){
-        for (std::vector<TacheUnitaire*>::const_iterator it = precede.cbegin(); it != precede.cend(); ++it)
+        for (std::vector<TacheUnitaire*>::const_iterator it = precede.begin(); it != precede.end(); ++it)
             (*it)->afficher(f<<"===");
     }
     else  f << "pas de taches precedentes" << "\n\n";
 
 }*/
 
+
+void Tache::ajouterTachePrec(Tache& t){
+    cout << "je rajoute une tache qui precede a cette tache" << "\n\n";
+    precede.push_back(&t);
+}
 
 //================================methodes de TacheUnitaire==================================================================
 
@@ -31,11 +32,13 @@ void TacheUnitaire::extensionAffiche(ostream& f){
 }
 */
 
+
+
 //================================methodes de TacheComposite=================================================================
 
 /*void TacheComposite::extensionAffiche(ostream& f){
     if (compose.size()){
-        for (std::vector<TacheUnitaire*>::const_iterator it = compose.cbegin(); it != compose.cend(); ++it)
+        for (std::vector<TacheUnitaire*>::const_iterator it = compose.begin(); it != compose.end(); ++it)
             (*it)->afficher(f << "###");
     }
     else  f << "pas de taches composes" << "\n";
@@ -45,14 +48,14 @@ void TacheUnitaire::extensionAffiche(ostream& f){
 
 //================================methodes de Projet=========================================================================
 Tache* Projet::trouverTache(const QString& ti)const{
-    for (vector<Tache*>::const_iterator it = taches.cbegin(); it != taches.cend(); ++it)
+    for (vector<Tache*>::const_iterator it = taches.begin(); it != taches.end(); ++it)
         if (ti==(*it)->getTitre()) return *it;
     return 0;
 }
 
 
-Tache& Projet::ajouterTacheUnitaire(const QString& t, const Date& dispo, const Date& deadline, const Duree& dur, bool preempt){
-    if (trouverTache(t)) throw CalendarException("erreur, TacheManager, tache deja existante");
+Tache& Projet::ajouterTacheUnitaire(const QString& t, const QDate& dispo, const QDate& deadline, const Duree& dur, bool preempt){
+    if (trouverTache(t)) throw TimeException("erreur, TacheManager, tache deja existante");
     TacheUnitaire* newt = new TacheUnitaire(t, dispo, deadline,dur, preempt);
     addItem(newt);
     return *newt;
@@ -60,7 +63,7 @@ Tache& Projet::ajouterTacheUnitaire(const QString& t, const Date& dispo, const D
 
 Tache& Projet::getTache(const QString& ti){
     Tache* t = trouverTache(ti);
-    if (!t) throw CalendarException("erreur, Projet, tache inexistante");
+    if (!t) throw TimeException("erreur, Projet, tache inexistante");
     return *t;
 }
 
@@ -76,7 +79,7 @@ void Projet::load(const QString& f){
     QFile fin(file);
     // If we can't open it, let's show an error message.
     if (!fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        throw CalendarException("Erreur ouverture fichier tâches");
+        throw TimeException("Erreur ouverture fichier tâches");
     }
     // QXmlStreamReader takes any QIODevice.
     QXmlStreamReader xml(&fin);
@@ -149,7 +152,7 @@ void Projet::load(const QString& f){
     }
     // Error handling.
     if (xml.hasError()) {
-        throw CalendarException("Erreur lecteur fichier taches, parser xml");
+        throw TimeException("Erreur lecteur fichier taches, parser xml");
     }
     // Removes any device() or data from the reader * and resets its internal state to the initial state.
     xml.clear();
@@ -160,12 +163,12 @@ void  Projet::save(const QString& f){
     file = f;
     QFile newfile(file);
     if (!newfile.open(QIODevice::WriteOnly | QIODevice::Text))
-        throw CalendarException(QString("erreur sauvegarde tâches : ouverture fichier xml"));
+        throw TimeException(QString("erreur sauvegarde tâches : ouverture fichier xml"));
     QXmlStreamWriter stream(&newfile);
     stream.setAutoFormatting(true);
     stream.writeStartDocument();
     stream.writeStartElement("taches");
-    for (vector<TacheUnitaire*>::const_iterator it = taches.cbegin(); it != taches.cend(); ++it){
+    for (vector<TacheUnitaire*>::const_iterator it = taches.begin(); it != taches.end(); ++it){
         stream.writeStartElement("tache");
         stream.writeAttribute("preemptive", ((*it)->getPreempte()) ? "true" : "false");
         stream.writeTextElement("titre", (*it)->getTitre());
@@ -185,13 +188,13 @@ void  Projet::save(const QString& f){
 //================================methodes de ProjetManager=========================================================================
 
 Projet* ProjetManager::trouverProjet(const QString& titre)const{
-    for (std::vector<Projet*>::const_iterator it = projet.cbegin(); it != projet.cend(); ++it)
+    for (std::vector<Projet*>::const_iterator it = projet.begin(); it != projet.end(); ++it)
         if ((*it)->getTitre()==titre) return *it;
     return 0;
 }
 
-Projet& ProjetManager::ajouterProjet(const QString& ti, const Date& dispo, const Date& deadline){
-    if (trouverProjet(ti)) throw CalendarException("erreur, ProjetManager, tache deja existante");
+Projet& ProjetManager::ajouterProjet(const QString& ti, const QDate& dispo, const QDate& deadline){
+    if (trouverProjet(ti)) throw TimeException("erreur, ProjetManager, tache deja existante");
     Projet* newt = new Projet(ti, dispo, deadline);
     addItem(newt);
     return *newt;
@@ -199,7 +202,7 @@ Projet& ProjetManager::ajouterProjet(const QString& ti, const Date& dispo, const
 
 Projet& ProjetManager::getProjet(const QString& ti){
     Tache* t = trouverProjet(ti);
-    if (!t) throw CalendarException("erreur, TacheManager, tache inexistante");
+    if (!t) throw TimeException("erreur, TacheManager, tache inexistante");
     return *t;
 }
 
@@ -228,7 +231,7 @@ void ProjetManager::load(const QString& f){
     QFile fin(file);
     // If we can't open it, let's show an error message.
     if (!fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        throw CalendarException("Erreur ouverture fichier tâches");
+        throw TimeException("Erreur ouverture fichier tâches");
     }
     // QXmlStreamReader takes any QIODevice.
     QXmlStreamReader xml(&fin);
@@ -302,14 +305,14 @@ void ProjetManager::load(const QString& f){
                     xml.readNext();
                 }
                 //qDebug()<<"ajout tache "<<identificateur<<"\n";
-                ajouterTache(identificateur, titre, duree, disponibilite, echeance, preemptive);
+                ajouterTacheUnitaire(identificateur, titre, duree, disponibilite, echeance, preemptive);
 
             }
         }
     }
     // Error handling.
     if (xml.hasError()) {
-        throw CalendarException("Erreur lecteur fichier taches, parser xml");
+        throw TimeException("Erreur lecteur fichier taches, parser xml");
     }
     // Removes any device() or data from the reader * and resets its internal state to the initial state.
     xml.clear();
@@ -320,15 +323,16 @@ void  ProjetManager::save(const QString& f){
     file = f;
     QFile newfile(file);
     if (!newfile.open(QIODevice::WriteOnly | QIODevice::Text))
-        throw CalendarException(QString("erreur sauvegarde tâches : ouverture fichier xml"));
+        throw TimeException(QString("erreur sauvegarde tâches : ouverture fichier xml"));
     QXmlStreamWriter stream(&newfile);
     stream.setAutoFormatting(true);
     stream.writeStartDocument();
     stream.writeStartElement("taches");
-    for (std::vector<Projet*>::const_iterator it = projet.cbegin(); it != projet.cend(); ++it){
+    for (std::vector<Projet*>::const_iterator it = projet.begin(); it != projet.end(); ++it){
         stream.writeStartElement("projet");
         stream.writeTextElement("titre", (*it)->getTitre());
         stream.writeTextElement("disponibilite", (*it)->getDispo().toString(Qt::ISODate));
+
         stream.writeTextElement("echeance", (*it)->getEch().toString(Qt::ISODate));
         stream.writeEndElement();
     }
