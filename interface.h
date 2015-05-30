@@ -1,4 +1,3 @@
-
 #ifndef INTERFACE
 #define INTERFACE
 
@@ -52,8 +51,6 @@ class Fenetre2 : public QWidget
     QPushButton* nouvel_evenement;
     QPushButton* vue_hebdomadaire;
     QPushButton* vue_projets;
-    QPushButton* creer_tache;
-    QPushButton* creer_projet;
     QVBoxLayout* couche;
 public :
     Fenetre2();
