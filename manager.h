@@ -1,112 +1,159 @@
 #ifndef MANAGER
 #define MANAGER
 
-#include<QString>
+
 #include<iostream>
 #include<QString>
 #include <vector>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
+#include <QDate>
+#include <QDebug>
+#include <QFile>
 #include "timing.h"
 
 using namespace std;
 namespace TIME {
 
-    class CalendarException{
-        QString info;
-    public:
-        CalendarException(const QString& message) :info(message){}
-        QString getInfo() const { return info; }
-    };
 
     class TacheUnitaire;
 
     class Tache{
+
         QString titre;
-        Date dispo;
-        Date ech;
+        QDate dispo;
+        QDate ech;
         Duree duree;
 
-        typedef std::vector<TacheUnitaire *> pred;
+        typedef std::vector<Tache *> pred;
         pred precede;
 
     public:
         //constructuer et destruceur
-        Tache(const QString& t, const Date& d, const Date& e, const Duree& du) :titre(t), dispo(d), ech(e), duree(du){
+        Tache::Tache(const QString& t, const QDate& d, const QDate& e, const Duree& du) :titre(t), dispo(d), ech(e), duree(du){
             precede.reserve(10);
             std::cout << "Construction Tache" << this << "\n";
         }
-        virtual ~Tache(){
-            std::cout << "Destruction Tache" << this << "\n";
-        }
+        virtual ~Tache(){ std::cout << "Destruction Tache" << this << "\n";}
 
         //accesseurs
         const QString& getTitre()const{ return titre; }
-        const Date& getDispo()const { return dispo; }
-        const Date& getEch()const { return ech; }
+        const QDate& getDispo()const { return dispo; }
+        const QDate& getEch()const { return ech; }
         const Duree& getDuree()const { return duree; }
         void setTitre(const QString& a){ titre = a; }
-        void setDispo(const Date& b){ dispo = b; }
-        void setEch(const Date& c){ ech = c; }
+        void setDispo(const QDate& b){ dispo = b; }
+        void setEch(const QDate& c){ ech = c; }
         void setDuree(const Duree& d){ duree = d; }
 
         //methodes
-       // void Tache::afficher(ostream& f);
+        // void Tache::afficher(ostream& f);
         virtual void extensionAffiche(ostream& f) = 0;
-        void ajouterTacheUniPrec(TacheUnitaire& t){
-            cout << "je rajoute une tache qui precede a cette tache" << "\n\n";
-            precede.push_back(&t);
-        }
-
+        virtual void ajouterTachePrec(Tache& t)=0;
      };
 
+
+
     class TacheUnitaire : public Tache{
-        bool preempte;
     public:
         //constructeur et destructeur
-        TacheUnitaire(const QString& t, const Date& d, const Date& e, const Duree& du, bool p) :Tache(t, d, e, du), preempte(p){
+        TacheUnitaire(const QString& t, const QDate& d, const QDate& e, const Duree& du, bool p) :Tache(t, d, e, du){
+            if (du>12 || du=12) throw TimeException("erreur, la durée d'une tache unitaire (non preempte) ne peut pas exceder 12h");
             std::cout << "Construction TacheUnitaire" << this << "\n";
         }
-        virtual ~TacheUnitaire(){
-            std::cout << "Destruction TacheUnitaire" << this << "\n";
-        }
 
-        //accesseurs
-        bool getPreempte()const { return preempte; }
+        virtual ~TacheUnitaire(){std::cout << "Destruction TacheUnitaire" << this << "\n";}
 
         //methodes
         void extensionAffiche(ostream& f);
     };
 
+    class TacheUnitaireNonPreempte : public TacheUnitaire{
+    public:
+        //constructeur et destructeur
+        TacheUnitaireNonPreempte(const QString& t, const QDate& d, const QDate& e, const Duree& du, bool p) :TacheUnitaire(t, d, e, du), preempte(p){
+            std::cout << "Construction TacheUnitaireNonPreempte" << this << "\n";
+        }
+        virtual ~TacheUnitaireNonPreempte(){std::cout << "Destruction TacheUnitaireNonPreempte" << this << "\n";}
+    };
+
+    class Partie{
+        Duree duree;
+        Tache* tache;
+    };
+
+    class TacheUnitairePreempte : public TacheUnitaire{
+        typedef std::vector<Partie*> par;
+        par parties;
+
+    public:
+        //constructeur et destructeur
+        TacheUnitairePreempte(const QString& t, const QDate& d, const QDate& e, const Duree& du) :titre(t), dispo(d), ech(e), duree(du){
+            precede.reserve(10);
+            std::cout << "Construction Tache" << this << "\n";
+        }
+        virtual ~TacheUnitairePreempte(){std::cout << "Destruction TacheUnitairePreempte" << this << "\n";}
+
+        //methode
+        //operateur + defini ??
+        void ajouterPartie(Parties* p){
+            parties.push_back(&p);
+            setDuree(p->duree+getDuree());
+        }
+
+    };
+
+
+    class TacheUnitaire : public Tache{
+    public:
+        //constructeur et destructeur
+        virtual TacheUnitaire(const QString& t, const QDate& d, const QDate& e, const Duree& du, bool p) =0;
+        virtual ~TacheUnitaire(){std::cout << "Destruction TacheUnitaire" << this << "\n";}
+
+        //methodes
+        void extensionAffiche(ostream& f);
+    };
+
+
+
       class TacheComposite : public Tache{
+
         typedef std::vector<TacheUnitaire*> com;
         com compose;
+
       public:
         //constructeur et destructeur
-        TacheComposite(const QString& t, const Date& d, const Date& e, const Duree& du):Tache(t, d, e, du){
+        TacheComposite(const QString& t, const QDate& d, const QDate& e, const Duree& du):Tache(t, d, e, du){
             compose.reserve(10);
             std::cout << "Construction TacheComposite" << this << "\n";
         }
         virtual ~TacheComposite(){
             std::cout << "Destruction TacheComposite" << this << "\n";
         }
+
         //methodes
+        // on peut rajouter des taches compose a des taches compose ?
         void extensionAffiche(ostream& f);
         void ajouterTacheUniComp(TacheUnitaire& t){
-            cout << "je rajoute une tache qui compose cette tache"<<"\n";
+            cout << "je rajoute une tache unitaire qui compose cette tache"<<"\n";
                 compose.push_back(&t);
         }
     };
 
 
+
     class Projet{
+
         QString titre;
-        Date dispo;
-        Date ech;
+        QDate dispo;
+        QDate ech;
+        QString file;
 
         typedef std::vector<Tache *> tac;
         tac taches;
 
         //constructeur et destructeur, recopie, affectation
-        Projet(const QString& t, const Date& d, const Date& e) :titre(t), dispo(d), ech(e){
+        Projet(const QString& t, const QDate& d, const QDate& e) :titre(t), dispo(d), ech(e){
             taches.reserve(10);
             std::cout << "Construction Projet" << this << "\n";
         }
@@ -118,26 +165,27 @@ namespace TIME {
             file = "";
             std::cout << "Destruction TacheComposite" << this << "\n";
         }
-        Projet(const Projet& um);
-        Projet& operator=(const Projet& um);
+        Projet(const Projet& p);
+        Projet& operator=(const Projet& p);
 
         //a implementer !!
         void addItem(Tache* t);
 
-        QString file;
-        Tache* trouverTache(const QString& ti) const;
-
     public:
         //acceseurs en lecture
         const QString& getTitre()const{ return titre; }
-        const Date& getDispo()const { return dispo; }
-        const Date& getEch()const { return ech; }
+        const QDate& getDispo()const { return dispo; }
+        const QDate& getEch()const { return ech; }
 
         //methodes
-        Tache& ajouterTacheUnitaire(const QString& t, const Date& dispo, const Date& deadline, const Duree& dur, bool preempt = false);
-        Tache& getTache(const QString& ti);
+        Tache* trouverTache(const QString& ti) const;
+        virtual Tache& ajouterTache(const QString& t, const QDate& dispo, const QDate& deadline, const Duree& dur)=0;
+
         bool isTacheExistante(const QString& ti) const { return trouverTache(ti) != 0; }
+
+        Tache& getTache(const QString& ti);
         const Tache& getTache(const QString& ti) const;
+
         void load(const QString& f);
         void save(const QString& f);
     };
@@ -145,6 +193,7 @@ namespace TIME {
 
     class ProjetManager{
 
+        QString file;
         typedef std::vector<Projet *> proj;
         proj projet;
 
@@ -167,7 +216,6 @@ namespace TIME {
         //a implementer !!
         void addItem(Projet* t);
 
-        QString file;
         Projet* trouverProjet(const QString& titre) const;
 
         //singleton
@@ -181,10 +229,13 @@ namespace TIME {
 
     public:
         //methodes
-        Projet& ajouterProjet(const QString& ti, const Date& dispo, const Date& deadline);
+        Projet& ajouterProjet(const QString& ti, const QDate& dispo, const QDate& deadline);
+
+        bool isProjetExistant(const QString& ti) const { return trouverProjet(ti) != 0; }
+
         Projet& getProjet(const QString& ti);
-        bool isProjetExistante(const QString& ti) const { return trouverProjet(ti) != 0; }
         const Projet& getProjet(const QString& ti) const;
+
         void load(const QString& f);
         void save(const QString& f);
 
