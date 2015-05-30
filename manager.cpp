@@ -9,7 +9,8 @@ using namespace std;
 
 //================================methodes de Tache==========================================================================
 
-void Tache::afficher(ostream& f){
+/*void Tache::afficher(ostream& f){
+
     f << "---Tache "<<titre<< "----------------------------------------- "<<"\n";
     f << "disponiblite=" << dispo << ",écheance=" << ech << ",duree=" << duree << "\n";
     extensionAffiche(f);
@@ -19,24 +20,28 @@ void Tache::afficher(ostream& f){
     }
     else  f << "pas de taches precedentes" << "\n\n";
 
-}
+}*/
+
 
 //================================methodes de TacheUnitaire==================================================================
 
+/*
 void TacheUnitaire::extensionAffiche(ostream& f){
     f << "preempte=" << preempte << "\n";
-};
+}
+*/
 
 //================================methodes de TacheComposite=================================================================
 
-void TacheComposite::extensionAffiche(ostream& f){
+/*void TacheComposite::extensionAffiche(ostream& f){
     if (compose.size()){
         for (std::vector<TacheUnitaire*>::const_iterator it = compose.cbegin(); it != compose.cend(); ++it)
             (*it)->afficher(f << "###");
     }
     else  f << "pas de taches composes" << "\n";
 
-}
+}*/
+
 
 //================================methodes de Projet=========================================================================
 Tache* Projet::trouverTache(const QString& ti)const{
@@ -48,7 +53,7 @@ Tache* Projet::trouverTache(const QString& ti)const{
 
 Tache& Projet::ajouterTacheUnitaire(const QString& t, const Date& dispo, const Date& deadline, const Duree& dur, bool preempt){
     if (trouverTache(t)) throw CalendarException("erreur, TacheManager, tache deja existante");
-    TacheUnitaire* newt = new TacheUnitaire(t, dur, dispo, deadline, preempt);
+    TacheUnitaire* newt = new TacheUnitaire(t, dispo, deadline,dur, preempt);
     addItem(newt);
     return *newt;
 }
