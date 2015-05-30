@@ -23,14 +23,13 @@ void Date::setDate(unsigned short int j, unsigned short int m, unsigned int a){
 
 void Date::setDateAujourdhui(){
 	// initialisation de la date avec la date d'aujourd'hui
-	/*	time_t rawtime;
+	time_t rawtime;
 	struct tm * timeinfo;
 	time ( &rawtime );
 	timeinfo = localtime ( &rawtime );
 	jour=timeinfo->tm_mday;
 	mois=timeinfo->tm_mon+1;
-	annee=timeinfo->tm_year+1900;*/
-
+	annee=timeinfo->tm_year+1900;
 }
 
 void Date::afficher(std::ostream& f) const{
