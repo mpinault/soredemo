@@ -10,7 +10,7 @@ namespace TIME {
 	*/
 	class TimeException{
 	public:
-		//! Constructeur ŕ partir d'une string
+		//! Constructeur à partir d'une string
 		TimeException(const std::string& m):info(m){}
 		const std::string& GetInfo() const { return info; } //<! Retourne l'information stockée dans la classe
 	private:
@@ -24,7 +24,7 @@ namespace TIME {
 	*/	
 	class Date {
 	public:
-		//! Constructeur ŕ partir d'un jour, mois, année
+		//! Constructeur à partir d'un jour, mois, année
 		/*! \param j jour avec 1<=j<=31
 			\param m mois avec 1<=m<=12
 			\param a année avec a>=0
@@ -56,12 +56,12 @@ namespace TIME {
 	*/	
 	class Duree{
 	public:
-		//! Constructeur ŕ partir de heure et minute
+		//! Constructeur à partir de heure et minute
 		/*! \param h heure avec h>=0
 			\param m minute avec 0<=m<=59
 			*/
 		Duree(unsigned int h, unsigned int m):nb_minutes(h*60+m) {if (m>59) throw TimeException("erreur: initialisation duree invalide");}
-		//! Constructeur ŕ partir de minute
+		//! Constructeur à partir de minute
 		/*! \param m minute avec m>=0
 			*/
 		Duree(unsigned int m=0):nb_minutes(m) {}
@@ -80,7 +80,7 @@ namespace TIME {
 	*/	
 	class Horaire{
 	public:
-		//! Constructeur ŕ partir de heure et minute
+		//! Constructeur à partir de heure et minute
 		/*! \param h heure avec 0<=h<=23
 			\param m minute avec 0<=m<=59
 			*/
@@ -102,7 +102,7 @@ namespace TIME {
 	*/	
 	class Periode{
 	public :
-		//! Constructeur ŕ partir de jour/mois/année
+		//! Constructeur à partir de jour/mois/année
 		/*! \param j nombre de jours avec 0<=j<=364
 			\param m nombre de mois avec 0<=m<=11
 			\param a nombre d'années 
@@ -122,7 +122,7 @@ namespace TIME {
 	*/	
 	class Intervalle{
 	public:
-		//! Constructeur ŕ partir de deux dates
+		//! Constructeur à partir de deux dates
 		/*! \param d date de début de l'intervalle
 			\param f date de fin de l'intervalle. On doit avoir d<=f
 			*/
@@ -150,5 +150,4 @@ std::istream& operator>>(std::istream&, TIME::Date&); // lecture format JJ/MM/AA
 std::istream& operator>>(std::istream&, TIME::Duree&); //lecture format hhHmm
 
 #endif
-
 
