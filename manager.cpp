@@ -3,75 +3,76 @@
 using namespace TIME;
 using namespace std;
 
-//================================methodes de Tache==========================================================================
+//================================Methodes de Tache==========================================================================
 
-/*void Tache::afficher(ostream& f){
-
-    f << "---Tache "<<titre<< "----------------------------------------- "<<"\n";
-    f << "disponiblite=" << dispo << ",écheance=" << ech << ",duree=" << duree << "\n";
-    extensionAffiche(f);
-    if (precede.size()){
-        for (std::vector<TacheUnitaire*>::const_iterator it = precede.begin(); it != precede.end(); ++it)
-            (*it)->afficher(f<<"===");
-    }
-    else  f << "pas de taches precedentes" << "\n\n";
-
-}*/
-
-
+//Methode virtuel mais qui a une definition dans la classe de base
 void Tache::ajouterTachePrec(Tache& t){
-    cout << "je rajoute une tache qui precede a cette tache" << "\n\n";
     precede.push_back(&t);
 }
 
-//================================methodes de TacheUnitaire==================================================================
+//================================Methodes de TacheUnitaire==================================================================
+//================================Methodes de TacheUnitaireNonPreempte=======================================================
+//================================Methodes de TacheUnitairePreempte==========================================================
 
-/*
-void TacheUnitaire::extensionAffiche(ostream& f){
-    f << "preempte=" << preempte << "\n";
+//On a besoin d'addition 2 durees.
+//On va surcharger l'operateur '+'. -> voir "timing.h", classe "Duree"
+
+void TacheUnitairePreempte::ajouterPartie(Partie* p){
+    parties.push_back(p);
+    setDuree(getDuree +p->getDuree());
 }
-*/
-
 
 
 //================================methodes de TacheComposite=================================================================
 
-/*void TacheComposite::extensionAffiche(ostream& f){
-    if (compose.size()){
-        for (std::vector<TacheUnitaire*>::const_iterator it = compose.begin(); it != compose.end(); ++it)
-            (*it)->afficher(f << "###");
-    }
-    else  f << "pas de taches composes" << "\n";
-
-}*/
-
-
-//================================methodes de Projet=========================================================================
-Tache* Projet::trouverTache(const QString& ti)const{
-    for (vector<Tache*>::const_iterator it = taches.begin(); it != taches.end(); ++it)
-        if (ti==(*it)->getTitre()) return *it;
-    return 0;
+void TacheComposite::ajouterTacheComp(Tache& t){
+    compose.push_back(&t);
 }
 
+//================================methodes de Projet=========================================================================
+        //ajoute une Tache dans le projet
+void Projet::ajouterTache(Tache* t){
+    taches.push_back(t);
+}
 
-Tache& Projet::ajouterTacheUnitaire(const QString& t, const QDate& dispo, const QDate& deadline, const Duree& dur, bool preempt){
-    if (trouverTache(t)) throw TimeException("erreur, TacheManager, tache deja existante");
-    TacheUnitaire* newt = new TacheUnitaire(t, dispo, deadline,dur, preempt);
-    addItem(newt);
+template<class T>
+Tache& Projet::creerTache(const QString& t, const QDate& dispo, const QDate& deadline, const Duree& dur){
+    if (isTacheExistante(t)) throw TimeException("erreur Projet, tache deja existante1");
+    T newt = new T(t, dispo, deadline,dur);
+    ajouterTache(newt);
     return *newt;
 }
 
-Tache& Projet::getTache(const QString& ti){
-    Tache* t = trouverTache(ti);
-    if (!t) throw TimeException("erreur, Projet, tache inexistante");
-    return *t;
+    //retrouver une Tache (const ou non-const) a partir de son titre
+    //revoir la difference de ces trois methodes !!
+Tache* Projet::trouverTache(const QString& ti)const{
+    //si throw une erreur, sort de la fonction ? check
+    if (isTacheExistante(ti)) throw TimeException("erreur Projet, tache deja existante2");
+    for (vector<Tache*>::const_iterator it = taches.begin(); it != taches.end(); ++it){
+        if (ti==(*it)->getTitre()) return it;
+    }
+
+    return 0;
 }
 
-const Tache& Projet::getTache(const QString& ti)const{
-    return const_cast<Projet*>(this)->getTache(ti);
+Tache& Projet::getTache(const QString& ti)const{
+    if (isTacheExistante(ti)) throw TimeException("erreur Projet, tache deja existante3");
+    for (vector<Tache*>::iterator it = taches.begin(); it != taches.end(); ++it){
+        if (ti==(*it)->getTitre()) return *it;
+    }
+    return 0;
+
 }
 
+const Tache& Projet::getTacheConst(const QString& ti)const{
+    if (isTacheExistante(ti)) throw TimeException("erreur Projet, tache deja existante4");
+    for (vector<Tache*>::const_iterator it = taches.begin(); it != taches.end(); ++it){
+        if (ti==(*it)->getTitre()) return *it;
+    }
+    return 0;
+}
 
+        //au niveau des fichiers
 void Projet::load(const QString& f){
     //qDebug()<<"debut load\n";
     this->~Projet();
@@ -79,7 +80,7 @@ void Projet::load(const QString& f){
     QFile fin(file);
     // If we can't open it, let's show an error message.
     if (!fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        throw TimeException("Erreur ouverture fichier tâches");
+        throw TimeException("Erreur Projet, ouverture fichier");
     }
     // QXmlStreamReader takes any QIODevice.
     QXmlStreamReader xml(&fin);
@@ -101,15 +102,8 @@ void Projet::load(const QString& f){
                 QDate disponibilite;
                 QDate echeance;
                 Duree duree;
-                bool preempt;
 
                 QXmlStreamAttributes attributes = xml.attributes();
-                /* Let's check that Task has attribute. */
-                if (attributes.hasAttribute("preemptive")) {
-                    QString val = attributes.value("preemptive").toString();
-                }
-                //qDebug()<<"preemptive="<<preemptive<<"\n";
-
                 xml.readNext();
                 //We're going to loop over the things because the order might change.
                 //We'll continue the loop until we hit an EndElement named tache.
@@ -145,14 +139,14 @@ void Projet::load(const QString& f){
                     xml.readNext();
                 }
                 //qDebug()<<"ajout tache "<<identificateur<<"\n";
-                ajouterTacheUnitaire(titre, disponibilite, echeance, duree, preempt);
+                ajouterTache(titre, disponibilite, echeance, duree);
 
             }
         }
     }
     // Error handling.
     if (xml.hasError()) {
-        throw TimeException("Erreur lecteur fichier taches, parser xml");
+        throw TimeException("Erreur Projet, lecteur fichier taches, parser xml");
     }
     // Removes any device() or data from the reader * and resets its internal state to the initial state.
     xml.clear();
@@ -170,7 +164,7 @@ void  Projet::save(const QString& f){
     stream.writeStartElement("taches");
     for (vector<TacheUnitaire*>::const_iterator it = taches.begin(); it != taches.end(); ++it){
         stream.writeStartElement("tache");
-        stream.writeAttribute("preemptive", ((*it)->getPreempte()) ? "true" : "false");
+        stream.writeAttribute("preemptive", (typeid(*it).name==QString(TacheUnitairePreempte)) ? "true" : "false");
         stream.writeTextElement("titre", (*it)->getTitre());
         stream.writeTextElement("disponibilite", (*it)->getDispo().toString(Qt::ISODate));
         stream.writeTextElement("echeance", (*it)->getEch().toString(Qt::ISODate));
@@ -210,8 +204,9 @@ const ProjetManager& ProjetManager::getProjet(const QString& ti)const{
     return const_cast<ProjetManager*>(this)->getProjet(ti);
 }
 
-
+//singleton
 ProjetManager::Handler ProjetManager::handler = ProjetManager::Handler();
+
 
 ProjetManager& ProjetManager::getInstance(){
     if (handler.instance == 0) handler.instance = new ProjetManager;
@@ -223,7 +218,7 @@ void ProjetManager::libererInstance(){
     handler.instance = 0;
 }
 
-
+//au niveau des fichiers
 void ProjetManager::load(const QString& f){
     //qDebug()<<"debut load\n";
     this->~ProjetManager();
@@ -249,7 +244,6 @@ void ProjetManager::load(const QString& f){
             // If it's named tache, we'll dig the information from there.
             if (xml.name() == "tache") {
                 qDebug() << "new tache\n";
-                QString identificateur;
                 QString titre;
                 QDate disponibilite;
                 QDate echeance;
@@ -271,12 +265,6 @@ void ProjetManager::load(const QString& f){
 
                 while (!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "tache")) {
                     if (xml.tokenType() == QXmlStreamReader::StartElement) {
-                        // We've found identificteur.
-                        if (xml.name() == "identificateur") {
-                            xml.readNext(); identificateur = xml.text().toString();
-                            //qDebug()<<"id="<<identificateur<<"\n";
-                        }
-
                         // We've found titre.
                         if (xml.name() == "titre") {
                             xml.readNext(); titre = xml.text().toString();
@@ -305,7 +293,7 @@ void ProjetManager::load(const QString& f){
                     xml.readNext();
                 }
                 //qDebug()<<"ajout tache "<<identificateur<<"\n";
-                ajouterTacheUnitaire(identificateur, titre, duree, disponibilite, echeance, preemptive);
+                Projet::creerTache(titre,disponibilite, echeance,duree);
 
             }
         }
