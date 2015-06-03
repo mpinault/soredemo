@@ -137,6 +137,6 @@ public:
 };
 
 
-};
+}
 
 #endif // MANAGER
