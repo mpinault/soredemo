@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taches>
+    <tache preemptive="true" compose="true">
+        <titre>Etablir une hiérarchie cohérente</titre>
+        <disponibilite>2015-02-28</disponibilite>
+        <echeance>2015-04-15</echeance>
+        <duree>600</duree>
+    </tache>
+    <tache preemptive="false"compose="true">
+        <titre>Répartir les classes entre développeurs</titre>
+        <disponibilite>2015-02-28</disponibilite>
+        <echeance>2015-04-24</echeance>
+        <duree>90</duree>
+    </tache>
+</taches>
