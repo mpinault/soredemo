@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projets>
+    <projet>
+        <titre>Etablir une hiérarchie cohérente</titre>
+        <disponibilite>2015-02-28</disponibilite>
+        <echeance>2015-04-15</echeance>
+    </projet>
+    <projet>
+        <titre>Répartir les classes entre développeurs</titre>
+        <disponibilite>2015-02-28</disponibilite>
+        <echeance>2015-04-24</echeance>
+    </Projet>
+</projets>
