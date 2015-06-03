@@ -9,5 +9,5 @@
         <titre>Répartir les classes entre développeurs</titre>
         <disponibilite>2015-02-28</disponibilite>
         <echeance>2015-04-24</echeance>
-    </Projet>
+    </projet>
 </projets>
