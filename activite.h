@@ -120,7 +120,7 @@ class ProgrammationActTrad : public Evenement {
 public :
 
     ///***************Constructeur ET Destructeur****************************************
-    ProgrammationActTrad(QDate& d, const Horaire& h, ActiviteTrad& a): Evenement(d, h), activite(&a){}
+    ProgrammationActTrad(QDate& d, const Horaire& h,const ActiviteTrad& a): Evenement(d, h), activite(&a){}
     virtual ~ProgrammationActTrad();
 
     ///***************Accesseurs****************************************
