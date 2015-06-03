@@ -70,9 +70,9 @@ void Projet::load(const QString& f){
         // If token is StartElement, we'll see if we can read it.
         if (token == QXmlStreamReader::StartElement) {
             // If it's named taches, we'll go to the next.
-            if (xml.name() == "projet") continue;
+            if (xml.name() == "taches") continue;
             // If it's named tache, we'll dig the information from there.
-            if (xml.name() == "projet") {
+            if (xml.name() == "tache") {
                 qDebug() << "new tache\n";
                 QString titre;
                 QDate disponibilite;
@@ -81,17 +81,18 @@ void Projet::load(const QString& f){
                 bool preemptive;
                 bool compose;
 
-                QXmlStreamAttributes attributes = xml.attributes();
+                QXmlStreamAttributes attributes1 = xml.attributes();
                 /* Let's check that Task has attribute. */
-                if(attributes.hasAttribute("preemptive")) {
-                    QString val =attributes.value("preemptive").toString();
+                if(attributes1.hasAttribute("preemptive")) {
+                    QString val =attributes1.value("preemptive").toString();
                     preemptive=(val == "true" ? true : false);
                 }
                 //qDebug()<<"preemptive="<<preemptive<<"\n";
 
+                QXmlStreamAttributes attributes2 = xml.attributes();
                 /* Let's check that Task has attribute. */
-                if(attributes.hasAttribute("compose")) {
-                    QString val =attributes.value("compose").toString();
+                if(attributes2.hasAttribute("compose")) {
+                    QString val =attributes2.value("compose").toString();
                     compose=(val == "true" ? true : false);
                 }
                 //qDebug()<<"compose="<<compose<<"\n";
@@ -167,6 +168,7 @@ void  Projet::save(const QString& f){
     for (vector<Tache*>::const_iterator it = taches.begin(); it != taches.end(); ++it){
         stream.writeStartElement("tache");
         //stream.writeAttribute("preemptive", (typeid(*it).name==QString(TacheUnitairePreempte)) ? "true" : "false");
+        //stream.writeAttribute("compose", (typeid(*it).name==QString(TacheUnitairePreempte)) ? "true" : "false");
         stream.writeTextElement("titre", (*it)->getTitre());
         stream.writeTextElement("disponibilite", (*it)->getDispo().toString(Qt::ISODate));
         stream.writeTextElement("echeance", (*it)->getEch().toString(Qt::ISODate));
