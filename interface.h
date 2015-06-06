@@ -23,6 +23,7 @@
 #include <QLineEdit>
 #include <QCheckBox>
 
+
 template <class T1,class T2>
 void ouvrirFenetre(T1& parent) {
         T2 * fenetre = new T2;
@@ -45,20 +46,29 @@ public slots :
 
 };
 
+
 class Fenetre2 : public QWidget
 {
     Q_OBJECT
-    QPushButton* nouvel_evenement;
+    QPushButton* creerTache;
+    QPushButton* creerProjet;
+    QPushButton* creerActTrad;
     QPushButton* vue_hebdomadaire;
+    QPushButton* progEvt;
     QPushButton* vue_projets;
+
     QVBoxLayout* couche;
+
 public :
     Fenetre2();
 public slots :
-    void ouvrirFenetre3();
+    void ouvrirFenetre10();
+    void ouvrirFenetre15();
+    void ouvrirFenetre8();
     void ouvrirFenetre4();
     void ouvrirFenetre5();
 };
+
 
 class Fenetre3 : public QDialog
 {
@@ -89,6 +99,7 @@ class Fenetre4 : public QDialog {
 
     QPushButton* buttonBack;
     QPushButton* buttonForward;
+    QPushButton* ajoutEvt;
 
     QCalendarWidget* calend;
     QDateEdit* jour_debut;
@@ -100,7 +111,7 @@ public :
     Fenetre4();
 public slots :
     void ouvrirFenetre2();
-    //void ouvrirFenetre8();
+    void ouvrirFenetre18();
 };
 
 
@@ -139,6 +150,9 @@ class Fenetre10: public QWidget{
     QLabel* titreLabel;
     QTextEdit* titre;
 
+    QLabel* projetLabel;
+    QComboBox* projet;
+
     QLabel* dateDebutLabel;
     QDateEdit* dateDebut;
 
@@ -160,6 +174,7 @@ class Fenetre10: public QWidget{
 
     QHBoxLayout* coucheH1;
     QHBoxLayout* coucheH2;
+    QHBoxLayout* couche2;
     QHBoxLayout* coucheH3;
     QHBoxLayout* coucheH4;
     QHBoxLayout* coucheH5;
@@ -171,6 +186,9 @@ class Fenetre10: public QWidget{
     public:
 
     explicit Fenetre10();
+
+public slots:
+    void ouvrirFenetre2();
 
 };
 
@@ -198,5 +216,105 @@ private :
 
 };
 */
+
+class Fenetre8 : public QWidget{
+
+    Q_OBJECT
+    QLabel* identificateurLabel;
+    QLineEdit* identificateur;
+
+    QLabel* titreLabel;
+    QTextEdit* titre;
+
+    QLabel* lieuLabel;
+    QTextEdit* lieu;
+
+    QLabel* typeLabel;
+    QComboBox* type;
+
+    QLabel* dureeLabel;
+    QSpinBox* hDuree;
+    QSpinBox* mDuree;
+
+    QPushButton* sauver;
+    QPushButton* annuler;
+
+    QHBoxLayout* coucheH1;
+    QHBoxLayout* coucheH2;
+    QHBoxLayout* coucheH3;
+    QHBoxLayout* coucheH4;
+    QHBoxLayout* coucheH5;
+    QHBoxLayout* coucheH6;
+    QVBoxLayout* couche;
+
+    public:
+    explicit Fenetre8();
+
+public slots:
+     void ouvrirFenetre2();
+
+
+};
+
+class Fenetre15 : public QWidget
+{
+    Q_OBJECT
+    QLabel* titreLabel;
+    QTextEdit* titre;
+
+    QLabel* dateDebutLabel;
+    QDateEdit* dateDebut;
+
+    QLabel* echeanceLabel;
+    QDateEdit* echeance;
+
+    QPushButton* annuler;
+    QPushButton* valider;
+
+    QHBoxLayout* couche1;
+    QHBoxLayout* couche2;
+    QHBoxLayout* couche3;
+    QHBoxLayout* couche4;
+
+    QVBoxLayout* couche;
+
+public :
+    Fenetre15();
+public slots :
+    void ouvrirFenetre2();
+};
+
+class Fenetre18 : public QWidget
+{
+    Q_OBJECT
+    QLabel* titreLabel1;
+    QComboBox* choix1;
+    QPushButton* valider1;
+
+    QLabel* titreLabel2;
+    QComboBox* choix2;
+
+    QLabel* dateDebutLabel;
+    QDateEdit* dateDebut;
+
+    QLabel* horaireDebutLabel;
+    QDateEdit* horaireDebut;
+
+    QPushButton* valider2;
+    QPushButton* annuler;
+
+    QVBoxLayout* couche1;
+    QVBoxLayout* couche2;
+    QHBoxLayout* couche3;
+    QHBoxLayout* couche4;
+    QHBoxLayout* couche5;
+    QVBoxLayout* couche;
+
+public :
+    Fenetre18();
+public slots :
+        void ouvrirFenetre4();
+};
+
 #endif // INTERFACE
 
