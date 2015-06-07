@@ -56,6 +56,9 @@ class Fenetre2 : public QWidget
     QPushButton* vue_hebdomadaire;
     QPushButton* progEvt;
     QPushButton* vue_projets;
+    QPushButton* ouvrir;
+    QPushButton* quitter;
+
 
     QVBoxLayout* couche;
 
@@ -67,6 +70,7 @@ public slots :
     void ouvrirFenetre8();
     void ouvrirFenetre4();
     void ouvrirFenetre5();
+    void ouvrirFenetre21();
 };
 
 
@@ -142,9 +146,6 @@ public slots :
 class Fenetre10: public QWidget{
     Q_OBJECT
 
-    QLabel* identificateurLabel;
-    QLineEdit* identificateur;
-
     QCheckBox* preemptive;
 
     QLabel* titreLabel;
@@ -172,7 +173,6 @@ class Fenetre10: public QWidget{
     QPushButton* sauver;
     QPushButton* annuler;
 
-    QHBoxLayout* coucheH1;
     QHBoxLayout* coucheH2;
     QHBoxLayout* couche2;
     QHBoxLayout* coucheH3;
@@ -220,9 +220,6 @@ private :
 class Fenetre8 : public QWidget{
 
     Q_OBJECT
-    QLabel* identificateurLabel;
-    QLineEdit* identificateur;
-
     QLabel* titreLabel;
     QTextEdit* titre;
 
@@ -239,7 +236,6 @@ class Fenetre8 : public QWidget{
     QPushButton* sauver;
     QPushButton* annuler;
 
-    QHBoxLayout* coucheH1;
     QHBoxLayout* coucheH2;
     QHBoxLayout* coucheH3;
     QHBoxLayout* coucheH4;
@@ -314,6 +310,26 @@ public :
     Fenetre18();
 public slots :
         void ouvrirFenetre4();
+};
+
+class Fenetre21 : public QWidget
+{
+    Q_OBJECT
+    QLabel* titreLabel;
+    QComboBox* choix;
+
+    QPushButton* valider;
+    QPushButton* annuler;
+
+    QVBoxLayout* couche1;
+    QHBoxLayout* couche2;
+    QVBoxLayout* couche;
+
+
+public :
+    Fenetre21();
+public slots :
+    void ouvrirFenetre2();
 };
 
 #endif // INTERFACE
