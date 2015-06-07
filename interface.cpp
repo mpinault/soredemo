@@ -544,6 +544,47 @@ Fenetre21::Fenetre21(){
 
 void Fenetre21::ouvrirFenetre2() {ouvrirFenetre<Fenetre21,Fenetre2>(*this);}
 
+//=====07/06/15======Morgane============================================================================================
+
+//La fenêtre 16 regroupe 16, 17 et 20 grâce à un constructeur avec un QString en paramètre
+//Elle affiche une fenêtre qui indique que le résultat de lacréation ou de l'ajout
+//peut être appelée par les fenêtres 15, 18, 19. Il passent en paramètre une chaîne de caractère qui indique le résultat (Echec/Succès de la création/ajout..)
+Fenetre16::Fenetre16(QString t){
+    this->setWindowTitle("Fenêtre 16 : Résultat de la création ou de l'ajout");
+    text = new QLabel(t);
+    menu = new QPushButton("Retour au menu");
+    couche = new QVBoxLayout;
+    couche->addWidget(text);
+    couche->addWidget(menu);
+    setLayout(couche);
+
+    QObject::connect(menu, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+}
+
+void Fenetre16::ouvrirFenetre2() {
+    ouvrirFenetre<Fenetre16,Fenetre2>(*this);
+}
+
+Fenetre19::Fenetre19(){
+    this->setWindowTitle(QString ("Fenetre 19 : Ajout Evenement"));
+    treeWidget = new QTreeWidget();
+    treeWidget->setColumnCount(1);
+/*
+    Tache* tache1 = new Tache(QString("premiere"),QDate(),QDate());
+    Tache* tache2 = new Tache(QString("compose la premiere"),QDate(),QDate());
+
+    QList<QTreeWidgetItem *> items;
+    for (int i = 0; i < 1; ++i){
+        QTreeWidgetItem* mainBranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("tache %1 : %2").arg(i).arg(tache1->getTitre())));
+        items.append(mainBranch);
+        items.append(new QTreeWidgetItem(mainBranch, QStringList(QString("tache %1 : %2").arg(i).arg(tache2->getTitre()))));
+    }
+    treeWidget->insertTopLevelItems(0, items);
+*/
+    couche = new QVBoxLayout;
+    couche->addWidget(treeWidget);
+    setLayout(couche);
+}
 
 /*
 Interface::Interface() : QWidget()
