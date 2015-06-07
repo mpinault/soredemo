@@ -71,7 +71,7 @@ void Projet::load(const QString& f){
             // If it's named taches, we'll go to the next.
             if (xml.name() == "projet") continue;
             // If it's named tache, we'll dig the information from there.
-            if (xml.name() == "projet") {
+            if (xml.name() == "tache") {
                 qDebug() << "new tache\n";
                 QString titre;
                 QDate disponibilite;
