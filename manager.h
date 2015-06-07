@@ -1,9 +1,9 @@
 #ifndef PROJETMANAGER
 #define PROJETMANAGER
-
+#include "timing.h"
 
 using namespace std;
-namespace TIME {
+using namespace TIME;
 
 
 //=====ProjetManager========================================================================================
@@ -16,12 +16,18 @@ class ProjetManager{
     proj projet;
 
     //Constructeur, Destructeur, Constructeur de recopie ET operateur d'affectation
-    ProjetManager(){projet.reserve(10); load(file);}
+
+    //Le constructeur de ProjetManager ne pouvait pas loader un fichier alors qu'il n'était pas initialiser du coup c'est get instance qui s'en occupe.
+    ProjetManager(){
+        projet.reserve(10);
+    }
+    //J'ai été obligée de mettre une ligne du destrcuteur en commentaire pcq sinon il détruisait le nom du fichier à loader dans la méthode load et
+    //du coup ça plantait car il n'avait aucun fichier à ouvrir...
     ~ProjetManager(){
         if (file != "") save(file);
         projet.clear();
         projet.~vector();
-        file = "";
+        //file = "";
     }
     ProjetManager(const ProjetManager& um);
     ProjetManager& operator=(const ProjetManager& um);
@@ -43,6 +49,9 @@ class ProjetManager{
 
 public:
     //Methodes
+        //Accesseur
+    void setFile(const QString& f){file=f;}
+
         //ajouter un projet a partir d'un formulaire
     Projet& creerProjet(const QString& ti, const QDate& dispo, const QDate& deadline);
     Projet& trouverProjetR(const QString& ti);
@@ -60,6 +69,6 @@ public:
 };
 
 
-}
+
 #endif // PROJETMANAGER
 
