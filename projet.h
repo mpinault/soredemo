@@ -2,9 +2,9 @@
 #define PROJET
 
 #include "timing.h"
+#include "tache.h"
 
 using namespace std;
-namespace TIME {
 
 //=====Projet====================================================================================================
 //Classe NON Abstraite
@@ -62,7 +62,6 @@ public:
     void save(const QString& f);
 };
 
-}
 
 
 #endif // PROJET
