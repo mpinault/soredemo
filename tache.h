@@ -13,7 +13,11 @@
 #include <QFile>
 
 using namespace std;
-namespace TIME {
+using namespace TIME;
+
+//=====07/06/15======Morgane============================================================================================
+#include <QFileDialog>
+
 
 //=====Tache==================================================================================================
 //Classe Abstraite
@@ -137,6 +141,5 @@ public:
 };
 
 
-}
 
 #endif // MANAGER
