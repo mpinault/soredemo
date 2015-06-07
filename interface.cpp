@@ -34,6 +34,8 @@ Fenetre2::Fenetre2(){
     vue_hebdomadaire = new QPushButton("Vue Hebdomadaire");
     progEvt = new QPushButton("Programmer un Evenement");
     vue_projets = new QPushButton("Vue ensemble des projets");
+    ouvrir = new QPushButton("Ouvrir un agenda existant");
+    quitter = new QPushButton("Quitter");
 
     couche = new QVBoxLayout;
     couche->addWidget(creerTache);
@@ -42,6 +44,8 @@ Fenetre2::Fenetre2(){
     couche->addWidget(vue_hebdomadaire);
     couche->addWidget(progEvt);
     couche->addWidget(vue_projets);
+    couche->addWidget(ouvrir);
+    couche->addWidget(quitter);
     setLayout(couche);
 
     //QObject::connect(nouvel_evenement, SIGNAL(clicked()),this, SLOT(ouvrirFenetre3()));
@@ -52,6 +56,8 @@ Fenetre2::Fenetre2(){
     QObject::connect(vue_hebdomadaire, SIGNAL(clicked()),this, SLOT(ouvrirFenetre4()));
     QObject::connect(progEvt, SIGNAL(clicked()),this, SLOT(ouvrirFenetre4()));
     QObject::connect(vue_projets, SIGNAL(clicked()),this, SLOT(ouvrirFenetre5()));
+    QObject::connect(ouvrir, SIGNAL(clicked()),this, SLOT(ouvrirFenetre21()));
+    //QObject::connect(quitter, SIGNAL(clicked()),this, SLOT(ouvrirFenetre5()));
 }
 
 
@@ -61,6 +67,8 @@ void Fenetre2::ouvrirFenetre15() {ouvrirFenetre<Fenetre2,Fenetre15>(*this);}
 void Fenetre2::ouvrirFenetre8() {ouvrirFenetre<Fenetre2,Fenetre8>(*this);}
 void Fenetre2::ouvrirFenetre4() {ouvrirFenetre<Fenetre2,Fenetre4>(*this);}
 void Fenetre2::ouvrirFenetre5() {ouvrirFenetre<Fenetre2,Fenetre5>(*this);}
+void Fenetre2::ouvrirFenetre21() {ouvrirFenetre<Fenetre2,Fenetre21>(*this);}
+
 
 Fenetre3::Fenetre3(){
     this->setWindowTitle(QString ("ProjectCalendar"));
@@ -248,9 +256,6 @@ Fenetre8::Fenetre8():QWidget(){
     this->setWindowTitle("Project Calendar");
     setFixedSize(800,500);
 
-    identificateurLabel= new QLabel ("Identificateur", this);
-    identificateur= new QLineEdit(0,this);
-
     titreLabel=new QLabel("Titre", this);
     titre=new QTextEdit(0, this);
 
@@ -280,10 +285,6 @@ Fenetre8::Fenetre8():QWidget(){
     sauver->setCursor(Qt::PointingHandCursor);
     annuler->setCursor(Qt::PointingHandCursor);
 
-    coucheH1 = new QHBoxLayout;
-    coucheH1->addWidget(identificateurLabel);
-    coucheH1->addWidget(identificateur);
-
     coucheH2 = new QHBoxLayout;
     coucheH2->addWidget(titreLabel);
     coucheH2->addWidget(titre);
@@ -306,7 +307,6 @@ Fenetre8::Fenetre8():QWidget(){
     coucheH6->addWidget(sauver);
 
     couche=new QVBoxLayout;
-    couche->addLayout(coucheH1);
     couche->addLayout(coucheH2);
     couche->addLayout(coucheH3);
     couche->addLayout(coucheH4);
@@ -325,9 +325,6 @@ Fenetre10::Fenetre10(){
 
     this->setWindowTitle("Project Calendar");
     setFixedSize(800,500);
-
-    identificateurLabel= new QLabel ("identificateur", this);
-    identificateur= new QLineEdit(0,this);
 
     preemptive=new QCheckBox("preemptive",this);
 
@@ -361,14 +358,10 @@ Fenetre10::Fenetre10(){
     sauver=new QPushButton("Sauver", this);
     annuler=new QPushButton ("Annuler",this);
 
-    coucheH1 = new QHBoxLayout;
-    coucheH1->addWidget(identificateurLabel);
-    coucheH1->addWidget(identificateur);
-    coucheH1->addWidget(preemptive);
-
     coucheH2 = new QHBoxLayout;
     coucheH2->addWidget(titreLabel);
     coucheH2->addWidget(titre);
+    coucheH2->addWidget(preemptive);
 
     couche2 = new QHBoxLayout;
     couche2->addWidget(projetLabel);
@@ -401,7 +394,6 @@ Fenetre10::Fenetre10(){
     coucheH8->addWidget(sauver);
 
     couche=new QVBoxLayout;
-    couche->addLayout(coucheH1);
     couche->addLayout(coucheH2);
     couche->addLayout(couche2);
     couche->addLayout(coucheH3);
@@ -520,6 +512,37 @@ Fenetre18::Fenetre18(){
 }
 
 void Fenetre18::ouvrirFenetre4() {ouvrirFenetre<Fenetre18,Fenetre4>(*this);}
+
+Fenetre21::Fenetre21(){
+
+    this->setWindowTitle("Project Calendar");
+    //setFixedSize(800,500);
+
+    titreLabel=new QLabel("Selectionner l'agenda que vous voulez exporter:", this);
+    choix=new QComboBox();
+
+    valider=new QPushButton("Valider", this);
+    annuler=new QPushButton ("Annuler",this);
+
+    couche1 = new QVBoxLayout;
+    couche1->addWidget(titreLabel);
+    couche1->addWidget(choix);
+
+    couche2 = new QHBoxLayout;
+    couche2->addWidget(annuler);
+    couche2->addWidget(valider);
+
+
+    couche=new QVBoxLayout;
+    couche->addLayout(couche1);
+    couche->addLayout(couche2);
+    setLayout(couche);
+
+    QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+
+}
+
+void Fenetre21::ouvrirFenetre2() {ouvrirFenetre<Fenetre21,Fenetre2>(*this);}
 
 
 /*
