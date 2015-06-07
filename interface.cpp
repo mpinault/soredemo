@@ -1,8 +1,13 @@
+
+//=====07/06/15==============Morgane====================================================================================
 #include "Interface.h"
+#include "tache.h"
+#include "projet.h"
+using namespace TIME;
 
 Fenetre1::Fenetre1(){
     this->setWindowTitle(QString ("ProjectCalendar"));
-    introduction = new QLabel("Bienvenue dans le projet Calendar, pour accéder aux différentes fonctionnallités appuyer sur START");
+    introduction = new QLabel("Bienvenue dans le projet Calendar, pour accéder aux différentes fonctionnalités appuyer sur START");
     start = new QPushButton("Start");
     couche = new QVBoxLayout;
     couche->addWidget(introduction);
@@ -569,18 +574,19 @@ Fenetre19::Fenetre19(){
     this->setWindowTitle(QString ("Fenetre 19 : Ajout Evenement"));
     treeWidget = new QTreeWidget();
     treeWidget->setColumnCount(1);
-/*
-    Tache* tache1 = new Tache(QString("premiere"),QDate(),QDate());
-    Tache* tache2 = new Tache(QString("compose la premiere"),QDate(),QDate());
+
+    ProjetManager& pManager=ProjetManager::getInstance();
+    Projet& project = pManager.creerProjet(QString("Projet A"),QDate(),QDate());
+    Tache& tache1 = project.creerTache(QString("Première tache"),QDate(),QDate(),Duree(),0);
 
     QList<QTreeWidgetItem *> items;
     for (int i = 0; i < 1; ++i){
-        QTreeWidgetItem* mainBranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("tache %1 : %2").arg(i).arg(tache1->getTitre())));
+        QTreeWidgetItem* mainBranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("Projet 1 : %2").arg(i).arg(project.getTitre())));
         items.append(mainBranch);
-        items.append(new QTreeWidgetItem(mainBranch, QStringList(QString("tache %1 : %2").arg(i).arg(tache2->getTitre()))));
+        items.append(new QTreeWidgetItem(mainBranch, QStringList(QString("tache %1 : %2").arg(i).arg(tache1.getTitre()))));
     }
     treeWidget->insertTopLevelItems(0, items);
-*/
+
     couche = new QVBoxLayout;
     couche->addWidget(treeWidget);
     setLayout(couche);
