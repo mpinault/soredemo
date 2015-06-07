@@ -1,16 +1,15 @@
-
-
 #include "Interface.h"
+#include "manager.h"
 
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    Fenetre4 fenetre4;
-    fenetre4.show();
+    //TacheManager& m=TacheManager::getInstance();
 
-    Fenetre10 fenetre10;
-    fenetre10.show();
+    Fenetre1 fenetre1;
+    fenetre1.show();
+
     return app.exec();
 }
