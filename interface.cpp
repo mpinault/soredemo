@@ -3,6 +3,8 @@
 #include "Interface.h"
 #include "tache.h"
 #include "projet.h"
+#include "manager.h"
+#include "activite.h"
 using namespace TIME;
 
 Fenetre1::Fenetre1(){
@@ -320,10 +322,23 @@ Fenetre8::Fenetre8():QWidget(){
     setLayout(couche);
 
     QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+    //QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverActTrad()));
 
 }
 
 void Fenetre8::ouvrirFenetre2() {ouvrirFenetre<Fenetre8,Fenetre2>(*this);}
+/*
+void Fenetre8::sauverActTrad(){
+    // on n'a pas EvenementManager !
+    //if (EvenementManager::getInstance().trouverProjetR(projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
+    QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
+
+    if (type->accessibleDescription()=="Reunion")Reunion(titre->accessibleDescription(),lieu->accessibleDescription(),0,Duree(hDuree->depth(),mDuree->depth()),type);
+    if (type==2)Rdv(titre->accessibleDescription(),lieu->accessibleDescription(),Duree(hDuree->depth(),0,mDuree->depth()),type);
+    else ActiviteTrad(titre->accessibleDescription(),lieu->accessibleDescription(),Duree(hDuree->depth(),mDuree->depth()),type);
+
+    QMessageBox::information(this, "Sauvegarde", "Tache sauvegardée!");
+}*/
 
 
 Fenetre10::Fenetre10(){
@@ -410,11 +425,24 @@ Fenetre10::Fenetre10(){
     setLayout(couche);
 
      QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
-     //QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+     QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverTache()));
 
 }
 
 void Fenetre10::ouvrirFenetre2() {ouvrirFenetre<Fenetre10,Fenetre2>(*this);}
+
+
+void Fenetre10::sauverTache(){
+    // ou creer l'instance de manager ?? (Alice , 07/06)
+    if (ProjetManager::getInstance().trouverProjetR(projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
+    QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
+
+    if (preemptive->isChecked())
+        TacheUnitairePreempte(titre->accessibleDescription(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()));
+    else TacheUnitaireNonPreempte(titre->accessibleDescription(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()));
+
+    QMessageBox::information(this, "Sauvegarde", "Tache sauvegardée!");
+}
 
 
 Fenetre15::Fenetre15(){
