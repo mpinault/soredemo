@@ -28,6 +28,10 @@
 #include<QTreeWidget>
 
 #include "tache.h"
+#include "projet.h"
+#include "manager.h"
+
+
 
 template <class T1,class T2>
 void ouvrirFenetre(T1& parent) {
@@ -339,20 +343,6 @@ public slots :
 
 
 //=====07/06/15==============Morgane====================================================================================
-//La fenêtre 16 regroupe 16, 17 et 20 grâce à un constructeur avec un QString en paramètre
-class Fenetre16 : public QWidget
-{
-    Q_OBJECT
-    QLabel* text;
-    QPushButton* menu;
-    QVBoxLayout* couche;
-
-public :
-    Fenetre16(QString t);
-public slots :
-    void ouvrirFenetre2();
-};
-
 //la fenêtre 19 est pour l'ajout d'évènement en tant que programmation d'un tache :
 class Fenetre19 : public QWidget
 {
@@ -366,6 +356,20 @@ public slots :
 
 };
 
+//La fenêtre 16 regroupe 16, 17 et 20 grâce à un constructeur avec un QString en paramètre
+class Fenetre16 : public QWidget
+{
+    Q_OBJECT
+    QLabel* text;
+    QPushButton* menu;
+    QVBoxLayout* couche;
+
+public :
+    Fenetre16(QString t);
+public slots :
+    void ouvrirFenetre2();
+
+};
 
 #endif // INTERFACE
 
