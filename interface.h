@@ -193,8 +193,8 @@ class Fenetre10: public QWidget{
     QVBoxLayout* couche;
 
     public:
-
     explicit Fenetre10();
+    void sauverTache();
 
 public slots:
     void ouvrirFenetre2();
@@ -257,6 +257,7 @@ class Fenetre8 : public QWidget{
 
 public slots:
      void ouvrirFenetre2();
+     //void sauverActTrad();
 
 
 };
