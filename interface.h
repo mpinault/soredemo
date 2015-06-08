@@ -25,7 +25,7 @@
 
 //=====07/06/15==============Morgane====================================================================================
 //ajouts pour la fenêtre 19
-#include<QTreeWidget>
+
 
 #include "tache.h"
 #include "projet.h"
@@ -352,7 +352,7 @@ class Fenetre19 : public QWidget
     QVBoxLayout* couche;
 
 public :
-    Fenetre19();
+    Fenetre19(const ProjetManager& m);
 public slots :
 
 };
