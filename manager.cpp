@@ -24,7 +24,7 @@ ProjetManager& ProjetManager::getInstance(){
         handler.instance->setFile(QFileDialog::getOpenFileName());
         qDebug()<<"1";
         qDebug()<<handler.instance->file;
-        handler.instance->load(handler.instance->file);
+        //handler.instance->load(handler.instance->file);
     }
     return *(handler.instance);
 }
@@ -44,6 +44,7 @@ void ProjetManager::ajouterProjet(Projet* p){
 Projet* ProjetManager::trouverProjetP(const QString& titre)const{
     for (std::vector<Projet*>::const_iterator it = projet.begin(); it != projet.end(); ++it)
         if ((*it)->getTitre()==titre) return *it;
+    return 0;
 }
 
 Projet& ProjetManager::creerProjet(const QString& ti, const QDate& dispo, const QDate& deadline){
