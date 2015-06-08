@@ -43,6 +43,7 @@ public:
     const QString& getTitre()const{ return titre; }
     const QDate& getDispo()const { return dispo; }
     const QDate& getEch()const { return ech; }
+    const tac& getTaches() const {return taches;}
     void setTitre(const QString& s){ titre=s; }
     void setDispo(const QDate& d){dispo=d; }
     void setEch(const QDate& e){ ech=e; }
