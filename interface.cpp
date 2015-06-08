@@ -598,26 +598,31 @@ void Fenetre16::ouvrirFenetre2() {
     ouvrirFenetre<Fenetre16,Fenetre2>(*this);
 }
 
-Fenetre19::Fenetre19(){
+Fenetre19::Fenetre19(const ProjetManager& m){
     this->setWindowTitle(QString ("Fenetre 19 : Ajout Evenement"));
     treeWidget = new QTreeWidget();
     treeWidget->setColumnCount(1);
 
-    ProjetManager& pManager=ProjetManager::getInstance();
-    Projet& project = pManager.creerProjet(QString("Projet A"),QDate(),QDate());
-    Tache& tache1 = project.creerTache(QString("Première tache"),QDate(),QDate(),Duree(),0);
-
     QList<QTreeWidgetItem *> items;
-    for (int i = 0; i < 1; ++i){
-        QTreeWidgetItem* mainBranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("Projet 1 : %2").arg(i).arg(project.getTitre())));
+    for(vector<Projet*>::const_iterator mit = m.getProjet().begin(); mit != m.getProjet().end(); ++mit){
+        QTreeWidgetItem* mainBranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("Projet : %1").arg((*mit)->getTitre())));
+        qDebug()<<"5";
         items.append(mainBranch);
-        items.append(new QTreeWidgetItem(mainBranch, QStringList(QString("tache %1 : %2").arg(i).arg(tache1.getTitre()))));
+        qDebug()<<"6";
+        for (vector<Tache*>::const_iterator it = (*mit)->getTaches().begin(); it != (*mit)->getTaches().end(); ++it){
+            QTreeWidgetItem* newTache = new QTreeWidgetItem(mainBranch, QStringList(QString("tache : %1").arg((*it)->getTitre())));
+            items.append(newTache);
+            if (typeid(*it).name()=="TacheComposite")  dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache);
+        }
     }
     treeWidget->insertTopLevelItems(0, items);
+    qDebug()<<"7";
 
     couche = new QVBoxLayout;
     couche->addWidget(treeWidget);
     setLayout(couche);
+    qDebug()<<"8";
+
 }
 
 /*
