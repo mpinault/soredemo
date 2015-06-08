@@ -1,3 +1,4 @@
+
 #include "tache.h"
 #include "projet.h"
 #include "manager.h"
@@ -33,3 +34,13 @@ void TacheUnitairePreempte::ajouterPartie(Partie* p){
 void TacheComposite::ajouterTacheComp(Tache& t){
     compose.push_back(&t);
 }
+
+void TacheComposite::ajouterTacheComparbre(QTreeWidgetItem* item){
+
+    for (vector<Tache*>::const_iterator it = this->getCompose().begin(); it != this->getCompose().end(); ++it){
+        QTreeWidgetItem* newTache = new QTreeWidgetItem(item, QStringList(QString("tache : %1").arg((*it)->getTitre())));
+        //item.append(newTache);
+        if (typeid(*it).name()=="14TacheComposite") dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache);
+    }
+}
+
