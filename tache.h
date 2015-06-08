@@ -18,6 +18,9 @@ using namespace TIME;
 //=====07/06/15======Morgane============================================================================================
 #include <QFileDialog>
 
+//=====08/06/15======Morgane============================================================================================
+#include<QTreeWidget>
+
 
 //=====Tache==================================================================================================
 //Classe Abstraite
@@ -135,9 +138,13 @@ public:
     }
     virtual ~TacheComposite(){}
 
+    //accesseur
+    const com& getCompose()const {return compose;}
+
     //Methodes
     void ajouterTachePrec(Tache& t)override{}
     void ajouterTacheComp(Tache& t);
+    void ajouterTacheComparbre(QTreeWidgetItem* item);
 };
 
 
