@@ -39,8 +39,14 @@ void ouvrirFenetre(T1& parent) {
         parent.close();
         fenetre->show();
 }
-
-
+/*
+template <class T1,class T2>
+void ouvrirFenetre(T1& parent,const Projet& p) {
+        T2 * fenetre = new T2(p);
+        parent.close();
+        fenetre->show();
+}
+*/
 class Fenetre1 : public QWidget
 {
     Q_OBJECT
@@ -80,6 +86,7 @@ public slots :
     void ouvrirFenetre4();
     void ouvrirFenetre5();
     void ouvrirFenetre21();
+    void ouvrirFenetre25();
 };
 
 
@@ -349,11 +356,18 @@ class Fenetre19 : public QWidget
 {
     Q_OBJECT
     QTreeWidget* treeWidget;
+    QHBoxLayout* ligne;
     QVBoxLayout* couche;
+    QPushButton* retour;
+    QPushButton* valider;
+
+    QComboBox* cBox;
 
 public :
-    Fenetre19(const ProjetManager& m);
+    Fenetre19(Projet& p);
+    QComboBox* getCBox()const {return cBox;}
 public slots :
+    void ouvrirFenetre2();
 
 };
 
@@ -372,5 +386,41 @@ public slots :
 
 };
 
+///Fenêtre7 : Elle est faite mais je ne vois pas trop quand est ce qu'elle est utile, je la laisse quand même pour l'instant...
+//La Fenêtre 7 permet d'afficher un projet avec les taches qui lui sont rattachées sous forme de treeView
+//permet d'appeler la fenêtre d'ajout d'une tache (Fenêtre ???)
+class Fenetre7 : public QWidget
+{
+    Q_OBJECT
+    QTreeWidget* treeWidget;
+    QHBoxLayout* ligne;
+    QVBoxLayout* couche;
+    QPushButton* retour;
+    QPushButton* valider;
+
+    QComboBox* taches;
+
+public :
+    Fenetre7(const Projet& p);
+public slots :
+    void ouvrirFenetre2();
+};
+
+///Fenêtre 25 terminée
+//la fenêtre 25 permet d'afficher une vue d'ensemble des projets (les différentes projets et leurs taches sous forme de TreeView)
+class Fenetre25 : public QWidget
+{
+    Q_OBJECT
+    QTreeWidget* treeWidget;
+    QVBoxLayout* couche;
+    QPushButton* retour;
+
+
+public :
+    Fenetre25();
+public slots :
+    void ouvrirFenetre2();
+
+};
 #endif // INTERFACE
 
