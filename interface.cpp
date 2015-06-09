@@ -612,7 +612,9 @@ Fenetre19::Fenetre19(const ProjetManager& m){
         for (vector<Tache*>::const_iterator it = (*mit)->getTaches().begin(); it != (*mit)->getTaches().end(); ++it){
             QTreeWidgetItem* newTache = new QTreeWidgetItem(mainBranch, QStringList(QString("tache : %1").arg((*it)->getTitre())));
             items.append(newTache);
-            if (typeid(*it).name()=="TacheComposite")  dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache);
+            if (typeid(*(*it))==typeid(TacheComposite))
+                dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache);
+            qDebug()<<"sortie du if";
         }
     }
     treeWidget->insertTopLevelItems(0, items);
