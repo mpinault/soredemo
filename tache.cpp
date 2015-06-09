@@ -44,3 +44,13 @@ void TacheComposite::ajouterTacheComparbre(QTreeWidgetItem* item){
     }
 }
 
+void TacheComposite::ajouterTacheComparbre(QTreeWidgetItem* item, QComboBox* cBox,int i){
+
+    for (vector<Tache*>::const_iterator it = this->getCompose().begin(); it != this->getCompose().end(); ++it){
+        QTreeWidgetItem* newTache = new QTreeWidgetItem(item, QStringList(QString("tache : %1").arg((*it)->getTitre())));
+        //item.append(newTache);
+        if (typeid(*it).name()=="14TacheComposite") dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache,cBox,i);
+        else cBox->insertItem(i,QString("tache : %1").arg((*it)->getTitre()));
+
+    }
+}
