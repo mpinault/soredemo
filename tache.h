@@ -20,7 +20,7 @@ using namespace TIME;
 
 //=====08/06/15======Morgane============================================================================================
 #include<QTreeWidget>
-
+#include<QComboBox>
 
 //=====Tache==================================================================================================
 //Classe Abstraite
@@ -145,6 +145,7 @@ public:
     void ajouterTachePrec(Tache& t)override{}
     void ajouterTacheComp(Tache& t);
     void ajouterTacheComparbre(QTreeWidgetItem* item);
+    void ajouterTacheComparbre(QTreeWidgetItem* item, QComboBox* cBox,int i);
 };
 
 
