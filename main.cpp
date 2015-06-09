@@ -7,7 +7,6 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 try{
-    int i;
     ProjetManager& pManager=ProjetManager::getInstance();
     qDebug()<<"2";
     Projet& project = pManager.creerProjet(QString("Projet X1"),QDate(),QDate());
@@ -25,7 +24,7 @@ try{
     qDebug()<<typeid(tache2).name();
     qDebug()<<typeid(tache3).name();
 
-    Fenetre19 fenetre19(pManager);
+    Fenetre19 fenetre19(project);
     fenetre19.show();
 
     return app.exec();
