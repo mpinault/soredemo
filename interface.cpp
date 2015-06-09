@@ -8,7 +8,7 @@
 using namespace TIME;
 
 Fenetre1::Fenetre1(){
-    this->setWindowTitle(QString ("ProjectCalendar"));
+    this->setWindowTitle(QString ("Fenêtre 1 : ProjectCalendar"));
     introduction = new QLabel("Bienvenue dans le projet Calendar, pour accéder aux différentes fonctionnalités appuyer sur START");
     start = new QPushButton("Start");
     couche = new QVBoxLayout;
@@ -24,7 +24,7 @@ void Fenetre1::ouvrirFenetre2() {ouvrirFenetre<Fenetre1,Fenetre2>(*this);}
 
 Fenetre2::Fenetre2(){
 
-    this->setWindowTitle(QString ("ProjectCalendar"));
+    this->setWindowTitle(QString ("Fenêtre 2 : ProjectCalendar"));
 
     QPushButton* creerTache;
     QPushButton* creerProjet;
@@ -62,7 +62,7 @@ Fenetre2::Fenetre2(){
     QObject::connect(creerActTrad, SIGNAL(clicked()),this, SLOT(ouvrirFenetre8()));
     QObject::connect(vue_hebdomadaire, SIGNAL(clicked()),this, SLOT(ouvrirFenetre4()));
     QObject::connect(progEvt, SIGNAL(clicked()),this, SLOT(ouvrirFenetre4()));
-    QObject::connect(vue_projets, SIGNAL(clicked()),this, SLOT(ouvrirFenetre5()));
+    QObject::connect(vue_projets, SIGNAL(clicked()),this, SLOT(ouvrirFenetre25()));
     QObject::connect(ouvrir, SIGNAL(clicked()),this, SLOT(ouvrirFenetre21()));
     //QObject::connect(quitter, SIGNAL(clicked()),this, SLOT(ouvrirFenetre5()));
 }
@@ -75,10 +75,12 @@ void Fenetre2::ouvrirFenetre8() {ouvrirFenetre<Fenetre2,Fenetre8>(*this);}
 void Fenetre2::ouvrirFenetre4() {ouvrirFenetre<Fenetre2,Fenetre4>(*this);}
 void Fenetre2::ouvrirFenetre5() {ouvrirFenetre<Fenetre2,Fenetre5>(*this);}
 void Fenetre2::ouvrirFenetre21() {ouvrirFenetre<Fenetre2,Fenetre21>(*this);}
+void Fenetre2::ouvrirFenetre25() {ouvrirFenetre<Fenetre2,Fenetre25>(*this);}
+
 
 
 Fenetre3::Fenetre3(){
-    this->setWindowTitle(QString ("ProjectCalendar"));
+    this->setWindowTitle(QString ("Fenêtre 3 :ProjectCalendar"));
     type_evenement = new QGroupBox("Sélectionner le type d'événement");
     activite_traditionnelle = new QRadioButton("Activité traditionelle");
     tache = new QRadioButton("Tâche liée à un projet");
@@ -141,7 +143,7 @@ void Fenetre3::ouvrirFenetreChoix() {
 
 Fenetre4::Fenetre4()
 {
-    this->setWindowTitle("Project Calendar");
+    this->setWindowTitle("Fenêtre 4 : Project Calendar");
 
     choix= new QLabel("Sélectionner le premier jour (pour avoir une vue):",this);
     indication= new QLabel("Pour pouvoir vous aider a choisir la semaine :",this);
@@ -181,7 +183,7 @@ void Fenetre4::ouvrirFenetre18() {ouvrirFenetre<Fenetre4,Fenetre18>(*this);}
 
 
 Fenetre5::Fenetre5(){
-    this->setWindowTitle("Project Calendar");
+    this->setWindowTitle("Fenêtre 5 : Project Calendar");
 
     choix= new QLabel("Selectionner un projet:",this);
 
@@ -215,7 +217,7 @@ Fenetre5::Fenetre5(){
     }
 
 Fenetre5::Fenetre5(int i){
-    this->setWindowTitle("Project Calendar");
+    this->setWindowTitle("Fenêtre 5 : Project Calendar");
 
     choix= new QLabel("Selectionner un projet:",this);
 
@@ -260,7 +262,7 @@ void Fenetre5::ouvrirFenetre10(){ouvrirFenetre<Fenetre5,Fenetre10>(*this);}
 
 Fenetre8::Fenetre8():QWidget(){
 
-    this->setWindowTitle("Project Calendar");
+    this->setWindowTitle("Fenêtre 8 : Project Calendar");
     setFixedSize(800,500);
 
     titreLabel=new QLabel("Titre", this);
@@ -343,7 +345,7 @@ void Fenetre8::sauverActTrad(){
 
 Fenetre10::Fenetre10(){
 
-    this->setWindowTitle("Project Calendar");
+    this->setWindowTitle("Fenêtre 10 : Project Calendar");
     setFixedSize(800,500);
 
     preemptive=new QCheckBox("preemptive",this);
@@ -447,7 +449,7 @@ void Fenetre10::sauverTache(){
 
 Fenetre15::Fenetre15(){
 
-    this->setWindowTitle("Project Calendar");
+    this->setWindowTitle("Fenêtre 15 : Project Calendar");
     setFixedSize(500,300);
 
     titreLabel=new QLabel("titre", this);
@@ -493,7 +495,7 @@ void Fenetre15::ouvrirFenetre2() {ouvrirFenetre<Fenetre15,Fenetre2>(*this);}
 
 Fenetre18::Fenetre18(){
 
-    this->setWindowTitle("Project Calendar");
+    this->setWindowTitle("Fenêtre 18 : Project Calendar");
     //setFixedSize(800,500);
 
     titreLabel1=new QLabel("Si vous voulez ajouter une Tache, selectionner un projet:", this);
@@ -548,7 +550,7 @@ void Fenetre18::ouvrirFenetre4() {ouvrirFenetre<Fenetre18,Fenetre4>(*this);}
 
 Fenetre21::Fenetre21(){
 
-    this->setWindowTitle("Project Calendar");
+    this->setWindowTitle("Fenêtre 21 : Project Calendar");
     //setFixedSize(800,500);
 
     titreLabel=new QLabel("Selectionner l'agenda que vous voulez exporter:", this);
@@ -598,10 +600,94 @@ void Fenetre16::ouvrirFenetre2() {
     ouvrirFenetre<Fenetre16,Fenetre2>(*this);
 }
 
-Fenetre19::Fenetre19(const ProjetManager& m){
+//Fenêtre 19 :
+//rajouter un test pour n'afficher dans la ComboBox que les taches pas encore programmées
+Fenetre19::Fenetre19(Projet& p){
     this->setWindowTitle(QString ("Fenetre 19 : Ajout Evenement"));
+
     treeWidget = new QTreeWidget();
     treeWidget->setColumnCount(1);
+    retour = new QPushButton("Annuler",this);
+    valider = new QPushButton("Valider",this);
+    cBox=new QComboBox();
+
+    int i=1;
+
+    QList<QTreeWidgetItem *> items;
+    for (vector<Tache*>::const_iterator it = p.getTaches().begin(); it != p.getTaches().end(); ++it){
+        QTreeWidgetItem* mainbranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("tache : %1").arg((*it)->getTitre())));
+        items.append(mainbranch);
+        i++;
+        if (typeid(*(*it))==typeid(TacheComposite))
+            dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(mainbranch,cBox,i);
+        else cBox->insertItem(i,QString("tache : %1").arg((*it)->getTitre()));
+        qDebug()<<"sortie du if";
+    }
+    treeWidget->insertTopLevelItems(0, items);
+
+    ligne= new QHBoxLayout;
+    ligne->addWidget(retour);
+    ligne->addWidget(valider);
+    couche = new QVBoxLayout;
+    couche->addWidget(treeWidget);
+    couche->addWidget(cBox);
+    couche->addLayout(ligne);
+    setLayout(couche);
+    qDebug()<<"8";
+
+    QObject::connect(retour, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+
+
+}
+
+void Fenetre19::ouvrirFenetre2() {
+    ouvrirFenetre<Fenetre19,Fenetre2>(*this);
+}
+
+//Elle est faite mais je ne vois pas trop quand est ce qu'elle est utile, je la laisse quand même pour l'instant...
+//La Fenêtre 7 permet l'affichage d'un projet sous forme de TreeView
+Fenetre7::Fenetre7(const Projet& p){
+    this->setWindowTitle(QString ("Fenetre 7 : Affichage d'un projet"));
+
+    treeWidget = new QTreeWidget();
+    treeWidget->setColumnCount(1);
+    retour = new QPushButton("Annuler",this);
+    valider = new QPushButton("Valider",this);
+
+    QList<QTreeWidgetItem *> items;
+    for (vector<Tache*>::const_iterator it = p.getTaches().begin(); it != p.getTaches().end(); ++it){
+        QTreeWidgetItem* mainbranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("tache : %1").arg((*it)->getTitre())));
+        items.append(mainbranch);
+        if (typeid(*(*it))==typeid(TacheComposite))
+            dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(mainbranch);
+    }
+    treeWidget->insertTopLevelItems(0, items);
+
+    ligne= new QHBoxLayout;
+    ligne->addWidget(retour);
+    ligne->addWidget(valider);
+    couche = new QVBoxLayout;
+    couche->addWidget(treeWidget);
+    couche->addLayout(ligne);
+    setLayout(couche);
+
+    QObject::connect(retour, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+}
+
+void Fenetre7::ouvrirFenetre2() {
+    ouvrirFenetre<Fenetre7,Fenetre2>(*this);
+}
+
+
+
+//Fenêtre 25 terminée
+//La Fenêtre 25 permet d'avor une vue d'ensemble de tous les projets
+Fenetre25::Fenetre25(){
+    this->setWindowTitle(QString ("Fenetre 25 : Vue de l'ensemble des Projets"));
+    ProjetManager& m=ProjetManager::getInstance();
+    treeWidget = new QTreeWidget();
+    treeWidget->setColumnCount(1);
+    retour = new QPushButton("Retour au menu",this);
 
     QList<QTreeWidgetItem *> items;
     for(vector<Projet*>::const_iterator mit = m.getProjet().begin(); mit != m.getProjet().end(); ++mit){
@@ -618,15 +704,18 @@ Fenetre19::Fenetre19(const ProjetManager& m){
         }
     }
     treeWidget->insertTopLevelItems(0, items);
-    qDebug()<<"7";
 
     couche = new QVBoxLayout;
     couche->addWidget(treeWidget);
+    couche->addWidget(retour);
     setLayout(couche);
-    qDebug()<<"8";
 
+    QObject::connect(retour, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
 }
 
+void Fenetre25::ouvrirFenetre2() {
+    ouvrirFenetre<Fenetre25,Fenetre2>(*this);
+}
 /*
 Interface::Interface() : QWidget()
 {
