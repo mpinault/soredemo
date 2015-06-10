@@ -1,6 +1,13 @@
 #ifndef INTERFACE
 #define INTERFACE
 
+/*!
+ * \file interface.h
+ * \brief fenetres de l'application
+ * \author Alice,Morgane
+ * \version 0.1
+ */
+
 #include <QApplication>
 #include <QWidget>
 #include <QPushButton>
@@ -73,7 +80,6 @@ class Fenetre2 : public QWidget
     QPushButton* vue_projets;
     QPushButton* ouvrir;
     QPushButton* quitter;
-
 
     QVBoxLayout* couche;
 
@@ -168,13 +174,13 @@ class Fenetre10: public QWidget{
     QTextEdit* titre;
 
     QLabel* projetLabel;
-    QComboBox* projet;
+    QComboBox* pro;
 
     QLabel* dateDebutLabel;
     QDateEdit* dateDebut;
 
     QLabel* horaireDebutLabel;
-    QDateEdit* horaireDebut;
+    QTimeEdit* horaire;
 
     QLabel* disponibiliteLabel;
     QDateEdit* disponibilite;
@@ -232,8 +238,29 @@ private :
 
 };
 */
+class Fenetre8 : public QWidget
+{
+    Q_OBJECT
+    QLabel* titre;
+    QPushButton* reunion;
+    QPushButton* rdv;
+    QPushButton* annuler;
 
-class Fenetre8 : public QWidget{
+    QPushButton* autres;
+    QVBoxLayout* couche;
+
+
+public :
+    Fenetre8();
+public slots :
+    void ouvrirFenetre2();
+    void ouvrirFenetre22();
+    void ouvrirFenetre23();
+    void ouvrirFenetre24();
+
+};
+
+class Fenetre23 : public QWidget{
 
     Q_OBJECT
     QLabel* titreLabel;
@@ -242,8 +269,8 @@ class Fenetre8 : public QWidget{
     QLabel* lieuLabel;
     QTextEdit* lieu;
 
-    QLabel* typeLabel;
-    QComboBox* type;
+    QLabel* sujetLabel;
+    QTextEdit* sujet;
 
     QLabel* dureeLabel;
     QSpinBox* hDuree;
@@ -260,7 +287,77 @@ class Fenetre8 : public QWidget{
     QVBoxLayout* couche;
 
     public:
-    explicit Fenetre8();
+    explicit Fenetre23();
+
+public slots:
+     void ouvrirFenetre8();
+     //void sauverActTrad();
+
+
+};
+
+//formulaire rdv
+class Fenetre24 : public QWidget{
+
+    Q_OBJECT
+    QLabel* titreLabel;
+    QTextEdit* titre;
+
+    QLabel* lieuLabel;
+    QTextEdit* lieu;
+
+    QLabel* persoLabel;
+    QTextEdit* perso;
+
+    QLabel* dureeLabel;
+    QSpinBox* hDuree;
+    QSpinBox* mDuree;
+
+    QPushButton* sauver;
+    QPushButton* annuler;
+
+    QHBoxLayout* coucheH2;
+    QHBoxLayout* coucheH3;
+    QHBoxLayout* coucheH4;
+    QHBoxLayout* coucheH5;
+    QHBoxLayout* coucheH6;
+    QVBoxLayout* couche;
+
+    public:
+    explicit Fenetre24();
+
+public slots:
+     void ouvrirFenetre8();
+     //void sauverActTrad();
+
+
+};
+
+
+class Fenetre22 : public QWidget{
+
+    Q_OBJECT
+    QLabel* titreLabel;
+    QTextEdit* titre;
+
+    QLabel* lieuLabel;
+    QTextEdit* lieu;
+
+    QLabel* dureeLabel;
+    QSpinBox* hDuree;
+    QSpinBox* mDuree;
+
+    QPushButton* sauver;
+    QPushButton* annuler;
+
+    QHBoxLayout* coucheH2;
+    QHBoxLayout* coucheH3;
+    QHBoxLayout* coucheH5;
+    QHBoxLayout* coucheH6;
+    QVBoxLayout* couche;
+
+    public:
+    explicit Fenetre22();
 
 public slots:
      void ouvrirFenetre2();
@@ -327,6 +424,7 @@ public :
     Fenetre18();
 public slots :
         void ouvrirFenetre4();
+        //void sauverTache();
 };
 
 class Fenetre21 : public QWidget
@@ -378,6 +476,7 @@ class Fenetre16 : public QWidget
     QLabel* text;
     QPushButton* menu;
     QVBoxLayout* couche;
+
 
 public :
     Fenetre16(QString t);
