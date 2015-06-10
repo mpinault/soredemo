@@ -1,5 +1,14 @@
 #ifndef PROJETMANAGER
 #define PROJETMANAGER
+
+/*!
+ * \file manager.h
+ * \brief manager des projets
+ * \author Alice,Morgane
+ * \version 0.1
+ */
+
+
 #include "timing.h"
 
 using namespace std;
@@ -9,6 +18,9 @@ using namespace TIME;
 //=====ProjetManager========================================================================================
 //Classe NON Abstraite
 class ProjetManager{
+
+    friend ProjetManager& getInstance();
+
     //fichier avec tous les noms des projets
     QString file;
 
@@ -40,6 +52,7 @@ class ProjetManager{
 
     //Singleton
     struct Handler{
+
         ProjetManager* instance;
         Handler() :instance(0){}
         // destructeur appelé à la fin du programme
@@ -63,6 +76,10 @@ public:
         //au niveau des fichiers
     void load(const QString& f);
     void save(const QString& f);
+
+        //pour les iterateurs
+    vector<Projet*>::const_iterator Pbegin(){return projet.begin();}
+    vector<Projet*>::const_iterator Pend(){return projet.end();}
 
         //pour le singleton
     static ProjetManager& getInstance();
