@@ -1,16 +1,26 @@
+/*!
+ * \file interface.cpp
+ * \brief fenetres de l'application
+ * \author Alice,Morgane
+ * \version 0.1
+ */
 
 //=====07/06/15==============Morgane====================================================================================
 #include "Interface.h"
 #include "tache.h"
 #include "projet.h"
 #include "manager.h"
+#include "evtmanager.h"
 #include "activite.h"
 using namespace TIME;
 
 Fenetre1::Fenetre1(){
     this->setWindowTitle(QString ("Fenêtre 1 : ProjectCalendar"));
     introduction = new QLabel("Bienvenue dans le projet Calendar, pour accéder aux différentes fonctionnalités appuyer sur START");
+
     start = new QPushButton("Start");
+    start->setCursor(Qt::PointingHandCursor);
+
     couche = new QVBoxLayout;
     couche->addWidget(introduction);
     couche->addWidget(start);
@@ -43,6 +53,15 @@ Fenetre2::Fenetre2(){
     vue_projets = new QPushButton("Vue ensemble des projets");
     ouvrir = new QPushButton("Ouvrir un agenda existant");
     quitter = new QPushButton("Quitter");
+
+    creerTache->setCursor(Qt::PointingHandCursor);
+    creerProjet->setCursor(Qt::PointingHandCursor);
+    creerActTrad->setCursor(Qt::PointingHandCursor);
+    vue_hebdomadaire->setCursor(Qt::PointingHandCursor);
+    progEvt->setCursor(Qt::PointingHandCursor);
+    vue_projets->setCursor(Qt::PointingHandCursor);
+    ouvrir->setCursor(Qt::PointingHandCursor);
+    quitter->setCursor(Qt::PointingHandCursor);
 
     couche = new QVBoxLayout;
     couche->addWidget(creerTache);
@@ -78,7 +97,7 @@ void Fenetre2::ouvrirFenetre21() {ouvrirFenetre<Fenetre2,Fenetre21>(*this);}
 void Fenetre2::ouvrirFenetre25() {ouvrirFenetre<Fenetre2,Fenetre25>(*this);}
 
 
-
+//on ne l'utilise pas pour l'instant ?
 Fenetre3::Fenetre3(){
     this->setWindowTitle(QString ("Fenêtre 3 :ProjectCalendar"));
     type_evenement = new QGroupBox("Sélectionner le type d'événement");
@@ -260,9 +279,47 @@ Fenetre5::Fenetre5(int i){
 void Fenetre5::ouvrirFenetre2(){ouvrirFenetre<Fenetre5,Fenetre2>(*this);}
 void Fenetre5::ouvrirFenetre10(){ouvrirFenetre<Fenetre5,Fenetre10>(*this);}
 
-Fenetre8::Fenetre8():QWidget(){
-
+//fenetre pour choisir le type d'activite traditionnelle
+Fenetre8::Fenetre8(){
     this->setWindowTitle("Fenêtre 8 : Project Calendar");
+
+    titre= new QLabel("Selectionner le type d'Activité Traditionnelle que vous voulez créer:",this);
+
+    reunion =new QPushButton("Réunion",this);
+    rdv =new QPushButton("Rendez-Vous",this);
+    autres =new QPushButton("Autres",this);
+
+    annuler =new QPushButton("Annuler",this);
+
+    reunion->setCursor(Qt::PointingHandCursor);
+    rdv->setCursor(Qt::PointingHandCursor);
+    autres->setCursor(Qt::PointingHandCursor);
+    annuler->setCursor(Qt::PointingHandCursor);
+
+
+    couche=new QVBoxLayout;
+    couche->addWidget(titre);
+    couche->addWidget(reunion);
+    couche->addWidget(rdv);
+    couche->addWidget(autres);
+    couche->addWidget(annuler);
+    setLayout(couche);
+
+    QObject::connect(reunion, SIGNAL(clicked()),this, SLOT(ouvrirFenetre23()));
+    QObject::connect(rdv, SIGNAL(clicked()),this, SLOT(ouvrirFenetre24()));
+    QObject::connect(autres, SIGNAL(clicked()),this, SLOT(ouvrirFenetre22()));
+    QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+}
+
+void Fenetre8::ouvrirFenetre2(){ouvrirFenetre<Fenetre8,Fenetre2>(*this);}
+void Fenetre8::ouvrirFenetre22(){ouvrirFenetre<Fenetre8,Fenetre22>(*this);}
+void Fenetre8::ouvrirFenetre23(){ouvrirFenetre<Fenetre8,Fenetre23>(*this);}
+void Fenetre8::ouvrirFenetre24(){ouvrirFenetre<Fenetre8,Fenetre24>(*this);}
+
+//formulaire reunion
+Fenetre23::Fenetre23():QWidget(){
+
+    this->setWindowTitle("Fenêtre 23 : Project Calendar");
     setFixedSize(800,500);
 
     titreLabel=new QLabel("Titre", this);
@@ -271,12 +328,8 @@ Fenetre8::Fenetre8():QWidget(){
     lieuLabel=new QLabel("Lieu", this);
     lieu=new QTextEdit(0, this);
 
-    typeLabel= new QLabel("Type:",this);
-
-    type=new QComboBox();
-    type->insertItem(1,"Reunion");
-    type->insertItem(2,"Rendez-vous");
-    type->insertItem(3,"Autre");
+    sujetLabel= new QLabel("Sujet",this);
+    sujet= new QTextEdit(0,this);
 
     dureeLabel= new QLabel ("Durée",this);
     hDuree=new QSpinBox(this);
@@ -286,7 +339,6 @@ Fenetre8::Fenetre8():QWidget(){
     mDuree->setMinimum(0);
     mDuree->setRange(0,59);
     mDuree->setSuffix(" minute(s)");
-
 
     sauver=new QPushButton("Valider", this);
     annuler=new QPushButton ("Revenir à la page précédente",this);
@@ -303,8 +355,8 @@ Fenetre8::Fenetre8():QWidget(){
     coucheH3->addWidget(lieu);
 
     coucheH4 = new QHBoxLayout;
-    coucheH4->addWidget(typeLabel);
-    coucheH4->addWidget(type);
+    coucheH4->addWidget(sujetLabel);
+    coucheH4->addWidget(sujet);
 
     coucheH5 = new QHBoxLayout;
     coucheH5->addWidget(dureeLabel);
@@ -323,14 +375,139 @@ Fenetre8::Fenetre8():QWidget(){
     couche->addLayout(coucheH6);
     setLayout(couche);
 
+    QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre8()));
+    //QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverActTrad()));
+
+}
+
+void Fenetre23::ouvrirFenetre8(){ouvrirFenetre<Fenetre23,Fenetre8>(*this);}
+
+//formulaire rendez-vous
+Fenetre24::Fenetre24():QWidget(){
+
+    this->setWindowTitle("Fenêtre 24 : Project Calendar");
+    setFixedSize(800,500);
+
+    titreLabel=new QLabel("Titre", this);
+    titre=new QTextEdit(0, this);
+
+    lieuLabel=new QLabel("Lieu", this);
+    lieu=new QTextEdit(0, this);
+
+    persoLabel= new QLabel("Listes des Personnes");
+    perso= new QTextEdit(0,this);
+
+    dureeLabel= new QLabel ("Durée",this);
+    hDuree=new QSpinBox(this);
+    hDuree->setMinimum(0);
+    hDuree->setSuffix(" heure(s)");
+    mDuree=new QSpinBox(this);
+    mDuree->setMinimum(0);
+    mDuree->setRange(0,59);
+    mDuree->setSuffix(" minute(s)");
+
+    sauver=new QPushButton("Valider", this);
+    annuler=new QPushButton ("Revenir à la page précédente",this);
+
+    sauver->setCursor(Qt::PointingHandCursor);
+    annuler->setCursor(Qt::PointingHandCursor);
+
+    coucheH2 = new QHBoxLayout;
+    coucheH2->addWidget(titreLabel);
+    coucheH2->addWidget(titre);
+
+    coucheH3 = new QHBoxLayout;
+    coucheH3->addWidget(lieuLabel);
+    coucheH3->addWidget(lieu);
+
+    coucheH4 = new QHBoxLayout;
+    coucheH4->addWidget(persoLabel);
+    coucheH4->addWidget(perso);
+
+    coucheH5 = new QHBoxLayout;
+    coucheH5->addWidget(dureeLabel);
+    coucheH5->addWidget(hDuree);
+    coucheH5->addWidget(mDuree);
+
+    coucheH6 = new QHBoxLayout;
+    coucheH6->addWidget(annuler);
+    coucheH6->addWidget(sauver);
+
+    couche=new QVBoxLayout;
+    couche->addLayout(coucheH2);
+    couche->addLayout(coucheH3);
+    couche->addLayout(coucheH4);
+    couche->addLayout(coucheH5);
+    couche->addLayout(coucheH6);
+    setLayout(couche);
+
+    QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre8()));
+    //QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverActTrad()));
+
+}
+
+void Fenetre24::ouvrirFenetre8(){ouvrirFenetre<Fenetre24,Fenetre8>(*this);}
+
+
+//formulaire autres
+Fenetre22::Fenetre22():QWidget(){
+
+    this->setWindowTitle("Fenêtre 22 : Project Calendar");
+    setFixedSize(800,500);
+
+    titreLabel=new QLabel("Titre", this);
+    titre=new QTextEdit(0, this);
+
+    lieuLabel=new QLabel("Lieu", this);
+    lieu=new QTextEdit(0, this);
+
+    dureeLabel= new QLabel ("Durée",this);
+    hDuree=new QSpinBox(this);
+    hDuree->setMinimum(0);
+    hDuree->setSuffix(" heure(s)");
+    mDuree=new QSpinBox(this);
+    mDuree->setMinimum(0);
+    mDuree->setRange(0,59);
+    mDuree->setSuffix(" minute(s)");
+
+    sauver=new QPushButton("Valider", this);
+    annuler=new QPushButton ("Revenir à la page précédente",this);
+
+    sauver->setCursor(Qt::PointingHandCursor);
+    annuler->setCursor(Qt::PointingHandCursor);
+
+    coucheH2 = new QHBoxLayout;
+    coucheH2->addWidget(titreLabel);
+    coucheH2->addWidget(titre);
+
+    coucheH3 = new QHBoxLayout;
+    coucheH3->addWidget(lieuLabel);
+    coucheH3->addWidget(lieu);
+
+    coucheH5 = new QHBoxLayout;
+    coucheH5->addWidget(dureeLabel);
+    coucheH5->addWidget(hDuree);
+    coucheH5->addWidget(mDuree);
+
+    coucheH6 = new QHBoxLayout;
+    coucheH6->addWidget(annuler);
+    coucheH6->addWidget(sauver);
+
+    couche=new QVBoxLayout;
+    couche->addLayout(coucheH2);
+    couche->addLayout(coucheH3);
+    couche->addLayout(coucheH5);
+    couche->addLayout(coucheH6);
+    setLayout(couche);
+
     QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
     //QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverActTrad()));
 
 }
 
-void Fenetre8::ouvrirFenetre2() {ouvrirFenetre<Fenetre8,Fenetre2>(*this);}
+void Fenetre22::ouvrirFenetre2() {ouvrirFenetre<Fenetre22,Fenetre2>(*this);}
 /*
-void Fenetre8::sauverActTrad(){
+void Fenetre22::sauverActTrad(){
     // on n'a pas EvenementManager !
     //if (EvenementManager::getInstance().trouverProjetR(projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
     QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
@@ -353,14 +530,22 @@ Fenetre10::Fenetre10(){
     titreLabel=new QLabel("titre", this);
     titre=new QTextEdit(0, this);
 
-    projetLabel=new QLabel("Projet associé a la tache:", this);
-    projet=new QComboBox();
+    projetLabel=new QLabel("Projet associé a la tache", this);
+    //affiche les projets existant dans TacheManager dans un QComboBox
+    pro=new QComboBox();
+    ProjetManager& p=ProjetManager::getInstance();
+    for (vector<Projet*>::const_iterator it = p.Pbegin(); it != p.Pend(); ++it){
+        int i=1;
+        pro->insertItem(i,(*it)->getTitre());
+        i++;
+    }
 
     dateDebutLabel= new QLabel ("Date début", this);
     dateDebut= new QDateEdit(QDate::currentDate());
 
     horaireDebutLabel= new QLabel ("Horaire début", this);
-    horaireDebut= new QDateEdit(QDate::currentDate());
+    horaire=new QTimeEdit(QTime::currentTime());
+
 
     dureeLabel= new QLabel ("Durée",this);
     hDuree=new QSpinBox(this);
@@ -380,6 +565,9 @@ Fenetre10::Fenetre10(){
     sauver=new QPushButton("Sauver", this);
     annuler=new QPushButton ("Annuler",this);
 
+    sauver->setCursor(Qt::PointingHandCursor);
+    annuler->setCursor(Qt::PointingHandCursor);
+
     coucheH2 = new QHBoxLayout;
     coucheH2->addWidget(titreLabel);
     coucheH2->addWidget(titre);
@@ -387,7 +575,7 @@ Fenetre10::Fenetre10(){
 
     couche2 = new QHBoxLayout;
     couche2->addWidget(projetLabel);
-    couche2->addWidget(projet);
+    couche2->addWidget(pro);
 
     coucheH3 = new QHBoxLayout;
     coucheH3->addWidget(dateDebutLabel);
@@ -395,7 +583,7 @@ Fenetre10::Fenetre10(){
 
     coucheH4 = new QHBoxLayout;
     coucheH4->addWidget(horaireDebutLabel);
-    coucheH4->addWidget(horaireDebut);
+    coucheH4->addWidget(horaire);
 
 
     coucheH5 = new QHBoxLayout;
@@ -429,23 +617,37 @@ Fenetre10::Fenetre10(){
      QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
      QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverTache()));
 
+
 }
 
 void Fenetre10::ouvrirFenetre2() {ouvrirFenetre<Fenetre10,Fenetre2>(*this);}
 
 
+/*
 void Fenetre10::sauverTache(){
+    QMessageBox::warning(this, "sauvertache 10", "debut fct");
     // ou creer l'instance de manager ?? (Alice , 07/06)
-    if (ProjetManager::getInstance().trouverProjetR(projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
-    QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
+
+    // condition pour verifier si la tache existe dans le projet
+    ProjetManager& p=ProjetManager::getInstance();
+    for (vector<Projet*>::const_iterator it = p.Pbegin(); it != p.Pend(); ++it){
+        if ((*it)->isTacheExistante(titre->accessibleDescription()))
+        QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
+    }
+   // if (p.trouverProjetR(p.projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
+    //QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
+
 
     if (preemptive->isChecked())
         TacheUnitairePreempte(titre->accessibleDescription(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()));
     else TacheUnitaireNonPreempte(titre->accessibleDescription(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()));
 
-    QMessageBox::information(this, "Sauvegarde", "Tache sauvegardée!");
-}
+    QMessageBox::information(this, "Sauvegarde", "Tache sauveg"
+                                                 "ardée!");
+  this->close();
 
+}
+*/
 
 Fenetre15::Fenetre15(){
 
@@ -463,6 +665,9 @@ Fenetre15::Fenetre15(){
 
     valider=new QPushButton("Valider", this);
     annuler=new QPushButton ("Annuler",this);
+
+    valider->setCursor(Qt::PointingHandCursor);
+    annuler->setCursor(Qt::PointingHandCursor);
 
     couche1 = new QHBoxLayout;
     couche1->addWidget(titreLabel);
@@ -488,23 +693,55 @@ Fenetre15::Fenetre15(){
     setLayout(couche);
 
      QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+     //QObject::connect(valider, SIGNAL(clicked()),this, SLOT(sauverTache()));
 
 }
+
+/*
+void Fenetre15::sauverTache(){
+    // ou creer l'instance de manager ?? (Alice , 07/06)
+    //if (ProjetManager::getInstance().trouverProjetR(projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
+    QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
+
+    if (preemptive->isChecked())
+        TacheUnitairePreempte(titre->accessibleDescription(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()));
+    else TacheUnitaireNonPreempte(titre->accessibleDescription(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()));
+
+    QMessageBox::information(this, "Sauvegarde", "Tache sauvegardée!");
+}
+
+*/
 
 void Fenetre15::ouvrirFenetre2() {ouvrirFenetre<Fenetre15,Fenetre2>(*this);}
 
 Fenetre18::Fenetre18(){
 
     this->setWindowTitle("Fenêtre 18 : Project Calendar");
-    //setFixedSize(800,500);
+    setFixedSize(700,500);
 
     titreLabel1=new QLabel("Si vous voulez ajouter une Tache, selectionner un projet:", this);
     choix1=new QComboBox();
+    ProjetManager& p=ProjetManager::getInstance();
+    for (vector<Projet*>::const_iterator it = p.Pbegin(); it != p.Pend(); ++it){
+        int i=1;
+        choix1->insertItem(i,(*it)->getTitre());
+        i++;
+    }
+
 
     valider1=new QPushButton("Valider", this);
+    valider1->setCursor(Qt::PointingHandCursor);
 
-    titreLabel2=new QLabel("Sinon pour une Tache Traditionnelle, selctionner ci-dessous:", this);
+    titreLabel2=new QLabel("Sinon pour une Activité Traditionnelle, selectionner ci-dessous:", this);
     choix2=new QComboBox();
+    //pour afficher des act trad, faire apres evenementManager !
+    /*
+    EvtManager& e=EvtManager::getInstanceEvt();
+    for (vector<Evenement*>::const_iterator it = e.Ebegin(); it != e.Eend(); ++it){
+        int i=1;
+        choix2->insertItem(i,(*it)->getTitre());
+        i++;
+    }*/
 
     dateDebutLabel= new QLabel ("Date début", this);
     dateDebut= new QDateEdit(QDate::currentDate());
@@ -513,8 +750,10 @@ Fenetre18::Fenetre18(){
     horaireDebut = new QDateEdit (QDate::currentDate());
 
     valider2=new QPushButton("Valider", this);
+    valider2->setCursor(Qt::PointingHandCursor);
 
     annuler=new QPushButton ("Annuler",this);
+    annuler->setCursor(Qt::PointingHandCursor);
 
     couche1 = new QVBoxLayout;
     couche1->addWidget(titreLabel1);
@@ -558,6 +797,8 @@ Fenetre21::Fenetre21(){
 
     valider=new QPushButton("Valider", this);
     annuler=new QPushButton ("Annuler",this);
+    valider->setCursor(Qt::PointingHandCursor);
+    annuler->setCursor(Qt::PointingHandCursor);
 
     couche1 = new QVBoxLayout;
     couche1->addWidget(titreLabel);
@@ -609,6 +850,8 @@ Fenetre19::Fenetre19(Projet& p){
     treeWidget->setColumnCount(1);
     retour = new QPushButton("Annuler",this);
     valider = new QPushButton("Valider",this);
+    retour->setCursor(Qt::PointingHandCursor);
+    valider->setCursor(Qt::PointingHandCursor);
     cBox=new QComboBox();
 
     int i=1;
