@@ -1,9 +1,17 @@
 #ifndef ACTIVITE
 #define ACTIVITE
 
+/*!
+ * \file activite.h
+ * \brief les activites traditionnelles
+ * \author Alice,Morgane
+ * \version 0.1
+ */
+
 #include <QString>
 #include <iostream>
 #include "timing.h"
+#include "tache.h"
 
 using namespace std;
 using namespace TIME;
@@ -120,13 +128,14 @@ class ProgrammationActTrad : public Evenement {
 public :
 
     ///***************Constructeur ET Destructeur****************************************
-    ProgrammationActTrad(QDate& d, const Horaire& h,const ActiviteTrad& a): Evenement(d, h), activite(&a){}
+    //ProgrammationActTrad(QDate& d, const Horaire& h,const ActiviteTrad& a): Evenement(d, h), activite(&a){}
     virtual ~ProgrammationActTrad();
 
     ///***************Accesseurs****************************************
     ProgrammationActTrad * getProgrammationActTrad() const;
 
     ///***************Méthodes****************************************
+    //je pense qu'on peut utiliser Qtime ou la fonction sommeD() que j'avais ecrite, a faire si besoin de cette methode (Alice)
     //Permet d'obtenir l'horaire de fin de l'évènement
    // QDate& getHoraireFin() const {
      //   return (horaire + activite->duree);
@@ -134,8 +143,31 @@ public :
         //Je sais pas trop comment l'implémenter vu que durée est de type Duree et date de type QDate...
 };
 
+///=====ProgrammationTache==================================================================================================
+///Classe Non Abstraite
+class ProgrammationTache : public Evenement {
+    Tache * tache;
+public :
+
+    ///***************Constructeur ET Destructeur****************************************
+    //ProgrammationTache(QDate& d, const Horaire& h,const Tache& a): Evenement(d, h), tache(&a){}
+    virtual ~ProgrammationTache();
+
+    ///***************Accesseurs****************************************
+    ProgrammationTache * getProgrammationTache() const;
+
+    ///***************Méthodes****************************************
+    //je pense qu'on peut utiliser Qtime ou la fonction sommeD() que j'avais ecrite, a faire si besoin de cette methode (Alice)
+    //Permet d'obtenir l'horaire de fin de la tachce
+   // QDate& getHoraireFin() const {
+     //   return (horaire + tache->duree);
+    //}
+        //Je sais pas trop comment l'implémenter vu que durée est de type Duree et date de type QDate...
+};
+
 std::ostream& operator<<(std::ostream& f, const ActiviteTrad& a);
 std::ostream& operator<<(std::ostream& f, const TIME::Duree& d);
+
 
 #endif // ACTIVITE
 
