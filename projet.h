@@ -1,6 +1,13 @@
 #ifndef PROJET
 #define PROJET
 
+/*!
+ * \file projet.h
+ * \brief projet qui est un manager des taches
+ * \author Alice,Morgane
+ * \version 0.1
+ */
+
 #include "timing.h"
 #include "tache.h"
 
