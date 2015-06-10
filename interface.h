@@ -165,6 +165,25 @@ public slots :
 
 };
 
+//=====10/06/15==============Morgane====================================================================================
+//La Fenêtre 6 affiche une vue hebdomadaire sous forme de tableau avec les évènements programmés
+class Fenetre6 : public QWidget {
+
+    Q_OBJECT
+
+    QPushButton* retour;
+    QPushButton* exporter;
+    QVBoxLayout* couche;
+
+    QTableWidget* tab;
+public :
+    Fenetre6();
+public slots :
+    void ouvrirFenetre2();
+
+
+};
+
 class Fenetre10: public QWidget{
     Q_OBJECT
 
