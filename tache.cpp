@@ -1,3 +1,9 @@
+/*!
+ * \file tache.cpp
+ * \brief les differents types des taches
+ * \author Alice,Morgane
+ * \version 0.1
+ */
 
 #include "tache.h"
 #include "projet.h"
