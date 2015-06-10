@@ -1,6 +1,13 @@
 #ifndef MANAGER
 #define MANAGER
 
+/*!
+ * \file tache.h
+ * \brief les differents types des taches
+ * \author Alice,Morgane
+ * \version 0.1
+ */
+
 #include <timing.h>
 #include <typeinfo>
 #include <QXmlStreamReader>
