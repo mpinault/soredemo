@@ -279,6 +279,47 @@ Fenetre5::Fenetre5(int i){
 void Fenetre5::ouvrirFenetre2(){ouvrirFenetre<Fenetre5,Fenetre2>(*this);}
 void Fenetre5::ouvrirFenetre10(){ouvrirFenetre<Fenetre5,Fenetre10>(*this);}
 
+//=====10/06/15======Morgane============================================================================================
+//La Fenêtre 6 affiche une vue hebdomadaire sous forme de tableau avec les évènements programmés
+Fenetre6::Fenetre6(){
+    this->setWindowTitle(QString ("Fenêtre 6 : ProjectCalendar"));
+
+    QVBoxLayout* couche;
+
+    retour = new QPushButton("Retour au Menu");
+    exporter = new QPushButton("Exporter la programmation");
+
+    QDate firstDay = QDate::currentDate();
+
+    tab = new QTableWidget(24,7,this);
+
+    QStringList jours;
+    for(unsigned int i=0; i<7; i++){
+        jours.append(QString(firstDay.addDays(i).toString()));
+    }
+    tab->setHorizontalHeaderLabels(jours);
+
+    QStringList heures;
+    for(unsigned int i=0; i<25; i++){
+        heures.append(QString(tr("%1 h").arg(i)));
+    }
+    tab->setVerticalHeaderLabels(heures);
+
+    couche = new QVBoxLayout;
+    couche->addWidget(tab);
+    setLayout(couche);
+    couche->addWidget(retour);
+    couche->addWidget(exporter);
+    setLayout(couche);
+
+    QObject::connect(retour, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+}
+
+void Fenetre6::ouvrirFenetre2() {
+    ouvrirFenetre<Fenetre6,Fenetre2>(*this);
+}
+
+
 //fenetre pour choisir le type d'activite traditionnelle
 Fenetre8::Fenetre8(){
     this->setWindowTitle("Fenêtre 8 : Project Calendar");
