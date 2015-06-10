@@ -1,3 +1,10 @@
+/*!
+ * \file manager.cpp
+ * \brief manager des projets
+ * \author Alice,Morgane
+ * \version 0.1
+ */
+
 #include "tache.h"
 #include "projet.h"
 #include "manager.h"
