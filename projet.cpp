@@ -1,3 +1,11 @@
+/*!
+ * \file projet.cpp
+ * \brief projet qui est un manager des taches
+ * \author Alice,Morgane
+ * \version 0.1
+ */
+
+
 #include "tache.h"
 #include "projet.h"
 #include "manager.h"
