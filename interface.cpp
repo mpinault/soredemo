@@ -11,6 +11,7 @@
 #include "projet.h"
 #include "manager.h"
 #include "evtmanager.h"
+#include "actmanager.h"
 #include "activite.h"
 using namespace TIME;
 
@@ -194,11 +195,13 @@ Fenetre4::Fenetre4()
 
     QObject::connect(buttonBack, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
     QObject::connect(ajoutEvt, SIGNAL(clicked()),this, SLOT(ouvrirFenetre18()));
+    QObject::connect(buttonForward, SIGNAL(clicked()),this, SLOT(ouvrirFenetre6()));
 
 }
 
 void Fenetre4::ouvrirFenetre2() {ouvrirFenetre<Fenetre4,Fenetre2>(*this);}
 void Fenetre4::ouvrirFenetre18() {ouvrirFenetre<Fenetre4,Fenetre18>(*this);}
+void Fenetre4::ouvrirFenetre6() {ouvrirFenetre<Fenetre4,Fenetre6>(*this);}
 
 
 Fenetre5::Fenetre5(){
@@ -279,6 +282,7 @@ Fenetre5::Fenetre5(int i){
 void Fenetre5::ouvrirFenetre2(){ouvrirFenetre<Fenetre5,Fenetre2>(*this);}
 void Fenetre5::ouvrirFenetre10(){ouvrirFenetre<Fenetre5,Fenetre10>(*this);}
 
+
 //=====10/06/15======Morgane============================================================================================
 //La Fenêtre 6 affiche une vue hebdomadaire sous forme de tableau avec les évènements programmés
 Fenetre6::Fenetre6(){
@@ -318,6 +322,7 @@ Fenetre6::Fenetre6(){
 void Fenetre6::ouvrirFenetre2() {
     ouvrirFenetre<Fenetre6,Fenetre2>(*this);
 }
+
 
 
 //fenetre pour choisir le type d'activite traditionnelle
@@ -417,8 +422,26 @@ Fenetre23::Fenetre23():QWidget(){
     setLayout(couche);
 
     QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre8()));
-    //QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverActTrad()));
+    QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverReunion()));
 
+}
+
+
+void Fenetre23::sauverReunion(){
+
+    ActManager& m=ActManager::getInstanceAct();
+
+    m.creerAct(titre->toPlainText(),lieu->toPlainText(),Duree(hDuree->depth(),mDuree->depth()),sujet->toPlainText(),0);
+    QMessageBox::information(this, "Sauvegarde", "Reunion sauvegardée!");
+
+    //faire la gestion des erreurs-> si le meme titre
+    /*
+    if (m.isActExistant(titre->toPlainText()))
+    QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
+    else{
+        m.creerAct(titre->toPlainText(),lieu->toPlainText(),sujet->toPlainText(),Duree(hDuree->depth(),mDuree->depth()),0);
+        QMessageBox::information(this, "Sauvegarde", "Projet sauvegardée!");
+    }*/
 }
 
 void Fenetre23::ouvrirFenetre8(){ouvrirFenetre<Fenetre23,Fenetre8>(*this);}
@@ -483,11 +506,21 @@ Fenetre24::Fenetre24():QWidget(){
     setLayout(couche);
 
     QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre8()));
-    //QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverActTrad()));
+    QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverRdv()));
 
 }
 
 void Fenetre24::ouvrirFenetre8(){ouvrirFenetre<Fenetre24,Fenetre8>(*this);}
+
+void Fenetre24::sauverRdv(){
+
+    ActManager& m=ActManager::getInstanceAct();
+
+    m.creerAct(titre->toPlainText(),lieu->toPlainText(),Duree(hDuree->depth(),mDuree->depth()),perso->toPlainText(),1);
+    QMessageBox::information(this, "Sauvegarde", "Rdv sauvegardée!");
+
+    //faire la gestion des erreurs-> si le meme titre
+}
 
 
 //formulaire autres
@@ -501,6 +534,9 @@ Fenetre22::Fenetre22():QWidget(){
 
     lieuLabel=new QLabel("Lieu", this);
     lieu=new QTextEdit(0, this);
+
+    typeLabel=new QLabel("Type de l'Activite", this);
+    type=new QTextEdit(0, this);
 
     dureeLabel= new QLabel ("Durée",this);
     hDuree=new QSpinBox(this);
@@ -525,6 +561,10 @@ Fenetre22::Fenetre22():QWidget(){
     coucheH3->addWidget(lieuLabel);
     coucheH3->addWidget(lieu);
 
+    coucheH4 = new QHBoxLayout;
+    coucheH4->addWidget(typeLabel);
+    coucheH4->addWidget(type);
+
     coucheH5 = new QHBoxLayout;
     coucheH5->addWidget(dureeLabel);
     coucheH5->addWidget(hDuree);
@@ -537,28 +577,27 @@ Fenetre22::Fenetre22():QWidget(){
     couche=new QVBoxLayout;
     couche->addLayout(coucheH2);
     couche->addLayout(coucheH3);
+    couche->addLayout(coucheH4);
     couche->addLayout(coucheH5);
     couche->addLayout(coucheH6);
     setLayout(couche);
 
-    QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
-    //QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverActTrad()));
+    QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre8()));
+    QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverAutres()));
 
 }
 
-void Fenetre22::ouvrirFenetre2() {ouvrirFenetre<Fenetre22,Fenetre2>(*this);}
-/*
-void Fenetre22::sauverActTrad(){
-    // on n'a pas EvenementManager !
+void Fenetre22::ouvrirFenetre8() {ouvrirFenetre<Fenetre22,Fenetre8>(*this);}
+
+void Fenetre22::sauverAutres(){
+    ActManager& a=ActManager::getInstanceAct();
     //if (EvenementManager::getInstance().trouverProjetR(projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
-    QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
+    //QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
 
-    if (type->accessibleDescription()=="Reunion")Reunion(titre->accessibleDescription(),lieu->accessibleDescription(),0,Duree(hDuree->depth(),mDuree->depth()),type);
-    if (type==2)Rdv(titre->accessibleDescription(),lieu->accessibleDescription(),Duree(hDuree->depth(),0,mDuree->depth()),type);
-    else ActiviteTrad(titre->accessibleDescription(),lieu->accessibleDescription(),Duree(hDuree->depth(),mDuree->depth()),type);
+    a.creerAct(titre->toPlainText(),lieu->toPlainText(),Duree(hDuree->depth(),mDuree->depth()),type->toPlainText() ,2);
 
-    QMessageBox::information(this, "Sauvegarde", "Tache sauvegardée!");
-}*/
+    QMessageBox::information(this, "Sauvegarde", "Activite sauvegardée!");
+}*
 
 
 Fenetre10::Fenetre10(){
@@ -658,37 +697,36 @@ Fenetre10::Fenetre10(){
      QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
      QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverTache()));
 
-
 }
 
 void Fenetre10::ouvrirFenetre2() {ouvrirFenetre<Fenetre10,Fenetre2>(*this);}
 
-
-/*
 void Fenetre10::sauverTache(){
-    QMessageBox::warning(this, "sauvertache 10", "debut fct");
-    // ou creer l'instance de manager ?? (Alice , 07/06)
+    //QMessageBox msg;
+    //msg.setText("ESSAI !!!!!!!!");
+    //msg.exec();
 
     // condition pour verifier si la tache existe dans le projet
+    /*
     ProjetManager& p=ProjetManager::getInstance();
     for (vector<Projet*>::const_iterator it = p.Pbegin(); it != p.Pend(); ++it){
         if ((*it)->isTacheExistante(titre->accessibleDescription()))
         QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
-    }
+    }*/
    // if (p.trouverProjetR(p.projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
     //QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
 
-
-    if (preemptive->isChecked())
-        TacheUnitairePreempte(titre->accessibleDescription(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()));
-    else TacheUnitaireNonPreempte(titre->accessibleDescription(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()));
-
-    QMessageBox::information(this, "Sauvegarde", "Tache sauveg"
-                                                 "ardée!");
-  this->close();
-
+    ProjetManager& p=ProjetManager::getInstance();
+    if (preemptive->isChecked()){
+        qDebug()<<titre->toPlainText();
+        p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()),1);
+    } else{
+            qDebug()<<"inside";
+            p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()),0);
+    }
+    QMessageBox::information(this, "Fenetre10", "Tache sauvegardée!");
+  //this->close();
 }
-*/
 
 Fenetre15::Fenetre15(){
 
@@ -696,10 +734,10 @@ Fenetre15::Fenetre15(){
     setFixedSize(500,300);
 
     titreLabel=new QLabel("titre", this);
-    titre=new QTextEdit(0, this);
 
     dateDebutLabel= new QLabel ("Date début", this);
     dateDebut= new QDateEdit(QDate::currentDate());
+    titre=new QTextEdit(0, this);
 
     echeanceLabel= new QLabel ("Echéance",this);
     echeance = new QDateEdit (QDate::currentDate());
@@ -734,24 +772,23 @@ Fenetre15::Fenetre15(){
     setLayout(couche);
 
      QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
-     //QObject::connect(valider, SIGNAL(clicked()),this, SLOT(sauverTache()));
+     QObject::connect(valider, SIGNAL(clicked()),this, SLOT(sauverProjet()));
 
 }
 
-/*
-void Fenetre15::sauverTache(){
-    // ou creer l'instance de manager ?? (Alice , 07/06)
-    //if (ProjetManager::getInstance().trouverProjetR(projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
+
+void Fenetre15::sauverProjet(){
+
+    ProjetManager& p=ProjetManager::getInstance();
+
+    if (p.isProjetExistant(titre->toPlainText()))
     QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
-
-    if (preemptive->isChecked())
-        TacheUnitairePreempte(titre->accessibleDescription(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()));
-    else TacheUnitaireNonPreempte(titre->accessibleDescription(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()));
-
-    QMessageBox::information(this, "Sauvegarde", "Tache sauvegardée!");
+    else{
+        p.creerProjet(titre->toPlainText(),QDate(),QDate());
+        QMessageBox::information(this, "Sauvegarde", "Projet sauvegardée!");
+    }
 }
 
-*/
 
 void Fenetre15::ouvrirFenetre2() {ouvrirFenetre<Fenetre15,Fenetre2>(*this);}
 
@@ -775,14 +812,12 @@ Fenetre18::Fenetre18(){
 
     titreLabel2=new QLabel("Sinon pour une Activité Traditionnelle, selectionner ci-dessous:", this);
     choix2=new QComboBox();
-    //pour afficher des act trad, faire apres evenementManager !
-    /*
-    EvtManager& e=EvtManager::getInstanceEvt();
-    for (vector<Evenement*>::const_iterator it = e.Ebegin(); it != e.Eend(); ++it){
+    ActManager& e=ActManager::getInstanceAct();
+    for (vector<ActiviteTrad*>::const_iterator it = e.Abegin(); it != e.Aend(); ++it){
         int i=1;
         choix2->insertItem(i,(*it)->getTitre());
         i++;
-    }*/
+    }
 
     dateDebutLabel= new QLabel ("Date début", this);
     dateDebut= new QDateEdit(QDate::currentDate());
