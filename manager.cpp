@@ -55,11 +55,13 @@ Projet* ProjetManager::trouverProjetP(const QString& titre)const{
 }
 
 Projet& ProjetManager::creerProjet(const QString& ti, const QDate& dispo, const QDate& deadline){
-    if (trouverProjetP(ti)) throw TimeException("erreur ProjetManager, projet deja existante");
+    // timexception a eviter car sinon ca quitte l'application a chaque fois que meme titre !
+    //if (trouverProjetP(ti)) throw TimeException("erreur ProjetManager, projet deja existante");
     Projet* newt = new Projet(ti, dispo, deadline);
     ajouterProjet(newt);
     return *newt;
 }
+
 
 Projet& ProjetManager::trouverProjetR(const QString& ti){
     Projet* p=trouverProjetP(ti);
