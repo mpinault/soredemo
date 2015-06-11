@@ -33,7 +33,8 @@ class EvtManager{
         evt.reserve(10);
     }
     ~EvtManager(){
-        if (file != "") save(file);
+        //de-commente apres verification de la methode save
+        //if (file != "") save(file);
         evt.clear();
         evt.~vector();
         //file = "";
@@ -63,16 +64,18 @@ public:
     void setFile(const QString& f){file=f;}
     const ev& getEvenement() const {return evt;}
 
-        //ajouter un evenement a partir d'un formulaire
-    Evenement& creerEvenement(const QString& ti, const QDate& dispo, const QDate& deadline);
+        //ajouter un evenement a partir d'un formulaire   
+    Evenement& creerEvenementTache(const QDate& d, const Horaire &h, Tache &t);
+    Evenement& creerEvenementAct(const QDate& d,const Horaire& h,ActiviteTrad& a);
+
     Evenement& trouverEvenementR(const QString& ti);
 
         //permet de savoir si le evenement existe a partir de son titre
     bool isEvenementExistant(const QString& ti) const { return trouverEvenementP(ti) != 0; }
 
         //au niveau des fichiers
-    void load(const QString& f);
-    void save(const QString& f);
+    //void load(const QString& f);
+    //void save(const QString& f);
 
         //pour les iterateurs
     vector<Evenement*>::const_iterator Ebegin(){return evt.begin();}
