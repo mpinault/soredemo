@@ -12,6 +12,7 @@ using namespace TIME;
 using namespace std;
 
 
+
 //================================methodes de EvtManager=================================================
 
 
@@ -42,18 +43,31 @@ void EvtManager::ajouterEvenement(Evenement* p){
 }
 
     //PRIVE//retrouve un evenement
+
 Evenement* EvtManager::trouverEvenementP(const QString& titre)const{
     for (std::vector<Evenement*>::const_iterator it = evt.begin(); it != evt.end(); ++it)
         if ((*it)->getTitre()==titre) return *it;
     return 0;
 }
 
-Evenement& EvtManager::creerEvenement(const QString& ti, const QDate& dispo, const QDate& deadline){
-    if (trouverEvenementP(ti)) throw TimeException("erreur EvtManager, evenement deja existante");
-    Evenement* newt = new Evenement(ti, dispo, deadline);
-    ajouterEvenement(newt);
-    return *newt;
+/*
+// pour creer une programmation de tache dans evenement
+Evenement& EvtManager::creerEvenementTache(const QDate& d,const Horaire& h,Tache& t){
+    // si le titre exise deja !
+    //if (trouverEvenementP(ti)) throw TimeException("erreur EvtManager, evenement deja existante");
+        ProgrammationTache* newt = new ProgrammationTache(d,h,t);
+        ajouterEvenement(newt);
+        return *newt;
 }
+
+// pour creer une programmation de act dans evenement
+Evenement& EvtManager::creerEvenementAct(const QDate& d,const Horaire& h,ActiviteTrad& a){
+    // si le titre exise deja !
+    //if (trouverEvenementP(ti)) throw TimeException("erreur EvtManager, evenement deja existante");
+        ProgrammationActTrad* newt = new ProgrammationActTrad(d,h,a);
+        ajouterEvenement(newt);
+        return *newt;
+}*/
 
 Evenement& EvtManager::trouverEvenementR(const QString& ti){
     Evenement* p=trouverEvenementP(ti);
@@ -63,6 +77,7 @@ Evenement& EvtManager::trouverEvenementR(const QString& ti){
 
 //au niveau des fichiers
 //a revoir !!
+/*
 void EvtManager::load(const QString& f){
     //qDebug()<<"debut load\n";
     this->~EvtManager();
@@ -95,7 +110,7 @@ void EvtManager::load(const QString& f){
                 bool preemptive;
 
                 QXmlStreamAttributes attributes = xml.attributes();
-                /* Let's check that Task has attribute. */
+                // Let's check that Task has attribute.
                 if (attributes.hasAttribute("preemptive")) {
                     QString val = attributes.value("preemptive").toString();
                     preemptive = (val == "true" ? true : false);
@@ -175,4 +190,5 @@ void  EvtManager::save(const QString& f){
     newfile.close();
 }
 
+*/
 
