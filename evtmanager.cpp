@@ -40,6 +40,7 @@ void EvtManager::libererInstanceEvt(){
     //PRIVE//ajout d'un evenement dans evt (son manager)
 void EvtManager::ajouterEvenement(Evenement* p){
     evt.push_back(p);
+
 }
 
     //PRIVE//retrouve un evenement
@@ -50,13 +51,13 @@ Evenement* EvtManager::trouverEvenementP(const QString& titre)const{
     return 0;
 }
 
-/*
+
 // pour creer une programmation de tache dans evenement
 Evenement& EvtManager::creerEvenementTache(const QDate& d,const Horaire& h,Tache& t){
     // si le titre exise deja !
     //if (trouverEvenementP(ti)) throw TimeException("erreur EvtManager, evenement deja existante");
         ProgrammationTache* newt = new ProgrammationTache(d,h,t);
-        ajouterEvenement(newt);
+       // ajouterEvenement(newt);
         return *newt;
 }
 
@@ -65,9 +66,9 @@ Evenement& EvtManager::creerEvenementAct(const QDate& d,const Horaire& h,Activit
     // si le titre exise deja !
     //if (trouverEvenementP(ti)) throw TimeException("erreur EvtManager, evenement deja existante");
         ProgrammationActTrad* newt = new ProgrammationActTrad(d,h,a);
-        ajouterEvenement(newt);
+       // ajouterEvenement(newt);
         return *newt;
-}*/
+}
 
 Evenement& EvtManager::trouverEvenementR(const QString& ti){
     Evenement* p=trouverEvenementP(ti);
