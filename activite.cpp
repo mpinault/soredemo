@@ -18,5 +18,3 @@ std::ostream& operator<<(std::ostream& f, const TIME::Duree& d){
     return f;
 }
 */
-
-Je teste qqch
