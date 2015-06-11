@@ -287,6 +287,7 @@ void Fenetre5::ouvrirFenetre10(){ouvrirFenetre<Fenetre5,Fenetre10>(*this);}
 //La Fenêtre 6 affiche une vue hebdomadaire sous forme de tableau avec les évènements programmés
 Fenetre6::Fenetre6(){
     this->setWindowTitle(QString ("Fenêtre 6 : ProjectCalendar"));
+    this->setFixedSize(900,900);
 
     QVBoxLayout* couche;
 
@@ -296,7 +297,7 @@ Fenetre6::Fenetre6(){
     QDate firstDay = QDate::currentDate();
 
     tab = new QTableWidget(24,7,this);
-
+    tab->adjustSize();
     QStringList jours;
     for(unsigned int i=0; i<7; i++){
         jours.append(QString(firstDay.addDays(i).toString()));
@@ -719,10 +720,11 @@ void Fenetre10::sauverTache(){
     ProjetManager& p=ProjetManager::getInstance();
     if (preemptive->isChecked()){
         qDebug()<<titre->toPlainText();
-        p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()),1);
+        p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),1);
     } else{
             qDebug()<<"inside";
-            p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->depth(),mDuree->depth()),0);
+            p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),0);
+            qDebug()<<hDuree->value();
     }
     QMessageBox::information(this, "Fenetre10", "Tache sauvegardée!");
   //this->close();
@@ -815,15 +817,15 @@ Fenetre18::Fenetre18(){
     ActManager& e=ActManager::getInstanceAct();
     for (vector<ActiviteTrad*>::const_iterator it = e.Abegin(); it != e.Aend(); ++it){
         int i=1;
-        choix2->insertItem(i,(*it)->getTitre());
+        if(!(*it)->getProg()) choix2->insertItem(i,(*it)->getTitre());
         i++;
     }
 
     dateDebutLabel= new QLabel ("Date début", this);
     dateDebut= new QDateEdit(QDate::currentDate());
 
-    horaireDebutLabel= new QLabel ("Echéance",this);
-    horaireDebut = new QDateEdit (QDate::currentDate());
+    horaireDebutLabel= new QLabel ("Horaire",this);
+    horaireDebut = new QTimeEdit (QTime::currentTime());
 
     valider2=new QPushButton("Valider", this);
     valider2->setCursor(Qt::PointingHandCursor);
@@ -858,10 +860,16 @@ Fenetre18::Fenetre18(){
     couche->addWidget(annuler);
     setLayout(couche);
     QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre4()));
+    QObject::connect(valider1, SIGNAL(clicked()),this, SLOT(ouvrirFenetre19()));
 
 }
 
 void Fenetre18::ouvrirFenetre4() {ouvrirFenetre<Fenetre18,Fenetre4>(*this);}
+void Fenetre18::ouvrirFenetre19() {
+        Fenetre19* fenetre = new Fenetre19(choix1->currentText());
+        this->close();
+        fenetre->show();
+}
 
 Fenetre21::Fenetre21(){
 
@@ -919,11 +927,13 @@ void Fenetre16::ouvrirFenetre2() {
 
 //Fenêtre 19 :
 //rajouter un test pour n'afficher dans la ComboBox que les taches pas encore programmées
-Fenetre19::Fenetre19(Projet& p){
+Fenetre19::Fenetre19(const QString& nomProjet){
+    p = ProjetManager::getInstance().trouverProjetP(nomProjet);
     this->setWindowTitle(QString ("Fenetre 19 : Ajout Evenement"));
 
     treeWidget = new QTreeWidget();
     treeWidget->setColumnCount(1);
+    treeWidget->setHeaderLabel(nomProjet);
     retour = new QPushButton("Annuler",this);
     valider = new QPushButton("Valider",this);
     retour->setCursor(Qt::PointingHandCursor);
@@ -933,7 +943,7 @@ Fenetre19::Fenetre19(Projet& p){
     int i=1;
 
     QList<QTreeWidgetItem *> items;
-    for (vector<Tache*>::const_iterator it = p.getTaches().begin(); it != p.getTaches().end(); ++it){
+    for (vector<Tache*>::const_iterator it = p->getTaches().begin(); it != p->getTaches().end(); ++it){
         QTreeWidgetItem* mainbranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("tache : %1").arg((*it)->getTitre())));
         items.append(mainbranch);
         i++;
@@ -1006,6 +1016,7 @@ Fenetre25::Fenetre25(){
     ProjetManager& m=ProjetManager::getInstance();
     treeWidget = new QTreeWidget();
     treeWidget->setColumnCount(1);
+    treeWidget->setHeaderLabel(QString("Ensemble des Projets :"));
     retour = new QPushButton("Retour au menu",this);
 
     QList<QTreeWidgetItem *> items;
