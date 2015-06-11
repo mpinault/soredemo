@@ -29,6 +29,7 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <QTableWidget>
 
 //=====07/06/15==============Morgane====================================================================================
 //ajouts pour la fenêtre 19
@@ -138,6 +139,7 @@ public :
 public slots :
     void ouvrirFenetre2();
     void ouvrirFenetre18();
+    void ouvrirFenetre6();
 };
 
 
@@ -165,6 +167,7 @@ public slots :
 
 };
 
+
 //=====10/06/15==============Morgane====================================================================================
 //La Fenêtre 6 affiche une vue hebdomadaire sous forme de tableau avec les évènements programmés
 class Fenetre6 : public QWidget {
@@ -183,6 +186,7 @@ public slots :
 
 
 };
+
 
 class Fenetre10: public QWidget{
     Q_OBJECT
@@ -226,10 +230,11 @@ class Fenetre10: public QWidget{
 
     public:
     explicit Fenetre10();
-    void sauverTache();
 
 public slots:
     void ouvrirFenetre2();
+    void sauverTache();
+
 
 };
 
@@ -310,9 +315,7 @@ class Fenetre23 : public QWidget{
 
 public slots:
      void ouvrirFenetre8();
-     //void sauverActTrad();
-
-
+     void sauverReunion();
 };
 
 //formulaire rdv
@@ -347,9 +350,7 @@ class Fenetre24 : public QWidget{
 
 public slots:
      void ouvrirFenetre8();
-     //void sauverActTrad();
-
-
+     void sauverRdv();
 };
 
 
@@ -362,6 +363,9 @@ class Fenetre22 : public QWidget{
     QLabel* lieuLabel;
     QTextEdit* lieu;
 
+    QLabel* typeLabel;
+    QTextEdit* type;
+
     QLabel* dureeLabel;
     QSpinBox* hDuree;
     QSpinBox* mDuree;
@@ -371,6 +375,7 @@ class Fenetre22 : public QWidget{
 
     QHBoxLayout* coucheH2;
     QHBoxLayout* coucheH3;
+    QHBoxLayout* coucheH4;
     QHBoxLayout* coucheH5;
     QHBoxLayout* coucheH6;
     QVBoxLayout* couche;
@@ -379,8 +384,8 @@ class Fenetre22 : public QWidget{
     explicit Fenetre22();
 
 public slots:
-     void ouvrirFenetre2();
-     //void sauverActTrad();
+     void ouvrirFenetre8();
+     void sauverAutres();
 
 
 };
@@ -411,6 +416,7 @@ public :
     Fenetre15();
 public slots :
     void ouvrirFenetre2();
+    void sauverProjet();
 };
 
 class Fenetre18 : public QWidget
