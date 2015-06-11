@@ -38,13 +38,14 @@ class Tache{
     QDate dispo;
     QDate ech;
     Duree duree;
+    bool prog;
 
     typedef std::vector<Tache *> pred;
     pred precede;
 
 public:
     //Constructuer ET Destructeur
-    Tache(const QString& t, const QDate& d, const QDate& e, const Duree& du):titre(t), dispo(d), ech(e), duree(du){
+    Tache(const QString& t, const QDate& d, const QDate& e, const Duree& du):titre(t), dispo(d), ech(e), duree(du),prog(0){
         precede.reserve(10);
     }
     virtual ~Tache(){}
@@ -53,6 +54,8 @@ public:
     const QString& getTitre()const{ return titre; }
     const QDate& getDispo()const { return dispo; }
     const QDate& getEch()const { return ech; }
+    bool getProg()const { return prog; }
+    void setProg(int a){prog=a;}
     const Duree& getDuree()const { return duree; }
     void setTitre(const QString& a){ titre = a; }
     void setDispo(const QDate& b){ dispo = b; }
@@ -81,8 +84,10 @@ class TacheUnitaireNonPreempte : public TacheUnitaire{
 public:
     //Constructeur ET Destructeur
     TacheUnitaireNonPreempte(const QString& t, const QDate& d, const QDate& e, const Duree& du) :TacheUnitaire(t, d, e, du){
-        if (du.getDureeEnHeures()>12 || du.getDureeEnHeures()==12)
+        if (du.getDureeEnHeures()>12 || du.getDureeEnHeures()==12){
+            qDebug()<<du.getDureeEnHeures();
             throw TimeException("erreur TacheUnitaireNonPreempte, la durée d'une tache unitaire non preempte ne peut pas exceder 12h");
+    }
     }
     virtual ~TacheUnitaireNonPreempte(){}
 
