@@ -18,6 +18,7 @@
 #include <QDate>
 #include <QDebug>
 #include <QFile>
+#include <QMessageBox>
 
 using namespace std;
 using namespace TIME;
