@@ -433,7 +433,7 @@ class Fenetre18 : public QWidget
     QDateEdit* dateDebut;
 
     QLabel* horaireDebutLabel;
-    QDateEdit* horaireDebut;
+    QTimeEdit* horaireDebut;
 
     QPushButton* valider2;
     QPushButton* annuler;
@@ -449,6 +449,7 @@ public :
     Fenetre18();
 public slots :
         void ouvrirFenetre4();
+        void ouvrirFenetre19();
         //void sauverTache();
 };
 
@@ -485,9 +486,10 @@ class Fenetre19 : public QWidget
     QPushButton* valider;
 
     QComboBox* cBox;
+    Projet* p;
 
 public :
-    Fenetre19(Projet& p);
+    Fenetre19(const QString &nomProjet);
     QComboBox* getCBox()const {return cBox;}
 public slots :
     void ouvrirFenetre2();
