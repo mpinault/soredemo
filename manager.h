@@ -47,8 +47,7 @@ class ProjetManager{
     //Methodes
         //ajoute un projet
     void ajouterProjet(Projet* p);
-        //trouve un projet
-    Projet* trouverProjetP(const QString& titre) const;
+
 
     //Singleton
     struct Handler{
@@ -69,6 +68,8 @@ public:
         //ajouter un projet a partir d'un formulaire
     Projet& creerProjet(const QString& ti, const QDate& dispo, const QDate& deadline);
     Projet& trouverProjetR(const QString& ti);
+    //trouve un projet
+    Projet* trouverProjetP(const QString& titre) const;
 
         //permet de savoir si le projet existe a partir de son titre
     bool isProjetExistant(const QString& ti) const { return trouverProjetP(ti) != 0; }
