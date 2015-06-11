@@ -55,9 +55,10 @@ protected :
     QString lieu;
     Duree duree;
     QString type;
+    bool prog;
 public :
     ///***************Constructeur ET Destructeur****************************************
-    ActiviteTrad(const QString& t, const QString& l, const Duree& d, const QString& ty) : titre(t), lieu(l), duree(d), type(ty){}
+    ActiviteTrad(const QString& t, const QString& l, const Duree& d, const QString& ty) : titre(t), lieu(l), duree(d), type(ty),prog(0){}
     //le destructeur n'est pas nécessaire ici mais on le déclare en virtuelle si jamais on veut spécifier la classe
     virtual ~ActiviteTrad(){}
 
@@ -65,6 +66,8 @@ public :
     QString getTitre() const {return titre;}
     QString getLieu() const {return lieu;}
     QString getType() const {return type;}
+    bool getProg() const {return prog;}
+    void setProg(int a){prog=a;}
     const Duree&  getDuree() const {return duree;}
     virtual void afficher(std::ostream& f= std::cout) const {
         f<<"***** Activite traditionelle********"<<"\n"<<"Titre="<<titre.toStdString()<<" lieu="<<lieu.toStdString()<<" Durée="
@@ -82,13 +85,13 @@ class Rdv : public ActiviteTrad {
     QString personnes;
 public :
     ///***************Constructeur ET Destructeur****************************************
-    Rdv(const QString& t,const QString& l,  const Duree& d,const QString& ty) : ActiviteTrad(t,l,d,ty) {
+    Rdv(const QString& t,const QString& l,  const Duree& d,const QString& p) : ActiviteTrad(t,l,d,QString("Rendez-vous")), personnes(p) {
         std::cout<<"construction Rdv"<<this<<"\n";
     }
     virtual ~Rdv(){std::cout<<"destruction Rdv"<<this<<"\n";}
 
     ///***************Accesseurs****************************************
-    //QString getPersonnes() const {return personnes; }
+    QString getPersonnes() const {return personnes; }
 
     ///***************Méthodes****************************************
     /*
@@ -102,17 +105,17 @@ public :
 ///=====Reunion==================================================================================================
 ///Classe Non Abstraite
 class Reunion : public ActiviteTrad {
-    //QString sujet;
+    QString sujet;
 public :
 
     ///***************Constructeur ET Destructeur****************************************
-    Reunion(const QString& t, const QString& l,  const Duree& d,const QString& ty) : ActiviteTrad(t,l,d,ty){
+    Reunion(const QString& t, const QString& l,  const Duree& d,const QString& s) : ActiviteTrad(t,l,d,QString("Réunion")),sujet(s){
         std::cout<<"construction Réunion"<<this<<"\n";
     }
     virtual ~Reunion() { std::cout<<"destruction Réunion"<<this<<"\n";}
 
     ///***************Accesseurs****************************************
-    //QString getSujet() const {return sujet; }
+    QString getSujet() const {return sujet; }
 
     ///***************Méthodes****************************************
     /*
@@ -130,8 +133,10 @@ class ProgrammationActTrad : public Evenement {
 public :
 
     ///***************Constructeur ET Destructeur****************************************
-    ProgrammationActTrad(const QDate& d, const Horaire& h,ActiviteTrad& a): Evenement(d, h), activite(&a){}
-    virtual ~ProgrammationActTrad();
+    ProgrammationActTrad(const QDate& d, const Horaire& h,ActiviteTrad& a): Evenement(d, h), activite(&a){
+        a.setProg(1);
+    }
+    virtual ~ProgrammationActTrad(){}
 
     ///***************Accesseurs****************************************
     ProgrammationActTrad * getProgrammationActTrad() const;
@@ -151,8 +156,10 @@ class ProgrammationTache : public Evenement {
 public :
 
     ///***************Constructeur ET Destructeur****************************************
-    ProgrammationTache(const QDate& d, const Horaire& h,Tache& a): Evenement(d, h), tache(&a){}
-    virtual ~ProgrammationTache();
+    ProgrammationTache(const QDate& d, const Horaire& h,Tache& a): Evenement(d, h), tache(&a){
+        a.setProg(1);
+    }
+    virtual ~ProgrammationTache(){}
 
     ///***************Accesseurs****************************************
     ProgrammationTache * getProgrammationTache() const;
