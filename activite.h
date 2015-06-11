@@ -17,18 +17,17 @@ using namespace std;
 using namespace TIME;
 
 
-
 ///=====Evenement==================================================================================================
 ///Classe Abstraite
 class Evenement {
 private :
     QDate date;
 protected :
-    TIME::Horaire horaire;
+    Horaire horaire;
 public :
 
     ///***************Constructeur ET Destructeur****************************************
-    Evenement(QDate& d, const TIME::Horaire& h): date(d), horaire(h){
+    Evenement(const QDate& d, const TIME::Horaire& h): date(d), horaire(h){
     //gestion des erreurs quand la horaire+durée dépasse la fin de la jounée
     //calculer la date de fin et rajouter l'évènement sur les jours suivants si nécessaire
     }
@@ -37,11 +36,13 @@ public :
     ///***************Accesseurs****************************************
     const QDate& getDate() const {return date;}
     const Horaire& getHoraire() const {return horaire;}
+    //afin de pouvoir connaitre le titre de l'activite ou de la tache
+    virtual const QString& getTitre()=0;
 
     ///***************Méthodes****************************************
     //Permet d'obtenir l'horaire de fin de l'évènement
     //Ici elle et virtuelle donc il faut la redéfinir dans ProgrammationActTrad et Programmationtache
-    virtual QDate& getHoraireFin() const =0;
+    virtual Horaire& getHoraireFin() =0;
 
 };
 
@@ -56,7 +57,7 @@ protected :
     QString type;
 public :
     ///***************Constructeur ET Destructeur****************************************
-    ActiviteTrad(QString& t, QString& l, const Duree& d, QString& ty) : titre(t), lieu(l), duree(d), type(ty){}
+    ActiviteTrad(const QString& t, const QString& l, const Duree& d, const QString& ty) : titre(t), lieu(l), duree(d), type(ty){}
     //le destructeur n'est pas nécessaire ici mais on le déclare en virtuelle si jamais on veut spécifier la classe
     virtual ~ActiviteTrad(){}
 
@@ -81,43 +82,44 @@ class Rdv : public ActiviteTrad {
     QString personnes;
 public :
     ///***************Constructeur ET Destructeur****************************************
-    Rdv(QString& t, QString& l,  const Duree& d, QString& p, QString ty) : ActiviteTrad(t,l,d,ty), personnes(p) {
-        type=QString("Rendez-vous");
+    Rdv(const QString& t,const QString& l,  const Duree& d,const QString& ty) : ActiviteTrad(t,l,d,ty) {
         std::cout<<"construction Rdv"<<this<<"\n";
     }
     virtual ~Rdv(){std::cout<<"destruction Rdv"<<this<<"\n";}
 
     ///***************Accesseurs****************************************
-    QString getPersonnes() const {return personnes; }
+    //QString getPersonnes() const {return personnes; }
 
     ///***************Méthodes****************************************
+    /*
     void afficher(std::ostream& f= std::cout) const {
         ActiviteTrad::afficher(f);
         f<<" personnes="<<personnes.toStdString()<<"\n";
     }
+    */
 };
 
 ///=====Reunion==================================================================================================
 ///Classe Non Abstraite
 class Reunion : public ActiviteTrad {
-    QString sujet;
+    //QString sujet;
 public :
 
     ///***************Constructeur ET Destructeur****************************************
-    Reunion(QString& t, QString& l,  const Duree& d, QString& s, QString ty="reunion") : ActiviteTrad(t,l,d,ty), sujet(s) {
-        type="Réunion";
+    Reunion(const QString& t, const QString& l,  const Duree& d,const QString& ty) : ActiviteTrad(t,l,d,ty){
         std::cout<<"construction Réunion"<<this<<"\n";
     }
     virtual ~Reunion() { std::cout<<"destruction Réunion"<<this<<"\n";}
 
     ///***************Accesseurs****************************************
-    QString getSujet() const {return sujet; }
+    //QString getSujet() const {return sujet; }
 
     ///***************Méthodes****************************************
+    /*
     void afficher(std::ostream& f= std::cout) const {
         ActiviteTrad::afficher(f);
         f<<" sujet="<<sujet.toStdString()<<"\n";
-    }
+    }*/
 
 };
 
@@ -128,19 +130,18 @@ class ProgrammationActTrad : public Evenement {
 public :
 
     ///***************Constructeur ET Destructeur****************************************
-    //ProgrammationActTrad(QDate& d, const Horaire& h,const ActiviteTrad& a): Evenement(d, h), activite(&a){}
+    ProgrammationActTrad(const QDate& d, const Horaire& h,ActiviteTrad& a): Evenement(d, h), activite(&a){}
     virtual ~ProgrammationActTrad();
 
     ///***************Accesseurs****************************************
     ProgrammationActTrad * getProgrammationActTrad() const;
+    const QString& getTitre()override{return activite->getTitre();}
 
     ///***************Méthodes****************************************
-    //je pense qu'on peut utiliser Qtime ou la fonction sommeD() que j'avais ecrite, a faire si besoin de cette methode (Alice)
-    //Permet d'obtenir l'horaire de fin de l'évènement
-   // QDate& getHoraireFin() const {
-     //   return (horaire + activite->duree);
-    //}
-        //Je sais pas trop comment l'implémenter vu que durée est de type Duree et date de type QDate...
+    //Permet d'obtenir l'horaire de fin de la tachce
+   Horaire& getHoraireFin()override{
+        return sommeH(horaire,activite->getDuree());
+    }
 };
 
 ///=====ProgrammationTache==================================================================================================
@@ -150,19 +151,18 @@ class ProgrammationTache : public Evenement {
 public :
 
     ///***************Constructeur ET Destructeur****************************************
-    //ProgrammationTache(QDate& d, const Horaire& h,const Tache& a): Evenement(d, h), tache(&a){}
+    ProgrammationTache(const QDate& d, const Horaire& h,Tache& a): Evenement(d, h), tache(&a){}
     virtual ~ProgrammationTache();
 
     ///***************Accesseurs****************************************
     ProgrammationTache * getProgrammationTache() const;
+    const QString& getTitre()override{return tache->getTitre();}
 
     ///***************Méthodes****************************************
-    //je pense qu'on peut utiliser Qtime ou la fonction sommeD() que j'avais ecrite, a faire si besoin de cette methode (Alice)
     //Permet d'obtenir l'horaire de fin de la tachce
-   // QDate& getHoraireFin() const {
-     //   return (horaire + tache->duree);
-    //}
-        //Je sais pas trop comment l'implémenter vu que durée est de type Duree et date de type QDate...
+   Horaire& getHoraireFin() override{
+        return sommeH(horaire,tache->getDuree());
+    }
 };
 
 std::ostream& operator<<(std::ostream& f, const ActiviteTrad& a);
