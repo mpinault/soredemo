@@ -145,6 +145,7 @@ public :
     ///***************Méthodes****************************************
     //Permet d'obtenir l'horaire de fin de la tachce
    Horaire& getHoraireFin()override{
+       qDebug()<<"On fait la somme de l'horaire er de la durée";
         return sommeH(horaire,activite->getDuree());
     }
 };
