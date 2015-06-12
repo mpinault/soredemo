@@ -192,7 +192,50 @@ public slots :
     void ouvrirFenetreC();
 };
 
+//pour choisir la tache compose
+class Fenetre31 : public QDialog {
+    Q_OBJECT
+    QLabel* indication;
+    QComboBox* tacheC;
 
+    QPushButton* buttonBack;
+    QPushButton* buttonForward;
+
+    QVBoxLayout* couche1;
+    QHBoxLayout* couche2;
+    QVBoxLayout* couche;
+
+    QString nomProjet;
+public :
+    Fenetre31(const QString& nomProjet);
+public slots :
+    void ouvrirFenetre21();
+    void ouvrirFenetre32();
+};
+
+
+//pour choisir la tache qu'on veut mettre dans une tache compose
+class Fenetre32 : public QDialog {
+    Q_OBJECT
+    QLabel* indication;
+    QComboBox* tacheC;
+
+    QPushButton* buttonBack;
+    QPushButton* buttonForward;
+
+    QVBoxLayout* couche1;
+    QHBoxLayout* couche2;
+    QVBoxLayout* couche;
+
+     QString nomProjet;
+     QString nomTache;
+
+public :
+    Fenetre32(const QString& nomTacheC, const QString& nomP);
+public slots :
+    void ouvrirFenetre31();
+    void ouvrirS();
+};
 
 //=====10/06/15==============Morgane====================================================================================
 //La Fenêtre 6 affiche une vue hebdomadaire sous forme de tableau avec les évènements programmés
@@ -254,10 +297,11 @@ class Fenetre10: public QWidget{
     QHBoxLayout* coucheH8;
     QVBoxLayout* couche;
 
-    Projet* p;
+    QString nomProjet;
+    //Projet* projetChoisie;
 
     public:
-    explicit Fenetre10(const QString& recp);
+    explicit Fenetre10(QString recp);
 
 public slots:
     void ouvrirFenetre30();
@@ -266,16 +310,16 @@ public slots:
 
 };
 
+
+//fenetre formulaire  pour creer des taches composite
+//ouvert par la fenetre30
 class Fenetre27: public QWidget{
     Q_OBJECT
-
-    QCheckBox* preemptive;
 
     QLabel* titreLabel;
     QTextEdit* titre;
 
     QLabel* projetLabel;
-    QComboBox* pro;
 
     QLabel* dateDebutLabel;
     QDateEdit* dateDebut;
@@ -306,42 +350,18 @@ class Fenetre27: public QWidget{
     QHBoxLayout* coucheH8;
     QVBoxLayout* couche;
 
+    QString nomProjet;
     Projet* p;
 
     public:
-    explicit Fenetre27(const QString &recp);
+    explicit Fenetre27(QString recp);
 
 public slots:
     void ouvrirFenetre30();
-    //void sauverTacheCompo();
+    void sauverTacheCompo();
 
 };
 
-
-/*
-class Interface : public QWidget
-{
-    Q_OBJECT
-
-public :
-    Interface();
-private :
-    QPushButton * ajouter_evenement;
-    QPushButton * afficher_taches;
-    QPushButton * exporter_programmation;
-    QPushButton * lundi;
-    QPushButton * mardi;
-    QPushButton * mercredi;
-    QPushButton * jeudi;
-    QPushButton * vendredi;
-    QPushButton * samedi;
-    QPushButton * dimanche;
-    QGridLayout * grille;
-    QVBoxLayout * boutons;
-    QHBoxLayout * cadre;
-
-};
-*/
 class Fenetre8 : public QWidget
 {
     Q_OBJECT
@@ -533,6 +553,7 @@ public slots :
         //void sauverTache();
 };
 
+//fenetre qui permet de selectionner un projet
 class Fenetre21 : public QWidget
 {
     Q_OBJECT
@@ -545,12 +566,78 @@ class Fenetre21 : public QWidget
     QVBoxLayout* couche1;
     QHBoxLayout* couche2;
     QVBoxLayout* couche;
-
-
 public :
     Fenetre21();
 public slots :
     void ouvrirFenetre2();
+    void ouvrirFenetreTC();
+};
+
+class Fenetre28: public QWidget{
+    Q_OBJECT
+
+    QLabel* titreLabel;
+
+    QLabel* dateDebutLabel;
+    QDateEdit* dateDebut;
+
+    QLabel* horaireDebutLabel;
+    QTimeEdit* horaire;
+
+    QLabel* dureeLabel;
+    QSpinBox* hDuree;
+    QSpinBox* mDuree;
+
+    QPushButton* sauver;
+    QPushButton* annuler;
+
+    QHBoxLayout* coucheH2;
+    QHBoxLayout* coucheH3;
+    QHBoxLayout* coucheH4;
+    QHBoxLayout* coucheH5;
+    QHBoxLayout* coucheH8;
+    QVBoxLayout* couche;
+
+    Projet& projCurr;
+    QString tachCurr;
+
+    public:
+    explicit Fenetre28(const QString& titreTache,const QString& titreProjet);
+
+public slots:
+    void ouvrirFenetre2();
+};
+
+class Fenetre29: public QWidget{
+    Q_OBJECT
+
+    QLabel* titreLabel;
+
+    QLabel* dateDebutLabel;
+    QDateEdit* dateDebut;
+
+    QLabel* horaireDebutLabel;
+    QTimeEdit* horaire;
+
+    QPushButton* sauver;
+    QPushButton* annuler;
+
+    QHBoxLayout* coucheH2;
+    QHBoxLayout* coucheH3;
+    QHBoxLayout* coucheH4;
+    QHBoxLayout* coucheH5;
+    QHBoxLayout* coucheH8;
+    QVBoxLayout* couche;
+
+    Projet& projCurr;
+    QString tachCurr;
+
+    public:
+    explicit Fenetre29(const QString& titreTache,const QString& titreProjet);
+
+public slots:
+    void ouvrirFenetre2();
+    void sauverTache();
 };
 
 
@@ -576,6 +663,7 @@ public :
     QComboBox* getCBox()const {return cBox;}
 public slots :
     void ouvrirFenetre2();
+    void ouvrirFenetreChoix();
 
 };
 
