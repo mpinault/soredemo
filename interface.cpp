@@ -52,7 +52,7 @@ Fenetre2::Fenetre2(){
     vue_hebdomadaire = new QPushButton("Vue Hebdomadaire");
     progEvt = new QPushButton("Programmer un Evenement");
     vue_projets = new QPushButton("Vue ensemble des projets");
-    ouvrir = new QPushButton("Ouvrir un agenda existant");
+    ouvrir = new QPushButton("Ajouter une Tache a une Tache Composite");
     quitter = new QPushButton("Quitter");
 
     creerTache->setCursor(Qt::PointingHandCursor);
@@ -65,8 +65,8 @@ Fenetre2::Fenetre2(){
     quitter->setCursor(Qt::PointingHandCursor);
 
     couche = new QVBoxLayout;
-    couche->addWidget(creerTache);
     couche->addWidget(creerProjet);
+    couche->addWidget(creerTache);
     couche->addWidget(creerActTrad);
     couche->addWidget(vue_hebdomadaire);
     couche->addWidget(progEvt);
@@ -201,11 +201,7 @@ Fenetre4::Fenetre4()
 
 void Fenetre4::ouvrirFenetre2() {ouvrirFenetre<Fenetre4,Fenetre2>(*this);}
 void Fenetre4::ouvrirFenetre18() {ouvrirFenetre<Fenetre4,Fenetre18>(*this);}
-+void Fenetre4::ouvrirFenetre6() {
-+    Fenetre6* fenetre = new Fenetre6(jour_debut->date());
-+    this->close();
-+    fenetre->show();
-+}
+void Fenetre4::ouvrirFenetre6() {ouvrirFenetre<Fenetre4,Fenetre6>(*this);}
 
 
 Fenetre5::Fenetre5(){
@@ -354,10 +350,127 @@ void Fenetre30::ouvrirFenetreC() {
 }
 
 
+Fenetre31::Fenetre31(const QString& nomP):nomProjet(nomP){
+    this->setWindowTitle("Fenêtre 31 : Project Calendar");
+
+    indication= new QLabel("Selectionner la Tache Composite à laquelle vous voulez ajouter une tache:",this);
+
+    tacheC=new QComboBox();
+    ProjetManager& pM=ProjetManager::getInstance();
+    Projet* projetCurrent=pM.trouverProjetP(nomProjet);
+    for (vector<Tache*>::const_iterator it = projetCurrent->Tbegin(); it != projetCurrent->Tend(); ++it){
+        int i=1;
+        if (typeid(**it)==typeid(TacheComposite))tacheC->insertItem(i,(*it)->getTitre());
+        else qDebug()<<typeid(**it).name();
+        i++;
+    }
+
+    buttonBack =new QPushButton("Revenir au Menu",this);
+    buttonForward =new QPushButton("Valider",this);
+
+    buttonBack->setCursor(Qt::PointingHandCursor);
+    buttonForward->setCursor(Qt::PointingHandCursor);
+
+    couche1= new QVBoxLayout;
+    couche1->addWidget(indication);
+    couche1->addWidget(tacheC);
+
+    couche2= new QHBoxLayout;
+    couche2->addWidget(buttonBack);
+    couche2->addWidget(buttonForward);
+
+    couche=new QVBoxLayout;
+    couche->addLayout(couche1);
+    couche->addLayout(couche2);
+    setLayout(couche);
+
+    qDebug()<<tacheC->currentText();
+    qDebug()<<nomProjet;
+    QObject::connect(buttonBack, SIGNAL(clicked()),this, SLOT(ouvrirFenetre21()));
+    QObject::connect(buttonForward, SIGNAL(clicked()),this, SLOT(ouvrirFenetre32()));
+}
+
+void Fenetre31::ouvrirFenetre21(){
+    Fenetre21 * fenetre = new Fenetre21;
+    this->close();
+    fenetre->show();
+}
+
+void Fenetre31::ouvrirFenetre32() {
+    qDebug()<<"fenetre31";
+    qDebug()<<tacheC->currentText();
+    qDebug()<<nomProjet;
+        Fenetre32* fenetre = new Fenetre32(tacheC->currentText(),nomProjet);
+        this->close();
+        fenetre->show();
+}
+
+Fenetre32::Fenetre32(const QString& nomTacheC, const QString& nomP):nomProjet(nomP),nomTache(nomTacheC){
+    this->setWindowTitle("Fenêtre 32 : Project Calendar");
+    qDebug()<<"fenetre32\n";
+    qDebug()<<nomTacheC;
+    qDebug()<<nomProjet;
+
+
+    indication= new QLabel("Selectionner la Tache  que vous voulez ajouter a la Tache Composite:",this);
+
+    tacheC=new QComboBox();
+    ProjetManager& pM=ProjetManager::getInstance();
+    Projet* projetCurrent=pM.trouverProjetP(nomProjet);
+    for (vector<Tache*>::const_iterator it = projetCurrent->Tbegin(); it != projetCurrent->Tend(); ++it){
+        int i=1;
+        if (typeid(**it)!=typeid(TacheComposite))tacheC->insertItem(i,(*it)->getTitre());
+        qDebug()<<"Dans fenetre 32 : type de la tache : ";
+        qDebug()<<typeid(**it).name();
+        i++;
+    }
+
+    buttonBack =new QPushButton("Revenir au Menu",this);
+    buttonForward =new QPushButton("Valider",this);
+
+    buttonBack->setCursor(Qt::PointingHandCursor);
+    buttonForward->setCursor(Qt::PointingHandCursor);
+
+    couche1= new QVBoxLayout;
+    couche1->addWidget(indication);
+    couche1->addWidget(tacheC);
+
+    couche2= new QHBoxLayout;
+    couche2->addWidget(buttonBack);
+    couche2->addWidget(buttonForward);
+
+    couche=new QVBoxLayout;
+    couche->addLayout(couche1);
+    couche->addLayout(couche2);
+    setLayout(couche);
+
+    QObject::connect(buttonBack, SIGNAL(clicked()),this, SLOT(ouvrirFenetre31()));
+    QObject::connect(buttonForward, SIGNAL(clicked()),this, SLOT(ouvrirS()));
+}
+
+
+void Fenetre32::ouvrirFenetre31(){
+    Fenetre31 * fenetre = new Fenetre31(nomProjet);
+    this->close();
+    fenetre->show();
+}
+
+void Fenetre32::ouvrirS() {
+
+    ProjetManager& pM=ProjetManager::getInstance();
+    Projet& projC=pM.trouverProjetR(nomProjet);
+    //TacheComposite& tc=dynamic_cast<TacheComposite&>projC.trouverTacheR(nomTacheC);
+    Tache& tc=projC.trouverTacheR(nomTache);
+
+    Tache& tVacompose=projC.trouverTacheR(tacheC->currentText());
+    dynamic_cast<TacheComposite&>(tc).ajouterTacheComp(tVacompose);
+    QMessageBox::information(this, "Fenetre32", "Tache placé dans la Tache Composé selectionné!");
+
+}
 
 //=====10/06/15======Morgane============================================================================================
 //La Fenêtre 6 affiche une vue hebdomadaire sous forme de tableau avec les évènements programmés
-Fenetre6::Fenetre6(QDate d){
+Fenetre6::Fenetre6(){
     this->setWindowTitle(QString ("Fenêtre 6 : ProjectCalendar"));
     this->setFixedSize(900,900);
 
@@ -366,7 +479,7 @@ Fenetre6::Fenetre6(QDate d){
     retour = new QPushButton("Retour au Menu");
     exporter = new QPushButton("Exporter la programmation");
 
-    QDate firstDay = d;
+    QDate firstDay = QDate::currentDate();
 
     tab = new QTableWidget(24,7,this);
     tab->adjustSize();
@@ -667,18 +780,23 @@ void Fenetre22::sauverAutres(){
     a.creerAct(titre->toPlainText(),lieu->toPlainText(),Duree(hDuree->depth(),mDuree->depth()),type->toPlainText() ,2);
 
     QMessageBox::information(this, "Sauvegarde", "Activite sauvegardée!");
-}*
+}
 
 
-Fenetre10::Fenetre10(const QString& recp){
+Fenetre10::Fenetre10(QString recp){
     qDebug()<<"A"<<endl;
-    p = ProjetManager::getInstance().trouverProjetP(recp);
+
+    nomProjet=recp;
+    //projetChoisie = ProjetManager::getInstance().trouverProjetP(recp);
+
     qDebug()<<"B"<<endl;
     this->setWindowTitle("Fenêtre 10 : Project Calendar");
     setFixedSize(800,500);
+
     qDebug()<<"C"<<endl;
     preemptive=new QCheckBox("preemptive",this);
-qDebug()<<"C"<<endl;
+
+    qDebug()<<"D"<<endl;
     titreLabel=new QLabel("titre", this);
     titre=new QTextEdit(0, this);
 /*
@@ -783,37 +901,29 @@ void Fenetre10::sauverTache(){
 
     ProjetManager& p=ProjetManager::getInstance();
     if (preemptive->isChecked()){
-        qDebug()<<titre->toPlainText();
-        p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),1);
+         p.trouverProjetR(nomProjet).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),1);
+        //p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),1);
+         QMessageBox::information(this, "Fenetre10", "Tache Preempte sauvegardée!");
     } else{
-            qDebug()<<"inside";
-            p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),0);
-            qDebug()<<hDuree->value();
+        p.trouverProjetR(nomProjet).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),0);
+        //p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),0);
+        QMessageBox::information(this, "Fenetre10", "Tache Non Preempte sauvegardée!");
     }
-    QMessageBox::information(this, "Fenetre10", "Tache sauvegardée!");
-  //this->close();
 }
 
-Fenetre27::Fenetre27(const QString& recp){
 
+Fenetre27::Fenetre27(QString recp){
+
+    nomProjet=recp;
     this->setWindowTitle("Fenêtre 27 : Project Calendar");
     setFixedSize(800,500);
-
-    preemptive=new QCheckBox("preemptive",this);
 
     titreLabel=new QLabel("titre", this);
     titre=new QTextEdit(0, this);
 
-    projetLabel=new QLabel("Tache qui sera composé", this);
-    //affiche les projets existant dans TacheManager dans un QComboBox
-    pro=new QComboBox();
-
-    p = ProjetManager::getInstance().trouverProjetP(recp);
-    for (vector<Tache*>::const_iterator it = p->Tbegin(); it != p->Tend(); ++it){
-        int i=1;
-        pro->insertItem(i,(*it)->getTitre());
-        i++;
-    }
+    projetLabel=new QLabel("Vous pouvez créer une tache composite a partir de ce formulaire.\n"
+                           " Pour y ajouter des taches, retourner au Menu et choisisez l'option :\n"
+                           "       - 'Ajouter des taches a un tache Composite'.", this);
 
     dateDebutLabel= new QLabel ("Date début", this);
     dateDebut= new QDateEdit(QDate::currentDate());
@@ -842,14 +952,12 @@ Fenetre27::Fenetre27(const QString& recp){
     sauver->setCursor(Qt::PointingHandCursor);
     annuler->setCursor(Qt::PointingHandCursor);
 
+    couche2 = new QHBoxLayout;
+    couche2->addWidget(projetLabel);
+
     coucheH2 = new QHBoxLayout;
     coucheH2->addWidget(titreLabel);
     coucheH2->addWidget(titre);
-    coucheH2->addWidget(preemptive);
-
-    couche2 = new QHBoxLayout;
-    couche2->addWidget(projetLabel);
-    couche2->addWidget(pro);
 
     coucheH3 = new QHBoxLayout;
     coucheH3->addWidget(dateDebutLabel);
@@ -858,7 +966,6 @@ Fenetre27::Fenetre27(const QString& recp){
     coucheH4 = new QHBoxLayout;
     coucheH4->addWidget(horaireDebutLabel);
     coucheH4->addWidget(horaire);
-
 
     coucheH5 = new QHBoxLayout;
     coucheH5->addWidget(dureeLabel);
@@ -878,8 +985,8 @@ Fenetre27::Fenetre27(const QString& recp){
     coucheH8->addWidget(sauver);
 
     couche=new QVBoxLayout;
-    couche->addLayout(coucheH2);
     couche->addLayout(couche2);
+    couche->addLayout(coucheH2);
     couche->addLayout(coucheH3);
     couche->addLayout(coucheH4);
     couche->addLayout(coucheH5);
@@ -889,22 +996,21 @@ Fenetre27::Fenetre27(const QString& recp){
     setLayout(couche);
 
      QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre30()));
-     //QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverTacheCompo()));
+     QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverTacheCompo()));
 
 }
 
 void Fenetre27::ouvrirFenetre30() {ouvrirFenetre<Fenetre27,Fenetre30>(*this);}
 
-/*
+
 void Fenetre27::sauverTacheCompo(){
 
     // condition pour verifier si la tachecompo existe dans le projet
    ProjetManager& man=ProjetManager::getInstance();
-   TacheComposite* a=&TacheComposite(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()));
-   man.trouverProjetR(recp).ajouterTache(a);
-   a->ajouterTacheComp(pro->currentText());
-   QMessageBox::information(this, "Fenetre27", "Tache sauvegardée!");
-}*/
+   TacheComposite* a=new TacheComposite(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()));
+   man.trouverProjetR(nomProjet).ajouterTache(a);
+   QMessageBox::information(this, "Fenetre27", "Tache Composite sauvegardée!");
+}
 
 
 
@@ -1055,8 +1161,14 @@ Fenetre21::Fenetre21(){
     this->setWindowTitle("Fenêtre 21 : Project Calendar");
     //setFixedSize(800,500);
 
-    titreLabel=new QLabel("Selectionner l'agenda que vous voulez exporter:", this);
+    titreLabel=new QLabel("Selectionner le projet:", this);
     choix=new QComboBox();
+    ProjetManager& p=ProjetManager::getInstance();
+    for (vector<Projet*>::const_iterator it = p.Pbegin(); it != p.Pend(); ++it){
+        int i=1;
+        choix->insertItem(i,(*it)->getTitre());
+        i++;
+    }
 
     valider=new QPushButton("Valider", this);
     annuler=new QPushButton ("Annuler",this);
@@ -1078,10 +1190,138 @@ Fenetre21::Fenetre21(){
     setLayout(couche);
 
     QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+    QObject::connect(valider, SIGNAL(clicked()),this, SLOT(ouvrirFenetreTC()));
 
 }
 
 void Fenetre21::ouvrirFenetre2() {ouvrirFenetre<Fenetre21,Fenetre2>(*this);}
+void Fenetre21::ouvrirFenetreTC() {
+        Fenetre31* fenetre = new Fenetre31(choix->currentText());
+        this->close();
+        fenetre->show();
+}
+
+Fenetre28::Fenetre28(const QString &titreTache, const QString &titreProjet):projCurr(ProjetManager::getInstance().trouverProjetR(titreProjet)),tachCurr(titreTache){
+    this->setWindowTitle("Fenêtre 28 : Project Calendar");
+    setFixedSize(800,500);
+
+    titreLabel=new QLabel("Tache Unitaire Preempté \n \nSelectionner les données ci-dessous pour programmer les evenements: ", this);
+
+    dateDebutLabel= new QLabel ("Date début", this);
+    dateDebut= new QDateEdit(QDate::currentDate());
+
+    horaireDebutLabel= new QLabel ("Horaire début", this);
+    horaire=new QTimeEdit(QTime::currentTime());
+
+    dureeLabel= new QLabel ("Durée",this);
+    hDuree=new QSpinBox(this);
+    hDuree->setMinimum(0);
+    hDuree->setSuffix(" heure(s)");
+    mDuree=new QSpinBox(this);
+    mDuree->setMinimum(0);
+    mDuree->setRange(0,59);
+    mDuree->setSuffix(" minute(s)");
+
+    sauver=new QPushButton("Sauver", this);
+    annuler=new QPushButton ("Annuler",this);
+
+    sauver->setCursor(Qt::PointingHandCursor);
+    annuler->setCursor(Qt::PointingHandCursor);
+
+    coucheH2 = new QHBoxLayout;
+    coucheH2->addWidget(titreLabel);
+
+    coucheH3 = new QHBoxLayout;
+    coucheH3->addWidget(dateDebutLabel);
+    coucheH3->addWidget(dateDebut);
+
+    coucheH4 = new QHBoxLayout;
+    coucheH4->addWidget(horaireDebutLabel);
+    coucheH4->addWidget(horaire);
+
+    coucheH5 = new QHBoxLayout;
+    coucheH5->addWidget(dureeLabel);
+    coucheH5->addWidget(hDuree);
+    coucheH5->addWidget(mDuree);
+
+    coucheH8 = new QHBoxLayout;
+    coucheH8->addWidget(annuler);
+    coucheH8->addWidget(sauver);
+
+    couche=new QVBoxLayout;
+    couche->addLayout(coucheH2);
+    couche->addLayout(coucheH3);
+    couche->addLayout(coucheH4);
+    couche->addLayout(coucheH5);
+    couche->addLayout(coucheH8);
+    setLayout(couche);
+
+    QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+    //QObject::connect(valider, SIGNAL(clicked()),this, SLOT(ouvrirFenetreTC()));
+
+}
+
+void Fenetre28::ouvrirFenetre2() {ouvrirFenetre<Fenetre28,Fenetre2>(*this);}
+
+Fenetre29::Fenetre29(const QString& titreTache,const QString& titreProjet):projCurr(ProjetManager::getInstance().trouverProjetR(titreProjet)),tachCurr(titreTache){
+    this->setWindowTitle("Fenêtre 29 : Project Calendar");
+    setFixedSize(800,500);
+
+    titreLabel=new QLabel("Tache Unitaire Non Preempté \n \nSelectionner les données ci-dessous pour programmer les evenements: ", this);
+
+    dateDebutLabel= new QLabel ("Date début", this);
+    dateDebut= new QDateEdit(QDate::currentDate());
+
+    horaireDebutLabel= new QLabel ("Horaire début", this);
+    horaire=new QTimeEdit(QTime::currentTime());
+
+    sauver=new QPushButton("Sauver", this);
+    annuler=new QPushButton ("Annuler",this);
+
+    sauver->setCursor(Qt::PointingHandCursor);
+    annuler->setCursor(Qt::PointingHandCursor);
+
+    coucheH2 = new QHBoxLayout;
+    coucheH2->addWidget(titreLabel);
+
+    coucheH3 = new QHBoxLayout;
+    coucheH3->addWidget(dateDebutLabel);
+    coucheH3->addWidget(dateDebut);
+
+    coucheH4 = new QHBoxLayout;
+    coucheH4->addWidget(horaireDebutLabel);
+    coucheH4->addWidget(horaire);
+
+    coucheH8 = new QHBoxLayout;
+    coucheH8->addWidget(annuler);
+    coucheH8->addWidget(sauver);
+
+    couche=new QVBoxLayout;
+    couche->addLayout(coucheH2);
+    couche->addLayout(coucheH3);
+    couche->addLayout(coucheH4);
+    couche->addLayout(coucheH8);
+    setLayout(couche);
+
+    QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+    QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverTache()));
+
+}
+
+void Fenetre29::ouvrirFenetre2() {ouvrirFenetre<Fenetre29,Fenetre2>(*this);}
+
+void Fenetre29::sauverTache() {
+    Tache& laTache=projCurr.trouverTacheR(tachCurr);
+
+
+      QTime a=horaire->time();
+     unsigned int heure=a.hour();
+     unsigned int min=a.minute();
+     Horaire& h=Horaire(heure, min);
+
+    ProgrammationTache(dateDebut->date(),h,laTache);
+
+}
 
 //=====07/06/15======Morgane============================================================================================
 
@@ -1129,7 +1369,7 @@ Fenetre19::Fenetre19(const QString& nomProjet){
         i++;
         if (typeid(*(*it))==typeid(TacheComposite))
             dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(mainbranch,cBox,i);
-        else cBox->insertItem(i,QString("tache : %1").arg((*it)->getTitre()));
+        else cBox->insertItem(i,QString("%1").arg((*it)->getTitre()));
         qDebug()<<"sortie du if";
     }
     treeWidget->insertTopLevelItems(0, items);
@@ -1146,12 +1386,33 @@ Fenetre19::Fenetre19(const QString& nomProjet){
     qDebug()<<"8";
 
     QObject::connect(retour, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
-
-
+    QObject::connect(valider, SIGNAL(clicked()),this, SLOT(ouvrirFenetreChoix()));
 }
 
-void Fenetre19::ouvrirFenetre2() {
-    ouvrirFenetre<Fenetre19,Fenetre2>(*this);
+void Fenetre19::ouvrirFenetre2() {ouvrirFenetre<Fenetre19,Fenetre2>(*this);}
+
+void Fenetre19::ouvrirFenetreChoix() {
+     //ProjetManager& pM=ProjetManager::getInstance();
+    qDebug()<<"Fenetre19";
+    qDebug()<<cBox->currentText();
+    qDebug()<<p->getTitre();
+    //qDebug()<<typeid(p->trouverTacheR(cBox->currentText()));
+
+
+    //Tache Unitaire Preempte
+    if( typeid(p->trouverTacheR(cBox->currentText()))==typeid(TacheUnitairePreempte)){
+        qDebug()<<" preempte, on dirait ! ";
+        Fenetre28* fenetre = new Fenetre28(cBox->currentText(),p->getTitre());
+        this->close();
+        fenetre->show();
+    }
+    //Tache Unitaire Non Preempte
+    if(typeid(p->trouverTacheR(cBox->currentText()))==typeid(TacheUnitaireNonPreempte)){
+         qDebug()<<"NON preempte, on dirait ! ";
+        Fenetre29* fenetre = new Fenetre29(cBox->currentText(),p->getTitre());
+        this->close();
+        fenetre->show();
+    }
 }
 
 //Elle est faite mais je ne vois pas trop quand est ce qu'elle est utile, je la laisse quand même pour l'instant...
