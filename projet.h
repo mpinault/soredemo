@@ -65,6 +65,10 @@ public:
         //retrouver une Tache a partir de son titre
     Tache& trouverTacheR(const QString& ti) const;
 
+        //pour les iterateurs
+    vector<Tache*>::const_iterator Tbegin(){return taches.begin();}
+    vector<Tache*>::const_iterator Tend(){return taches.end();}
+
         //au niveau des fichiers
     void load(const QString& f);
     void save(const QString& f);
