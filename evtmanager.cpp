@@ -55,10 +55,11 @@ Evenement* EvtManager::trouverEvenementP(const QString& titre)const{
 // pour creer une programmation de tache dans evenement
 Evenement& EvtManager::creerEvenementTache(const QDate& d,const Horaire& h,Tache& t){
     // si le titre exise deja !
-    //if (trouverEvenementP(ti)) throw TimeException("erreur EvtManager, evenement deja existante");
-        ProgrammationTache* newt = new ProgrammationTache(d,h,t);
+    if (trouverEvenementP(t.getTitre())) throw TimeException("erreur EvtManager, evenement deja existante");
+    ProgrammationTache* newt = new ProgrammationTache(d,h,t);
+    evt.push_back(newt);
        // ajouterEvenement(newt);
-        return *newt;
+    return *newt;
 }
 
 // pour creer une programmation de act dans evenement
@@ -192,4 +193,29 @@ void  EvtManager::save(const QString& f){
 }
 
 */
+/*
 
+bool EvtManager::isHoraireValide(const QDate& d, const Horaire& debut, const Horaire& fin) const{
+    for(std::vector<Evenement*>::const_iterator it = evt.begin(); it != evt.end(); ++it){
+            if (typeid(*(*it))==typeid(ProgrammationActTrad)) {
+                qDebug()<<"Programmation Activité Traditionelle";
+                Duree& d = dynamic_cast<ProgrammationActTrad*>(*it)->getActivite()->getDuree();
+                Horaire& htid = (*it)->getHoraire();
+                Horaire& htif = sommeH(htid,d);
+                if ((htid>=debut && htid<=fin)|| (htif>=debut && htif<=fin)||(htid<=debut && htif>=fin))
+                    return 0;
+            }
+            else
+                if (typeid(*(*it))==typeid(ProgrammationTache)) {
+                    qDebug()<<"Programmation Tache";
+                    Duree& d = dynamic_cast<ProgrammationTache*>(*it)->getTache()->getDuree();
+                    Horaire& htid = (*it)->getHoraire();
+                    Horaire& htif = (*it)->getHoraireFin();
+                    if ((htid>=debut && htid<=fin)|| (htif>=debut && htif<=fin)||(htid<=debut && htif>=fin))
+                        return 0;
+                }
+            else qDebug()<<"Programmation inconnue";
+    }
+    return 1;
+}
+*/
