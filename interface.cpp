@@ -77,7 +77,7 @@ Fenetre2::Fenetre2(){
 
     //QObject::connect(nouvel_evenement, SIGNAL(clicked()),this, SLOT(ouvrirFenetre3()));
 
-    QObject::connect(creerTache, SIGNAL(clicked()),this, SLOT(ouvrirFenetre30()));
+    QObject::connect(creerTache, SIGNAL(clicked()),this, SLOT(ouvrirFenetre10()));
     QObject::connect(creerProjet, SIGNAL(clicked()),this, SLOT(ouvrirFenetre15()));
     QObject::connect(creerActTrad, SIGNAL(clicked()),this, SLOT(ouvrirFenetre8()));
     QObject::connect(vue_hebdomadaire, SIGNAL(clicked()),this, SLOT(ouvrirFenetre4()));
@@ -89,7 +89,7 @@ Fenetre2::Fenetre2(){
 
 
 
-void Fenetre2::ouvrirFenetre30() {ouvrirFenetre<Fenetre2,Fenetre30>(*this);}
+void Fenetre2::ouvrirFenetre10() {ouvrirFenetre<Fenetre2,Fenetre10>(*this);}
 void Fenetre2::ouvrirFenetre15() {ouvrirFenetre<Fenetre2,Fenetre15>(*this);}
 void Fenetre2::ouvrirFenetre8() {ouvrirFenetre<Fenetre2,Fenetre8>(*this);}
 void Fenetre2::ouvrirFenetre4() {ouvrirFenetre<Fenetre2,Fenetre4>(*this);}
@@ -201,7 +201,11 @@ Fenetre4::Fenetre4()
 
 void Fenetre4::ouvrirFenetre2() {ouvrirFenetre<Fenetre4,Fenetre2>(*this);}
 void Fenetre4::ouvrirFenetre18() {ouvrirFenetre<Fenetre4,Fenetre18>(*this);}
-void Fenetre4::ouvrirFenetre6() {ouvrirFenetre<Fenetre4,Fenetre6>(*this);}
+void Fenetre4::ouvrirFenetre6() {
+    Fenetre6* fenetre = new Fenetre6(jour_debut->date());
+    this->close();
+    fenetre->show();
+}
 
 
 Fenetre5::Fenetre5(){
@@ -280,80 +284,12 @@ Fenetre5::Fenetre5(int i){
 }
 
 void Fenetre5::ouvrirFenetre2(){ouvrirFenetre<Fenetre5,Fenetre2>(*this);}
-//void Fenetre5::ouvrirFenetre10(){ouvrirFenetre<Fenetre5,Fenetre10>(*this);}
-
-
-
-
-Fenetre30::Fenetre30(){
-    this->setWindowTitle("Fenêtre 30 : Project Calendar");
-
-    choix= new QLabel("Selectionner un projet:",this);
-
-    projet=new QComboBox();
-    ProjetManager& p=ProjetManager::getInstance();
-    for (vector<Projet*>::const_iterator it = p.Pbegin(); it != p.Pend(); ++it){
-        int i=1;
-        projet->insertItem(i,(*it)->getTitre());
-        i++;
-    }
-
-    indication = new QLabel("Sélectionner le type de tache :");
-    uni = new QRadioButton("Tache Unitaire");
-    compo= new QRadioButton("Tache Composite (tache composé à une tache du projet)");
-    uni->setChecked(true);
-
-    buttonBack =new QPushButton("Revenir au Menu",this);
-    buttonForward =new QPushButton("Valider",this);
-
-    buttonBack->setCursor(Qt::PointingHandCursor);
-    buttonForward->setCursor(Qt::PointingHandCursor);
-
-    couche1= new QVBoxLayout;
-    couche1->addWidget(choix);
-    couche1->addWidget(projet);
-    couche1->addStretch(1);
-
-    couche3= new QVBoxLayout;
-    couche3->addWidget(indication);
-    couche3->addWidget(uni);
-    couche3->addWidget(compo);
-
-    couche2= new QHBoxLayout;
-    couche2->addWidget(buttonBack);
-    couche2->addWidget(buttonForward);
-
-    couche=new QVBoxLayout;
-    couche->addLayout(couche1);
-    couche->addLayout(couche3);
-    couche->addLayout(couche2);
-    setLayout(couche);
-
-    QObject::connect(buttonBack, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
-    QObject::connect(buttonForward, SIGNAL(clicked()),this, SLOT(ouvrirFenetreC()));
-}
-
-void Fenetre30::ouvrirFenetre2(){ouvrirFenetre<Fenetre30,Fenetre2>(*this);}
-
-void Fenetre30::ouvrirFenetreC() {
-    if(uni->isChecked()){
-        Fenetre10* fenetre = new Fenetre10(projet->currentText());
-        this->close();
-        fenetre->show();
-    }
-    if(compo->isChecked()){
-        Fenetre27* fenetre = new Fenetre27(projet->currentText());
-        this->close();
-        fenetre->show();
-    }
-
-}
-
+void Fenetre5::ouvrirFenetre10(){ouvrirFenetre<Fenetre5,Fenetre10>(*this);}
 
 
 //=====10/06/15======Morgane============================================================================================
 //La Fenêtre 6 affiche une vue hebdomadaire sous forme de tableau avec les évènements programmés
-Fenetre6::Fenetre6(){
+Fenetre6::Fenetre6(QDate d){
     this->setWindowTitle(QString ("Fenêtre 6 : ProjectCalendar"));
     this->setFixedSize(900,900);
 
@@ -362,7 +298,7 @@ Fenetre6::Fenetre6(){
     retour = new QPushButton("Retour au Menu");
     exporter = new QPushButton("Exporter la programmation");
 
-    QDate firstDay = QDate::currentDate();
+    QDate firstDay = d;
 
     tab = new QTableWidget(24,7,this);
     tab->adjustSize();
@@ -388,7 +324,10 @@ Fenetre6::Fenetre6(){
     QObject::connect(retour, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
 }
 
-void Fenetre6::ouvrirFenetre2() {ouvrirFenetre<Fenetre6,Fenetre2>(*this);}
+void Fenetre6::ouvrirFenetre2() {
+    ouvrirFenetre<Fenetre6,Fenetre2>(*this);
+}
+
 
 
 //fenetre pour choisir le type d'activite traditionnelle
@@ -666,18 +605,16 @@ void Fenetre22::sauverAutres(){
 }*
 
 
-Fenetre10::Fenetre10(const QString& recp){
-    qDebug()<<"A"<<endl;
-    p = ProjetManager::getInstance().trouverProjetP(recp);
-    qDebug()<<"B"<<endl;
+Fenetre10::Fenetre10(){
+
     this->setWindowTitle("Fenêtre 10 : Project Calendar");
     setFixedSize(800,500);
-    qDebug()<<"C"<<endl;
+
     preemptive=new QCheckBox("preemptive",this);
-qDebug()<<"C"<<endl;
+
     titreLabel=new QLabel("titre", this);
     titre=new QTextEdit(0, this);
-/*
+
     projetLabel=new QLabel("Projet associé a la tache", this);
     //affiche les projets existant dans TacheManager dans un QComboBox
     pro=new QComboBox();
@@ -686,129 +623,6 @@ qDebug()<<"C"<<endl;
         int i=1;
         pro->insertItem(i,(*it)->getTitre());
         i++;
-    }*/
-
-    dateDebutLabel= new QLabel ("Date début", this);
-    dateDebut= new QDateEdit(QDate::currentDate());
-
-    horaireDebutLabel= new QLabel ("Horaire début", this);
-    horaire=new QTimeEdit(QTime::currentTime());
-
-
-    dureeLabel= new QLabel ("Durée",this);
-    hDuree=new QSpinBox(this);
-    hDuree->setMinimum(0);
-    hDuree->setSuffix(" heure(s)");
-    mDuree=new QSpinBox(this);
-    mDuree->setMinimum(0);
-    mDuree->setRange(0,59);
-    mDuree->setSuffix(" minute(s)");
-
-    disponibiliteLabel= new QLabel("Disponibilité",this);
-    disponibilite=new QDateEdit(QDate::currentDate());
-
-    echeanceLabel= new QLabel ("Echéance",this);
-    echeance = new QDateEdit (QDate::currentDate());
-
-    sauver=new QPushButton("Sauver", this);
-    annuler=new QPushButton ("Annuler",this);
-
-    sauver->setCursor(Qt::PointingHandCursor);
-    annuler->setCursor(Qt::PointingHandCursor);
-
-    coucheH2 = new QHBoxLayout;
-    coucheH2->addWidget(titreLabel);
-    coucheH2->addWidget(titre);
-    coucheH2->addWidget(preemptive);
-
-    coucheH3 = new QHBoxLayout;
-    coucheH3->addWidget(dateDebutLabel);
-    coucheH3->addWidget(dateDebut);
-
-    coucheH4 = new QHBoxLayout;
-    coucheH4->addWidget(horaireDebutLabel);
-    coucheH4->addWidget(horaire);
-
-    coucheH5 = new QHBoxLayout;
-    coucheH5->addWidget(dureeLabel);
-    coucheH5->addWidget(hDuree);
-    coucheH5->addWidget(mDuree);
-
-    coucheH6 = new QHBoxLayout;
-    coucheH6->addWidget(disponibiliteLabel);
-    coucheH6->addWidget(disponibilite);
-
-    coucheH7 = new QHBoxLayout;
-    coucheH7->addWidget(echeanceLabel);
-    coucheH7->addWidget(echeance);
-
-    coucheH8 = new QHBoxLayout;
-    coucheH8->addWidget(annuler);
-    coucheH8->addWidget(sauver);
-
-    couche=new QVBoxLayout;
-    couche->addLayout(coucheH2);
-    couche->addLayout(coucheH3);
-    couche->addLayout(coucheH4);
-    couche->addLayout(coucheH5);
-    couche->addLayout(coucheH6);
-    couche->addLayout(coucheH7);
-    couche->addLayout(coucheH8);
-    setLayout(couche);
-
-     QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre30()));
-     QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverTache()));
-}
-
-void Fenetre10::ouvrirFenetre30() {ouvrirFenetre<Fenetre10,Fenetre30>(*this);}
-
-void Fenetre10::sauverTache(){
-    //QMessageBox msg;
-    //msg.setText("ESSAI !!!!!!!!");
-    //msg.exec();
-
-    // condition pour verifier si la tache existe dans le projet
-    /*
-    ProjetManager& p=ProjetManager::getInstance();
-    for (vector<Projet*>::const_iterator it = p.Pbegin(); it != p.Pend(); ++it){
-        if ((*it)->isTacheExistante(titre->accessibleDescription()))
-        QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
-    }*/
-   // if (p.trouverProjetR(p.projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
-    //QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
-
-    ProjetManager& p=ProjetManager::getInstance();
-    if (preemptive->isChecked()){
-        qDebug()<<titre->toPlainText();
-        p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),1);
-    } else{
-            qDebug()<<"inside";
-            p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),0);
-            qDebug()<<hDuree->value();
-    }
-    QMessageBox::information(this, "Fenetre10", "Tache sauvegardée!");
-  //this->close();
-}
-
-Fenetre27::Fenetre27(const QString& recp){
-
-    this->setWindowTitle("Fenêtre 27 : Project Calendar");
-    setFixedSize(800,500);
-
-    preemptive=new QCheckBox("preemptive",this);
-
-    titreLabel=new QLabel("titre", this);
-    titre=new QTextEdit(0, this);
-
-    projetLabel=new QLabel("Tache qui sera composé", this);
-    //affiche les projets existant dans TacheManager dans un QComboBox
-    pro=new QComboBox();
-
-    p = ProjetManager::getInstance().trouverProjetP(recp);
-    for (vector<Tache*>::const_iterator it = p->Tbegin(); it != p->Tend(); ++it){
-        int i=1;
-        pro->insertItem(i,(*it)->getTitre());
-        i++;
     }
 
     dateDebutLabel= new QLabel ("Date début", this);
@@ -816,6 +630,7 @@ Fenetre27::Fenetre27(const QString& recp){
 
     horaireDebutLabel= new QLabel ("Horaire début", this);
     horaire=new QTimeEdit(QTime::currentTime());
+
 
     dureeLabel= new QLabel ("Durée",this);
     hDuree=new QSpinBox(this);
@@ -884,26 +699,40 @@ Fenetre27::Fenetre27(const QString& recp){
     couche->addLayout(coucheH8);
     setLayout(couche);
 
-     QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre30()));
-     //QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverTacheCompo()));
+     QObject::connect(annuler, SIGNAL(clicked()),this, SLOT(ouvrirFenetre2()));
+     QObject::connect(sauver, SIGNAL(clicked()),this, SLOT(sauverTache()));
 
 }
 
-void Fenetre27::ouvrirFenetre30() {ouvrirFenetre<Fenetre27,Fenetre30>(*this);}
+void Fenetre10::ouvrirFenetre2() {ouvrirFenetre<Fenetre10,Fenetre2>(*this);}
 
-/*
-void Fenetre27::sauverTacheCompo(){
+void Fenetre10::sauverTache(){
+    //QMessageBox msg;
+    //msg.setText("ESSAI !!!!!!!!");
+    //msg.exec();
 
-    // condition pour verifier si la tachecompo existe dans le projet
-   ProjetManager& man=ProjetManager::getInstance();
-   TacheComposite* a=&TacheComposite(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()));
-   man.trouverProjetR(recp).ajouterTache(a);
-   a->ajouterTacheComp(pro->currentText());
-   QMessageBox::information(this, "Fenetre27", "Tache sauvegardée!");
-}*/
+    // condition pour verifier si la tache existe dans le projet
+    /*
+    ProjetManager& p=ProjetManager::getInstance();
+    for (vector<Projet*>::const_iterator it = p.Pbegin(); it != p.Pend(); ++it){
+        if ((*it)->isTacheExistante(titre->accessibleDescription()))
+        QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
+    }*/
+   // if (p.trouverProjetR(p.projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
+    //QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
 
-
-
+    ProjetManager& p=ProjetManager::getInstance();
+    if (preemptive->isChecked()){
+        qDebug()<<titre->toPlainText();
+        p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),1);
+    } else{
+            qDebug()<<"inside";
+            p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),0);
+            qDebug()<<hDuree->value();
+    }
+    QMessageBox::information(this, "Fenetre10", "Tache sauvegardée!");
+  //this->close();
+}
 
 Fenetre15::Fenetre15(){
 
@@ -1106,7 +935,6 @@ Fenetre19::Fenetre19(const QString& nomProjet){
     p = ProjetManager::getInstance().trouverProjetP(nomProjet);
     this->setWindowTitle(QString ("Fenetre 19 : Ajout Evenement"));
 
-    projet=new QLabel("Selectionner la tache :", this);
     treeWidget = new QTreeWidget();
     treeWidget->setColumnCount(1);
     treeWidget->setHeaderLabel(nomProjet);
@@ -1135,7 +963,6 @@ Fenetre19::Fenetre19(const QString& nomProjet){
     ligne->addWidget(valider);
     couche = new QVBoxLayout;
     couche->addWidget(treeWidget);
-    couche->addWidget(projet);
     couche->addWidget(cBox);
     couche->addLayout(ligne);
     setLayout(couche);
