@@ -41,16 +41,14 @@ class Projet{
     Projet& operator=(const Projet& p);
 
     //Methodes
-        //ajoute une Tache dans le projet
-    void ajouterTache(Tache* t);
     Tache* trouverTacheP(const QString& ti) const;
-
 public:
     //Acceseurs en Lecture ET Ecriture
     const QString& getTitre()const{ return titre; }
     const QDate& getDispo()const { return dispo; }
     const QDate& getEch()const { return ech; }
     const tac& getTaches() const {return taches;}
+    tac& getTachesNC(){return taches;}
     void setTitre(const QString& s){ titre=s; }
     void setDispo(const QDate& d){dispo=d; }
     void setEch(const QDate& e){ ech=e; }
@@ -64,6 +62,9 @@ public:
 
         //retrouver une Tache a partir de son titre
     Tache& trouverTacheR(const QString& ti) const;
+
+    //ajoute une Tache dans le projet
+    void ajouterTache(Tache* t);
 
         //pour les iterateurs
     vector<Tache*>::const_iterator Tbegin(){return taches.begin();}
