@@ -498,6 +498,39 @@ Fenetre6::Fenetre6(const QDate& d){
     }
     tab->setVerticalHeaderLabels(heures);
 
+    for(unsigned int i=0; i<24;i++){
+        for(unsigned int j=0; j<7; j++){
+            QTableWidgetItem *newItem = new QTableWidgetItem(tr("0"));
+                tab->setItem(i, j, newItem);
+        }
+    }
+
+    EvtManager& e=EvtManager::getInstanceEvt();
+    for(vector<Evenement*>::const_iterator eit = e.getEvenement().begin(); eit != e.getEvenement().end(); ++eit){
+        qDebug()<<"La date de l'évènement est :";
+        qDebug()<<(*eit)->getDate();
+
+        if ((*eit)->getDate()>=d && (*eit)->getDate()<=d.addDays(7)){
+            qDebug()<<"On est dans le if : la date est comprise dans l'intervalle";
+            QTableWidgetItem *newItem = new QTableWidgetItem(tr("1"));
+            qDebug()<<"On est dans le if : l'heure de fin :";
+            qDebug()<<(*eit)->getHoraireFin().getHeure();
+            qDebug()<<"On est dans le if : le jour' :";
+            qDebug()<<(*eit)->getDate().addDays(-d.day()).day();
+            tab->setItem((*eit)->getHoraire().getHeure(),(*eit)->getDate().addDays(-d.day()).day(), newItem);
+        }
+        /*if(typeid(*eit)=typeid(ProgrammationActTrad*)){
+            ProgrammationActTrad* act=dynamic_cast<ProgrammationActTrad*>(*eit);
+
+        }
+        for (vector<Tache*>::const_iterator it = (*mit)->getTaches().begin(); it != (*mit)->getTaches().end(); ++it){
+            QTreeWidgetItem* newTache = new QTreeWidgetItem(mainBranch, QStringList(QString("tache : %1").arg((*it)->getTitre())));
+            items.append(newTache);
+            if (typeid(*(*it))==typeid(TacheComposite))
+                dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache);
+            qDebug()<<"sortie du if";
+        }*/
+    }
     couche = new QVBoxLayout;
     couche->addWidget(tab);
     setLayout(couche);
@@ -1316,13 +1349,14 @@ void Fenetre29::ouvrirFenetre2() {ouvrirFenetre<Fenetre29,Fenetre2>(*this);}
 void Fenetre29::sauverTache() {
     Tache& laTache=projCurr.trouverTacheR(tachCurr);
 
-
-      QTime a=horaire->time();
+     EvtManager& m=EvtManager::getInstanceEvt();
+     QTime a=horaire->time();
      unsigned int heure=a.hour();
      unsigned int min=a.minute();
      Horaire h=Horaire(heure, min);
+     Evenement& evt = m.creerEvenementTache(dateDebut->date(),h,laTache);
 
-    ProgrammationTache(dateDebut->date(),h,laTache);
+     //ProgrammationTache(dateDebut->date(),h,laTache);
 
 }
 
