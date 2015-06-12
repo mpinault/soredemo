@@ -65,7 +65,7 @@ public:
     const ac& getAct() const {return act;}
 
         //ajouter un evenement a partir d'un formulaire
-    ActiviteTrad& ActManager::creerAct(const QString& t, const QString& lieu, const Duree& dur, const QString& type, int a);
+    ActiviteTrad& creerAct(const QString& t, const QString& lieu, const Duree& dur, const QString& type, int a);
 
     ActiviteTrad& trouverActR(const QString& ti);
 
