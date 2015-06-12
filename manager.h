@@ -64,6 +64,7 @@ public:
         //Accesseur
     void setFile(const QString& f){file=f;}
     const proj& getProjet() const {return projet;}
+    proj& getProjetNC(){return projet;}
 
         //ajouter un projet a partir d'un formulaire
     Projet& creerProjet(const QString& ti, const QDate& dispo, const QDate& deadline);
