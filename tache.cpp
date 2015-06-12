@@ -36,9 +36,26 @@ void TacheUnitairePreempte::ajouterPartie(Partie* p){
 
 
 //================================methodes de TacheComposite=================================================================
-
 void TacheComposite::ajouterTacheComp(Tache& t){
     compose.push_back(&t);
+    QString nomProjet;
+    int position;
+    ProjetManager& m = ProjetManager::getInstance();
+    int i=0;
+    for(std::vector<Projet*>::iterator mit = m.getProjetNC().begin(); mit != m.getProjetNC().end(); ++mit){
+        for (std::vector<Tache*>::const_iterator it = (*mit)->getTaches().begin(); it != (*mit)->getTaches().end(); ++it){
+            if ((*it)==&t) {
+                qDebug()<<"On trouve bien la tache";
+                position=i;
+                (*mit)->getTachesNC().erase((*mit)->getTachesNC().begin()+position);
+                qDebug()<<"Après la suppression";
+            }
+            i++;
+        }
+    }
+    Projet* p = m.trouverProjetP(nomProjet);
+    //supprimer la tache ajoute dans la tache compose du projet
+    //utiliser un for , iterator et supprimer du vector de la tache
 }
 
 void TacheComposite::ajouterTacheComparbre(QTreeWidgetItem* item){
