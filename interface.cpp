@@ -201,7 +201,11 @@ Fenetre4::Fenetre4()
 
 void Fenetre4::ouvrirFenetre2() {ouvrirFenetre<Fenetre4,Fenetre2>(*this);}
 void Fenetre4::ouvrirFenetre18() {ouvrirFenetre<Fenetre4,Fenetre18>(*this);}
-void Fenetre4::ouvrirFenetre6() {ouvrirFenetre<Fenetre4,Fenetre6>(*this);}
++void Fenetre4::ouvrirFenetre6() {
++    Fenetre6* fenetre = new Fenetre6(jour_debut->date());
++    this->close();
++    fenetre->show();
++}
 
 
 Fenetre5::Fenetre5(){
@@ -353,7 +357,7 @@ void Fenetre30::ouvrirFenetreC() {
 
 //=====10/06/15======Morgane============================================================================================
 //La Fenêtre 6 affiche une vue hebdomadaire sous forme de tableau avec les évènements programmés
-Fenetre6::Fenetre6(){
+Fenetre6::Fenetre6(QDate d){
     this->setWindowTitle(QString ("Fenêtre 6 : ProjectCalendar"));
     this->setFixedSize(900,900);
 
@@ -362,7 +366,7 @@ Fenetre6::Fenetre6(){
     retour = new QPushButton("Retour au Menu");
     exporter = new QPushButton("Exporter la programmation");
 
-    QDate firstDay = QDate::currentDate();
+    QDate firstDay = d;
 
     tab = new QTableWidget(24,7,this);
     tab->adjustSize();
