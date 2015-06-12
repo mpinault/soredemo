@@ -87,7 +87,7 @@ class Fenetre2 : public QWidget
 public :
     Fenetre2();
 public slots :
-    void ouvrirFenetre10();
+    void ouvrirFenetre30();
     void ouvrirFenetre15();
     void ouvrirFenetre8();
     void ouvrirFenetre4();
@@ -95,6 +95,7 @@ public slots :
     void ouvrirFenetre21();
     void ouvrirFenetre25();
 };
+
 
 
 class Fenetre3 : public QDialog
@@ -163,9 +164,34 @@ public slots :
     void ouvrirFenetre2();
     //void ouvrirFenetre7();
     //void ouvrirFenetre9();
-    void ouvrirFenetre10();
+    //void ouvrirFenetre10();
 
 };
+
+
+class Fenetre30 : public QDialog {
+    Q_OBJECT
+    QLabel* indication;
+    QLabel* choix;
+    QRadioButton* uni;
+    QRadioButton* compo;
+    QPushButton* buttonBack;
+    QPushButton* buttonForward;
+
+    QVBoxLayout* couche1;
+    QHBoxLayout* couche2;
+    QVBoxLayout* couche3;
+    QVBoxLayout* couche;
+
+    QComboBox* projet;
+public :
+    Fenetre30();
+
+public slots :
+    void ouvrirFenetre2();
+    void ouvrirFenetreC();
+};
+
 
 
 //=====10/06/15==============Morgane====================================================================================
@@ -228,15 +254,69 @@ class Fenetre10: public QWidget{
     QHBoxLayout* coucheH8;
     QVBoxLayout* couche;
 
+    Projet* p;
+
     public:
-    explicit Fenetre10();
+    explicit Fenetre10(const QString& recp);
 
 public slots:
-    void ouvrirFenetre2();
+    void ouvrirFenetre30();
     void sauverTache();
 
 
 };
+
+class Fenetre27: public QWidget{
+    Q_OBJECT
+
+    QCheckBox* preemptive;
+
+    QLabel* titreLabel;
+    QTextEdit* titre;
+
+    QLabel* projetLabel;
+    QComboBox* pro;
+
+    QLabel* dateDebutLabel;
+    QDateEdit* dateDebut;
+
+    QLabel* horaireDebutLabel;
+    QTimeEdit* horaire;
+
+    QLabel* disponibiliteLabel;
+    QDateEdit* disponibilite;
+
+    QLabel* echeanceLabel;
+    QDateEdit* echeance;
+
+    QLabel* dureeLabel;
+    QSpinBox* hDuree;
+    QSpinBox* mDuree;
+
+    QPushButton* sauver;
+    QPushButton* annuler;
+
+    QHBoxLayout* coucheH2;
+    QHBoxLayout* couche2;
+    QHBoxLayout* coucheH3;
+    QHBoxLayout* coucheH4;
+    QHBoxLayout* coucheH5;
+    QHBoxLayout* coucheH6;
+    QHBoxLayout* coucheH7;
+    QHBoxLayout* coucheH8;
+    QVBoxLayout* couche;
+
+    Projet* p;
+
+    public:
+    explicit Fenetre27(const QString &recp);
+
+public slots:
+    void ouvrirFenetre30();
+    //void sauverTacheCompo();
+
+};
+
 
 /*
 class Interface : public QWidget
@@ -480,8 +560,11 @@ class Fenetre19 : public QWidget
 {
     Q_OBJECT
     QTreeWidget* treeWidget;
+    QLabel* projet;
+
     QHBoxLayout* ligne;
     QVBoxLayout* couche;
+
     QPushButton* retour;
     QPushButton* valider;
 
