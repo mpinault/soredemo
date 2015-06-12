@@ -64,7 +64,7 @@ public:
     void setFile(const QString& f){file=f;}
     const ev& getEvenement() const {return evt;}
 
-        //ajouter un evenement a partir d'un formulaire
+        //ajouter un evenement a partir d'un formulaire   
     Evenement& creerEvenementTache(const QDate& d, const Horaire &h, Tache &t);
     Evenement& creerEvenementAct(const QDate& d,const Horaire& h,ActiviteTrad& a);
 
@@ -72,9 +72,6 @@ public:
 
         //permet de savoir si le evenement existe a partir de son titre
     bool isEvenementExistant(const QString& ti) const { return trouverEvenementP(ti) != 0; }
-
-    //permet de savoir si le evenement existe a partir de son titre
-    bool isHoraireValide(const QDate& d, const Horaire& debut, const Horaire& fin) const;
 
         //au niveau des fichiers
     //void load(const QString& f);
