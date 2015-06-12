@@ -249,7 +249,7 @@ class Fenetre6 : public QWidget {
 
     QTableWidget* tab;
 public :
-    Fenetre6();
+    Fenetre6(const QDate &d);
 public slots :
     void ouvrirFenetre2();
 
