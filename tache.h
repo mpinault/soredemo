@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QMessageBox>
+#include<algorithm>
 
 using namespace std;
 using namespace TIME;
@@ -156,7 +157,7 @@ public:
 
     //Methodes
     void ajouterTachePrec(Tache& t)override{}
-    void ajouterTacheComp(Tache& t);
+    void ajouterTacheComp(Tache &t);
     void ajouterTacheComparbre(QTreeWidgetItem* item);
     void ajouterTacheComparbre(QTreeWidgetItem* item, QComboBox* cBox,int i);
 };
