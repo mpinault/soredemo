@@ -40,13 +40,15 @@ class Tache{
     QDate ech;
     Duree duree;
     bool prog;
+    //estCompose signifie que la tache est une sous tache d'une tache composite
+    bool estCompose;
 
     typedef std::vector<Tache *> pred;
     pred precede;
 
 public:
     //Constructuer ET Destructeur
-    Tache(const QString& t, const QDate& d, const QDate& e, const Duree& du):titre(t), dispo(d), ech(e), duree(du),prog(0){
+    Tache(const QString& t, const QDate& d, const QDate& e, const Duree& du):titre(t), dispo(d), ech(e), duree(du),prog(0),estCompose(0){
         precede.reserve(10);
     }
     virtual ~Tache(){}
@@ -57,6 +59,8 @@ public:
     const QDate& getEch()const { return ech; }
     bool getProg()const { return prog; }
     void setProg(int a){prog=a;}
+    bool getEstCompose()const { return estCompose; }
+    void setEstCompose(int a){estCompose=a;}
     const Duree& getDuree()const { return duree; }
     void setTitre(const QString& a){ titre = a; }
     void setDispo(const QDate& b){ dispo = b; }
@@ -85,7 +89,7 @@ class TacheUnitaireNonPreempte : public TacheUnitaire{
 public:
     //Constructeur ET Destructeur
     TacheUnitaireNonPreempte(const QString& t, const QDate& d, const QDate& e, const Duree& du) :TacheUnitaire(t, d, e, du){
-        if (du.getDureeEnHeures()>12 || du.getDureeEnHeures()==12){
+        if (du.getDureeEnHeures()>12){
             qDebug()<<du.getDureeEnHeures();
             throw TimeException("erreur TacheUnitaireNonPreempte, la durée d'une tache unitaire non preempte ne peut pas exceder 12h");
     }
