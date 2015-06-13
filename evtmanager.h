@@ -6,6 +6,7 @@
  * \brief EvtManager, manager des evenements
  * \author Alice,Morgane
  * \version 0.1
+ * \date 14 juin 2015
  */
 
 
@@ -64,7 +65,7 @@ public:
     void setFile(const QString& f){file=f;}
     const ev& getEvenement() const {return evt;}
 
-        //ajouter un evenement a partir d'un formulaire   
+        //ajouter un evenement a partir d'un formulaire
     Evenement& creerEvenementTache(const QDate& d, const Horaire &h, Tache &t);
     Evenement& creerEvenementAct(const QDate& d,const Horaire& h,ActiviteTrad& a);
 
