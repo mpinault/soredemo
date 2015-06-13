@@ -10,6 +10,18 @@
 #include "tache.h"
 #include "projet.h"
 #include "manager.h"
+#include "evtmanager.h"/*!
+ * \file interface.cpp
+ * \brief fenetres de l'application
+ * \author Alice,Morgane
+ * \version 0.1
+ */
+
+//=====07/06/15==============Morgane====================================================================================
+#include "Interface.h"
+#include "tache.h"
+#include "projet.h"
+#include "manager.h"
 #include "evtmanager.h"
 #include "actmanager.h"
 #include "activite.h"
@@ -303,7 +315,7 @@ Fenetre30::Fenetre30(){
 
     indication = new QLabel("Sélectionner le type de tache :");
     uni = new QRadioButton("Tache Unitaire");
-    compo= new QRadioButton("Tache Composite (tache composé à une tache du projet)");
+    compo= new QRadioButton("Tache Composite (tache qui est compose d'autres taches')");
     uni->setChecked(true);
 
     buttonBack =new QPushButton("Revenir au Menu",this);
@@ -618,7 +630,7 @@ void Fenetre8::ouvrirFenetre24(){ouvrirFenetre<Fenetre8,Fenetre24>(*this);}
 Fenetre23::Fenetre23():QWidget(){
 
     this->setWindowTitle("Fenêtre 23 : Project Calendar");
-    setFixedSize(800,500);
+    //setFixedSize(800,500);
 
     titreLabel=new QLabel("Titre", this);
     titre=new QLineEdit(0, this);
@@ -705,7 +717,7 @@ void Fenetre23::ouvrirFenetre8(){ouvrirFenetre<Fenetre23,Fenetre8>(*this);}
 Fenetre24::Fenetre24():QWidget(){
 
     this->setWindowTitle("Fenêtre 24 : Project Calendar");
-    setFixedSize(800,500);
+    //setFixedSize(800,500);
 
     titreLabel=new QLabel("Titre", this);
     titre=new QLineEdit(0, this);
@@ -787,7 +799,7 @@ void Fenetre24::sauverRdv(){
 Fenetre22::Fenetre22():QWidget(){
 
     this->setWindowTitle("Fenêtre 22 : Project Calendar");
-    setFixedSize(800,500);
+    //setFixedSize(800,500);
 
     titreLabel=new QLabel("Titre", this);
     titre=new QLineEdit(0, this);
@@ -871,7 +883,7 @@ Fenetre10::Fenetre10(QString recp){
     nomProjet=recp;
 
     this->setWindowTitle("Fenêtre 10 : Project Calendar");
-    setFixedSize(800,500);
+    //setFixedSize(800,500);
 
     preemptive=new QCheckBox("preemptive",this);
 
@@ -966,7 +978,7 @@ Fenetre27::Fenetre27(QString recp){
 
     nomProjet=recp;
     this->setWindowTitle("Fenêtre 27 : Project Calendar");
-    setFixedSize(800,500);
+    //setFixedSize(800,500);
 
     titreLabel=new QLabel("titre", this);
     titre=new QLineEdit(0, this);
@@ -1054,7 +1066,7 @@ void Fenetre27::sauverTacheCompo(){
 Fenetre15::Fenetre15(){
 
     this->setWindowTitle("Fenêtre 15 : Project Calendar");
-    setFixedSize(500,300);
+    //setFixedSize(500,300);
 
     titreLabel=new QLabel("titre", this);
 
@@ -1123,7 +1135,7 @@ void Fenetre15::ouvrirFenetre2() {ouvrirFenetre<Fenetre15,Fenetre2>(*this);}
 Fenetre18::Fenetre18(){
 
     this->setWindowTitle("Fenêtre 18 : Project Calendar");
-    setFixedSize(700,500);
+    //setFixedSize(700,500);
 
     titreLabel1=new QLabel("Si vous voulez ajouter une Tache, selectionner un projet:", this);
     choix1=new QComboBox();
@@ -1244,7 +1256,7 @@ void Fenetre21::ouvrirFenetreTC() {
 
 Fenetre28::Fenetre28(const QString &titreTache, const QString &titreProjet):projCurr(ProjetManager::getInstance().trouverProjetR(titreProjet)),tachCurr(titreTache){
     this->setWindowTitle("Fenêtre 28 : Project Calendar");
-    setFixedSize(800,500);
+    //setFixedSize(800,500);
 
     titreLabel=new QLabel("Tache Unitaire Preempté \n \nSelectionner les données ci-dessous pour programmer les evenements: ", this);
 
@@ -1306,7 +1318,7 @@ void Fenetre28::ouvrirFenetre2() {ouvrirFenetre<Fenetre28,Fenetre2>(*this);}
 
 Fenetre29::Fenetre29(const QString& titreTache,const QString& titreProjet):projCurr(ProjetManager::getInstance().trouverProjetR(titreProjet)),tachCurr(titreTache){
     this->setWindowTitle("Fenêtre 29 : Project Calendar");
-    setFixedSize(800,500);
+    //setFixedSize(800,500);
 
     titreLabel=new QLabel("Tache Unitaire Non Preempté \n \nSelectionner les données ci-dessous pour programmer les evenements: ", this);
 
@@ -1657,3 +1669,5 @@ void MaFenetre::ouvrirSecondeFenetre()
     secondeFenetre->exec();
 }
 */
+
+
