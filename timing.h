@@ -1,5 +1,12 @@
 #if !defined(CTIME)
 #define CTIME
+/*!
+ * \file timing.h
+ * \brief les differents structures pour la gestion du temps
+ * \author Antoine Jouglet, modifié par Alice et Morgane
+ * \version 0.1
+ * \date 14 juin 2015
+ */
 
 #include <QString>
 #include <QDate>
@@ -8,49 +15,23 @@
 #include<iomanip>
 
 namespace TIME {
+
+
         /*! \class TimeException
-                        \brief Classe permettant de g�rer les exceptions des classes du namespace TIME
+                        \brief Classe permettant de gérer les exceptions des classes du namespace TIME
         */
         class TimeException{
         public:
                 //! Constructeur ? partir d'une QString
                 TimeException(const QString& m):info(m){}
-                const QString& GetInfo() const { return info; } //<! Retourne l'information stock�e dans la classe
+                const QString& GetInfo() const { return info; } //<! Retourne l'information stockée dans la classe
         private:
                 QString info;
         };
 
-        /*! \class Date
-                        \brief Classe permettant de manipuler des dates standards
-                        L'utilisation de cette classe n�cessite des dates valides au sens commun du terme.
-                        D�clenchement d'exception dans le cas contraire
-        */
-        /*
-        class Date {
-        public:
-                //! Constructeur ? partir d'un jour, mois, ann�e
-                // \param j jour avec 1<=j<=31
-                //      \param m mois avec 1<=m<=12
-                //     \param a ann�e avec a>=0
-                Date(unsigned int short j=1, unsigned int short m=1, unsigned int a=0):jour(1),mois(1),annee(0){ setDate(j,m,a); }
-                // m�thodes
-                unsigned short int  getJour() const { return jour; } //<! Retourne le jour de la date
-                unsigned short int  getMois() const { return mois; } //<! Retourne le mois de la date
-                unsigned int getAnnee() const { return annee; } //<! Retourne l'ann�e de la date
-                void setDate(unsigned short int j, unsigned short int m, unsigned int a); //!< initialisation de la date
-                void setDateAujourdhui(); //!< initialisation de la date avec la date d'aujourd'hui
-                void afficher(QTextStream& f=std::cout) const; //!< affiche le date sous le format JJ/MM/AAAA
-                bool operator==(const Date& d) const; //<! d1==d2 retourne vrai si les deux dates sont �gales
-                bool operator<(const Date& d) const; //<! Compare deux dates dans le temps : d1<d2 retourne true si d1 est avant d2
-                int operator-(const Date& d) const; //<! Retourne le nombre de jours s�parant les deux dates
-                Date demain() const; //<! Retourne la date du lendemain
-                Date operator+(unsigned int nb) const; //<!Retourne la date de dans nb jours
-        private:
-                // attributs
-                unsigned short int jour; // jour entre 1 et 31
-                unsigned short int mois; // mois entre 1 et 12
-                unsigned int annee;
-        };*/
+
+
+
 
         /*! \class Duree
                 \brief Classe permettant de manipuler des durees
@@ -80,6 +61,7 @@ namespace TIME {
             unsigned int nb_minutes;
         };
 
+
         // A RAJOUTE
         namespace {
          unsigned int sommeD(const Duree& d1,const Duree& d2){
@@ -93,10 +75,12 @@ namespace TIME {
 
 
 
+
+
         /*! \class Horaire
                         \brief Classe permettant de manipuler des horaires
-                        L'utilisation de cette classe n�cessite des dates valides au sens commun du terme.
-                        D�clenchement d'exception dans le cas contraire
+                        L'utilisation de cette classe nécessite des dates valides au sens commun du terme.
+                        Déclenchement d'exception dans le cas contraire
         */
 
         class Horaire{
@@ -114,6 +98,8 @@ namespace TIME {
                 unsigned short int  heure;
                 unsigned short int  minute;
         };
+
+
 
         //A RAJOUTE (ALice,11/06)
         namespace {
@@ -134,58 +120,9 @@ namespace TIME {
         //A RAJOUTER (ALice,11/06)
 
 
-        /*! \class Periode
-                        \brief Classe permettant de manipuler des periodes exprim�es en jours/mois/ann�es
-                        L'utilisation de cette classe n�cessite des dates valides au sens commun du terme.
-                        D�clenchement d'exception dans le cas contraire
-        */
-        /*
-        class Periode{
-        public :
-                //! Constructeur ? partir de jour/mois/ann�e
-                // \param j nombre de jours avec 0<=j<=364
-                 //       \param m nombre de mois avec 0<=m<=11
-                 //       \param a nombre d'ann�es
-
-                Periode(unsigned int j, unsigned int m, unsigned int a);
-                void afficher(QTextStream& f=std::cout) const { f<<"{"<<nb_jours<<" jours, "<<nb_mois<<" mois, "<<nb_annees<<" ans}"; }
-        private:
-                unsigned int nb_jours;
-                unsigned int nb_mois;
-                unsigned int nb_annees;
-        };*/
-
-        /*! \class Intervalle
-                        \brief Classe permettant de manipuler des intervalles de dates
-                        L'utilisation de cette classe n�cessite des dates valides au sens commun du terme.
-                        D�clenchement d'exception dans le cas contraire
-        */
-        /*
-        class Intervalle{
-        public:
-                //! Constructeur ? partir de deux dates
-                // \param d date de d�but de l'intervalle
-                 //       \param f date de fin de l'intervalle. On doit avoir d<=f
-                Intervalle(const Date & d, const Date & f);
-                void afficher(QTextStream& f=std::cout) const; //<! Affiche l'intervalle de dates
-                Date getDebut() const { return debut; } //<! Retourne la date de d�but de l'intervalle
-                Date getFin() const { return fin; } //<! Retourne la date de fin de l'intervalle
-                int getDuree() const { return fin-debut; } //<! Retourne le nombre de jours s'�coulant entre le d�but et la fin de l'intervalle
-                bool operator&&(const Intervalle & v) const; //<! I1&&I2 Retourne vrai si il y a intersection entre I1 et I2
-                Intervalle operator + (const Intervalle & i) const; //<! I1+I2 Retourne un intervalle union des 2 intervalles I1 et I2 qui se touchent, ie I2.debut est le jour du lendemain de I1.fin
-        private:
-                Date debut;
-                Date fin;
-        };
-        */
 
 }
 
-//QTextStream& operator<<(QTextStream& f, const QDate&);
-//QTextStream& operator<<(QTextStream& f, const Duree& d);
-//QTextStream& operator<<(QTextStream& f, const TIME::Horaire & h);
-//QTextStream& operator<<(QTextStream& f, const TIME::Periode & p);
-//QTextStream& operator<<(QTextStream& f, const TIME::Intervalle & p);
 
 std::istream& operator>>(std::istream&, QDate&); // lecture format JJ/MM/AAAA
 std::istream& operator>>(std::istream&, TIME::Duree&); //lecture format hhHmm
