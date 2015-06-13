@@ -6,6 +6,7 @@
  * \brief fenetres de l'application
  * \author Alice,Morgane
  * \version 0.1
+ * \date 14 juin 2015
  */
 
 #include <QApplication>
