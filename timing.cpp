@@ -2,132 +2,15 @@
 #include "timing.h"
 #include <ctime>
 
+/*!
+ * \file tache.cpp
+ * \brief les differents types des taches
+ * \author Antoine Jouglet, modifié par Alice et Morgane
+ * \version 0.1
+ * \date 14 juin 2015
+ */
+
 using namespace TIME;
-
-//QTextStream& operator<<(QTextStream& f, const QDate& x){ x.afficher(f); return f;}
-//QTextStream& operator<<(QTextStream& f, const Duree & d){ d.afficher(f); return f; }
-//QTextStream& operator<<(QTextStream& f, const Horaire & h){ h.afficher(f); return f; }
-//QTextStream& operator<<(QTextStream& f, const Periode & p){ p.afficher(f); return f; }
-
-
-
-
-/*
-void QDate::setDate(unsigned short int j, unsigned short int m, unsigned int a){
-    // initialisation de la date, renvoie vrai si la date est valide
-    if (a>=0&&a<=3000) annee=a; else throw TimeException("erreur: annee invalide");
-    if (m>=1&&m<=12) mois=m; else throw TimeException("erreur: mois invalide");
-    switch(m){
-    case 1: case 3: case 5: case 7: case 8: case 10: case 12: if (j>=1 && j<=31) jour=j; else throw TimeException("erreur: jour invalide"); break;
-    case 4: case 6: case 9: case 11: if (j>=1 && j<=30) jour=j; else throw TimeException("erreur: jour invalide"); break;
-    case 2: if (j>=1 && (j<=29 || (j==30 && a%4==0))) jour=j; else throw TimeException("erreur: jour invalide"); break;
-    }
-}
-
-void QDate::setDateAujourdhui(){
-    // initialisation de la date avec la date d'aujourd'hui
-    time_t rawtime;
-    struct tm * timeinfo;
-    time ( &rawtime );
-    timeinfo = localtime ( &rawtime );
-    jour=timeinfo->tm_mday;
-    mois=timeinfo->tm_mon+1;
-    annee=timeinfo->tm_year+1900;
-}
-
-void QDate::afficher(QTextStream& f) const{
-    // affiche le date sous le format JJ/MM/AAAA
-    f<<std::setfill('0')<<std::setw(2)<<jour<<"/"<<std::setw(2)<<mois<<"/"<<annee<<std::setfill(' ');
-}
-
-bool QDate::operator==(const QDate& d) const{
-    if (annee<d.annee) return false;
-    if (annee>d.annee) return false;
-    if (mois<d.mois) return false;
-    if (mois>d.mois) return false;
-    if (jour<d.jour) return false;
-    if (jour>d.jour) return false;
-    return true;
-}
-
-bool QDate::operator<(const QDate& d) const{
-    if (annee<d.annee) return true;
-    if (annee>d.annee) return false;
-    if (mois<d.mois) return true;
-    if (mois>d.mois) return false;
-    if (jour<d.jour) return true;
-    if (jour>d.jour) return false;
-    return false;
-}
-
-int QDate::operator-(const QDate& d) const{
-    int n=(annee-d.annee)*365+(annee-d.annee)/4;
-    n+=int((mois-d.mois)*30.5);
-    n+=jour-d.jour;
-    return n;
-}
-
-QDate QDate::demain() const{
-    QDate d=*this;
-    d.jour+=1;
-    switch(d.mois){
-    case 1: case 3: case 5: case 7: case 8: case 10: case 12: if (d.jour==30) { d.jour=1; d.mois++; } break;
-    case 4: case 6: case 9: case 11: if (d.jour==31) { d.jour=1; d.mois++; } break;
-    case 2: if (d.jour==29 && d.annee%4>0) { d.jour=1; d.mois++; } if (d.jour==30) { d.jour=1; d.mois++; } break;
-    }
-    if (d.mois==13){ d.annee++; d.mois=1; }
-    return d;
-}
-
-QDate QDate::operator+(unsigned int nb_jours) const{
-    QDate d=*this;
-    while(nb_jours>0) { d=d.demain(); nb_jours--; }
-    return d;
-}
-
-bool Horaire::operator<(const Horaire& h) const{
-    if (heure<h.heure) return true;
-    if (heure>h.heure) return false;
-    if (minute<h.minute) return true;
-    if (minute>h.minute) return false;
-    return true;
-}
-
-Periode::Periode(unsigned int j, unsigned int m, unsigned int a):
-           nb_jours(j), nb_mois(m), nb_annees(a) {
-    if (j>364) throw TimeException("erreur: initialisation periode invalide");
-    if (m>11) throw TimeException("erreur: initialisation periode invalide");
-}
-*/
-
-//QTextStream& operator<<(QTextStream& f, const Intervalle& x){ x.afficher(f); return f;}
-
-/*
-Intervalle::Intervalle(const QDate & d, const QDate & f):debut(d),fin(f){
-    if (fin<debut) throw TimeException("Erreur dans la creation d'un intervalle: fin<debut");
-}
-
-bool Intervalle::operator&&(const Intervalle & v) const {
-    if (debut<v.debut){
-        if (fin<v.debut) return false; else return true;
-    }
-    if (v.fin<fin){
-        if (v.fin<debut) return false; else return true;
-    }
-    return true;
-}
-
-Intervalle Intervalle::operator+(const Intervalle & i) const {
-    QDate d=fin.demain();
-    if (d==i.debut){
-        return Intervalle(debut,i.fin);
-    }else throw TimeException("Ne peut pas faire l'union de 2 intervalles (ils ne se touchent pas...");
-}
-
-void Intervalle::afficher(QTextStream& f) const {
-    f<<"["<<debut<<" ; "<<fin<<"]";
-}
-*/
 
 std::istream& operator>>(std::istream& flot, QDate& date){
     unsigned int short j,m,a;
