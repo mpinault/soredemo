@@ -927,7 +927,7 @@ Fenetre10::Fenetre10(QString recp){
 void Fenetre10::ouvrirFenetre30() {ouvrirFenetre<Fenetre10,Fenetre30>(*this);}
 
 void Fenetre10::sauverTache(){
-
+    if(echeance->date()>=disponibilite->date()){
     ProjetManager& p=ProjetManager::getInstance();
     if (preemptive->isChecked()){
          if (!(disponibilite->date().addDays((hDuree->value())/24)>echeance->date())){
@@ -948,6 +948,9 @@ void Fenetre10::sauverTache(){
     }
 
 }
+    else 
+        QMessageBox::information(this, "Fenetre10", "La date d'échéance doit être supérieure à la date de disponibilité !");
+}        
 
 
 Fenetre27::Fenetre27(QString recp){
