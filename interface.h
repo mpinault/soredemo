@@ -263,16 +263,10 @@ class Fenetre10: public QWidget{
     QCheckBox* preemptive;
 
     QLabel* titreLabel;
-    QTextEdit* titre;
+    QLineEdit* titre;
 
     QLabel* projetLabel;
     QComboBox* pro;
-
-    QLabel* dateDebutLabel;
-    QDateEdit* dateDebut;
-
-    QLabel* horaireDebutLabel;
-    QTimeEdit* horaire;
 
     QLabel* disponibiliteLabel;
     QDateEdit* disponibilite;
@@ -289,8 +283,6 @@ class Fenetre10: public QWidget{
 
     QHBoxLayout* coucheH2;
     QHBoxLayout* couche2;
-    QHBoxLayout* coucheH3;
-    QHBoxLayout* coucheH4;
     QHBoxLayout* coucheH5;
     QHBoxLayout* coucheH6;
     QHBoxLayout* coucheH7;
@@ -317,12 +309,9 @@ class Fenetre27: public QWidget{
     Q_OBJECT
 
     QLabel* titreLabel;
-    QTextEdit* titre;
+    QLineEdit* titre;
 
     QLabel* projetLabel;
-
-    QLabel* dateDebutLabel;
-    QDateEdit* dateDebut;
 
     QLabel* horaireDebutLabel;
     QTimeEdit* horaire;
@@ -342,8 +331,6 @@ class Fenetre27: public QWidget{
 
     QHBoxLayout* coucheH2;
     QHBoxLayout* couche2;
-    QHBoxLayout* coucheH3;
-    QHBoxLayout* coucheH4;
     QHBoxLayout* coucheH5;
     QHBoxLayout* coucheH6;
     QHBoxLayout* coucheH7;
@@ -388,7 +375,7 @@ class Fenetre23 : public QWidget{
 
     Q_OBJECT
     QLabel* titreLabel;
-    QTextEdit* titre;
+    QLineEdit* titre;
 
     QLabel* lieuLabel;
     QTextEdit* lieu;
@@ -423,7 +410,7 @@ class Fenetre24 : public QWidget{
 
     Q_OBJECT
     QLabel* titreLabel;
-    QTextEdit* titre;
+    QLineEdit* titre;
 
     QLabel* lieuLabel;
     QTextEdit* lieu;
@@ -458,7 +445,7 @@ class Fenetre22 : public QWidget{
 
     Q_OBJECT
     QLabel* titreLabel;
-    QTextEdit* titre;
+    QLineEdit* titre;
 
     QLabel* lieuLabel;
     QTextEdit* lieu;
@@ -494,7 +481,7 @@ class Fenetre15 : public QWidget
 {
     Q_OBJECT
     QLabel* titreLabel;
-    QTextEdit* titre;
+    QLineEdit* titre;
 
     QLabel* dateDebutLabel;
     QDateEdit* dateDebut;
