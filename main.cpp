@@ -3,6 +3,7 @@
  * \brief programme principale
  * \author Alice,Morgane
  * \version 0.1
+ * \date 14 juin 2015
  */
 
 #include "Interface.h"
@@ -19,7 +20,7 @@ int main(int argc, char *argv[])
         ProjetManager& pManager=ProjetManager::getInstance();
         EvtManager& mManager=EvtManager::getInstanceEvt();
         ActManager& aManager=ActManager::getInstanceAct();
-     
+
 
         Fenetre1 fenetre1;
         fenetre1.show();
