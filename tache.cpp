@@ -38,6 +38,8 @@ void TacheUnitairePreempte::ajouterPartie(Partie* p){
 //================================methodes de TacheComposite=================================================================
 void TacheComposite::ajouterTacheComp(Tache& t){
     compose.push_back(&t);
+    t.setEstCompose(1);
+    /*
     QString nomProjet;
     int position;
     ProjetManager& m = ProjetManager::getInstance();
@@ -56,24 +58,30 @@ void TacheComposite::ajouterTacheComp(Tache& t){
     Projet* p = m.trouverProjetP(nomProjet);
     //supprimer la tache ajoute dans la tache compose du projet
     //utiliser un for , iterator et supprimer du vector de la tache
+    */
 }
 
 void TacheComposite::ajouterTacheComparbre(QTreeWidgetItem* item){
 
     for (vector<Tache*>::const_iterator it = this->getCompose().begin(); it != this->getCompose().end(); ++it){
-        QTreeWidgetItem* newTache = new QTreeWidgetItem(item, QStringList(QString("tache : %1").arg((*it)->getTitre())));
-        //item.append(newTache);
-        if (typeid(*it).name()=="14TacheComposite") dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache);
+        //Ici on met le if en commentaire pcq on a pas trouvé de solution....
+          // if(!(*it)->getEstCompose()){
+            QTreeWidgetItem* newTache = new QTreeWidgetItem(item, QStringList(QString("%1").arg((*it)->getTitre())));
+            //item.append(newTache);
+            if (typeid(**it)==typeid(TacheComposite)) dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache);
+   // }
     }
 }
 
 void TacheComposite::ajouterTacheComparbre(QTreeWidgetItem* item, QComboBox* cBox,int i){
 
     for (vector<Tache*>::const_iterator it = this->getCompose().begin(); it != this->getCompose().end(); ++it){
-        QTreeWidgetItem* newTache = new QTreeWidgetItem(item, QStringList(QString("tache : %1").arg((*it)->getTitre())));
-        //item.append(newTache);
-        if (typeid(*it).name()=="14TacheComposite") dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache,cBox,i);
-        else cBox->insertItem(i,QString("tache : %1").arg((*it)->getTitre()));
-
+      //Ici on met le if en commentaire pcq on a pas trouvé de solution....
+        // if(!(*it)->getEstCompose()){
+            QTreeWidgetItem* newTache = new QTreeWidgetItem(item, QStringList(QString("%1").arg((*it)->getTitre())));
+            //item.append(newTache);
+            if (typeid(**it)==typeid(TacheComposite)) dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache,cBox,i);
+            else if (!(*it)->getProg()) cBox->insertItem(i,QString("%1").arg((*it)->getTitre()));
+         //  }
     }
 }
