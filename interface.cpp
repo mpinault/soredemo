@@ -84,7 +84,7 @@ Fenetre2::Fenetre2(){
     QObject::connect(progEvt, SIGNAL(clicked()),this, SLOT(ouvrirFenetre4()));
     QObject::connect(vue_projets, SIGNAL(clicked()),this, SLOT(ouvrirFenetre25()));
     QObject::connect(ouvrir, SIGNAL(clicked()),this, SLOT(ouvrirFenetre21()));
-    //QObject::connect(quitter, SIGNAL(clicked()),this, SLOT(ouvrirFenetre5()));
+    QObject::connect(quitter, SIGNAL(clicked()),qApp, SLOT(quit()));
 }
 
 
@@ -422,7 +422,9 @@ Fenetre32::Fenetre32(const QString& nomTacheC, const QString& nomP):nomProjet(no
     Projet* projetCurrent=pM.trouverProjetP(nomProjet);
     for (vector<Tache*>::const_iterator it = projetCurrent->Tbegin(); it != projetCurrent->Tend(); ++it){
         int i=1;
-        if (typeid(**it)!=typeid(TacheComposite))tacheC->insertItem(i,(*it)->getTitre());
+        if (((*it)->getTitre()!=nomTacheC)&&
+                //(typeid(**it)!=typeid(TacheComposite))&&
+                (!(*it)->getEstCompose()))tacheC->insertItem(i,(*it)->getTitre());
         qDebug()<<"Dans fenetre 32 : type de la tache : ";
         qDebug()<<typeid(**it).name();
         i++;
@@ -468,6 +470,7 @@ void Fenetre32::ouvrirS() {
     Tache& tVacompose=projC.trouverTacheR(tacheC->currentText());
     dynamic_cast<TacheComposite&>(tc).ajouterTacheComp(tVacompose);
     QMessageBox::information(this, "Fenetre32", "Tache placé dans la Tache Composé selectionné!");
+    ouvrirFenetre<Fenetre32,Fenetre2>(*this);
 
 }
 
@@ -514,15 +517,36 @@ Fenetre6::Fenetre6(const QDate& d){
             qDebug()<<"On est dans le if : la date est comprise dans l'intervalle";
             QTableWidgetItem *newItem = new QTableWidgetItem(tr("1"));
             qDebug()<<"On est dans le if : l'heure de fin :";
-            qDebug()<<(*eit)->getHoraireFin().getHeure();
+            qDebug()<<(*eit)->getHoraire().getHeure();
             qDebug()<<"On est dans le if : le jour' :";
             qDebug()<<(*eit)->getDate().addDays(-d.day()).day();
-            tab->setItem((*eit)->getHoraire().getHeure(),(*eit)->getDate().addDays(-d.day()).day(), newItem);
+
+            //On rajoute un 1 à l'heure de début quelque soit le type
+            if((*eit)->getDate().addDays(-d.day()).day()==31)
+                tab->setItem((*eit)->getHoraire().getHeure(),0, newItem);
+            else tab->setItem((*eit)->getHoraire().getHeure(),(*eit)->getDate().addDays(-d.day()).day(), newItem);
         }
-        /*if(typeid(*eit)=typeid(ProgrammationActTrad*)){
-            ProgrammationActTrad* act=dynamic_cast<ProgrammationActTrad*>(*eit);
+
+        qDebug()<<typeid(**eit).name();
+       if(typeid(**eit)==typeid(ProgrammationActTrad)){
+            qDebug()<<dynamic_cast<ProgrammationActTrad*>(*eit)->getDuree().getHeure();
 
         }
+       if(typeid(**eit)==typeid(ProgrammationTache)){
+            qDebug()<<dynamic_cast<ProgrammationTache*>(*eit)->getDuree().getHeure();
+            for(unsigned int i=1 ; i<dynamic_cast<ProgrammationTache*>(*eit)->getDuree().getHeure();i++){
+                QTableWidgetItem *newItem = new QTableWidgetItem(tr("1"));
+                if((*eit)->getDate().addDays(-d.day()).day()==31)
+                    tab->setItem((*eit)->getHoraire().getHeure()+i,0, newItem);
+                else tab->setItem((*eit)->getHoraire().getHeure()+i,(*eit)->getDate().addDays(-d.day()).day(), newItem);
+            }
+
+        }
+
+       //Rajouter le cas de programmation Partie de taches si on traite les taches préemptées.
+
+
+        /*
         for (vector<Tache*>::const_iterator it = (*mit)->getTaches().begin(); it != (*mit)->getTaches().end(); ++it){
             QTreeWidgetItem* newTache = new QTreeWidgetItem(mainBranch, QStringList(QString("tache : %1").arg((*it)->getTitre())));
             items.append(newTache);
@@ -588,7 +612,7 @@ Fenetre23::Fenetre23():QWidget(){
     setFixedSize(800,500);
 
     titreLabel=new QLabel("Titre", this);
-    titre=new QTextEdit(0, this);
+    titre=new QLineEdit(0, this);
 
     lieuLabel=new QLabel("Lieu", this);
     lieu=new QTextEdit(0, this);
@@ -647,18 +671,21 @@ Fenetre23::Fenetre23():QWidget(){
 
 
 void Fenetre23::sauverReunion(){
-
+    if (hDuree->value()<=12){
     ActManager& m=ActManager::getInstanceAct();
 
-    m.creerAct(titre->toPlainText(),lieu->toPlainText(),Duree(hDuree->depth(),mDuree->depth()),sujet->toPlainText(),0);
-    QMessageBox::information(this, "Sauvegarde", "Reunion sauvegardée!");
+    m.creerAct(titre->text(),lieu->toPlainText(),Duree(hDuree->value(),mDuree->value()),sujet->toPlainText(),0);
+    QMessageBox::information(this, "Sauvegarde", "Activité sauvegardée!");
+    ouvrirFenetre<Fenetre23,Fenetre2>(*this);
+    }
+    else QMessageBox::information(this, "Fenetre23", "Durée d'une réunion ne peut excéder 12heures (on est pas des robots)' ");
 
     //faire la gestion des erreurs-> si le meme titre
     /*
-    if (m.isActExistant(titre->toPlainText()))
+    if (m.isActExistant(titre->text()))
     QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
     else{
-        m.creerAct(titre->toPlainText(),lieu->toPlainText(),sujet->toPlainText(),Duree(hDuree->depth(),mDuree->depth()),0);
+        m.creerAct(titre->text(),lieu->toPlainText(),sujet->toPlainText(),Duree(hDuree->depth(),mDuree->depth()),0);
         QMessageBox::information(this, "Sauvegarde", "Projet sauvegardée!");
     }*/
 }
@@ -672,7 +699,7 @@ Fenetre24::Fenetre24():QWidget(){
     setFixedSize(800,500);
 
     titreLabel=new QLabel("Titre", this);
-    titre=new QTextEdit(0, this);
+    titre=new QLineEdit(0, this);
 
     lieuLabel=new QLabel("Lieu", this);
     lieu=new QTextEdit(0, this);
@@ -733,10 +760,15 @@ void Fenetre24::ouvrirFenetre8(){ouvrirFenetre<Fenetre24,Fenetre8>(*this);}
 
 void Fenetre24::sauverRdv(){
 
+    if(hDuree->value()<=12){
     ActManager& m=ActManager::getInstanceAct();
 
-    m.creerAct(titre->toPlainText(),lieu->toPlainText(),Duree(hDuree->depth(),mDuree->depth()),perso->toPlainText(),1);
+    m.creerAct(titre->text(),lieu->toPlainText(),Duree(hDuree->value(),mDuree->value()),perso->toPlainText(),1);
     QMessageBox::information(this, "Sauvegarde", "Rdv sauvegardée!");
+    ouvrirFenetre<Fenetre24,Fenetre2>(*this);
+
+    }
+    else QMessageBox::information(this, "Fenetre24", "Durée d'un rendez-vous ne peut excéder 12heures  ");
 
     //faire la gestion des erreurs-> si le meme titre
 }
@@ -749,7 +781,7 @@ Fenetre22::Fenetre22():QWidget(){
     setFixedSize(800,500);
 
     titreLabel=new QLabel("Titre", this);
-    titre=new QTextEdit(0, this);
+    titre=new QLineEdit(0, this);
 
     lieuLabel=new QLabel("Lieu", this);
     lieu=new QTextEdit(0, this);
@@ -809,49 +841,33 @@ Fenetre22::Fenetre22():QWidget(){
 void Fenetre22::ouvrirFenetre8() {ouvrirFenetre<Fenetre22,Fenetre8>(*this);}
 
 void Fenetre22::sauverAutres(){
+
+    if(hDuree->value()<=12){
     ActManager& a=ActManager::getInstanceAct();
     //if (EvenementManager::getInstance().trouverProjetR(projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
     //QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
 
-    a.creerAct(titre->toPlainText(),lieu->toPlainText(),Duree(hDuree->depth(),mDuree->depth()),type->toPlainText() ,2);
+    a.creerAct(titre->text(),lieu->toPlainText(),Duree(hDuree->value(),mDuree->value()),type->toPlainText() ,2);
 
     QMessageBox::information(this, "Sauvegarde", "Activite sauvegardée!");
+    ouvrirFenetre<Fenetre22,Fenetre2>(*this);
+    }
+    else QMessageBox::information(this, "Fenetre22", "Durée d'une activité ne peut excéder 12heures ");
+
 }
 
 
 Fenetre10::Fenetre10(QString recp){
-    qDebug()<<"A"<<endl;
 
     nomProjet=recp;
-    //projetChoisie = ProjetManager::getInstance().trouverProjetP(recp);
 
-    qDebug()<<"B"<<endl;
     this->setWindowTitle("Fenêtre 10 : Project Calendar");
     setFixedSize(800,500);
 
-    qDebug()<<"C"<<endl;
     preemptive=new QCheckBox("preemptive",this);
 
-    qDebug()<<"D"<<endl;
     titreLabel=new QLabel("titre", this);
-    titre=new QTextEdit(0, this);
-/*
-    projetLabel=new QLabel("Projet associé a la tache", this);
-    //affiche les projets existant dans TacheManager dans un QComboBox
-    pro=new QComboBox();
-    ProjetManager& p=ProjetManager::getInstance();
-    for (vector<Projet*>::const_iterator it = p.Pbegin(); it != p.Pend(); ++it){
-        int i=1;
-        pro->insertItem(i,(*it)->getTitre());
-        i++;
-    }*/
-
-    dateDebutLabel= new QLabel ("Date début", this);
-    dateDebut= new QDateEdit(QDate::currentDate());
-
-    horaireDebutLabel= new QLabel ("Horaire début", this);
-    horaire=new QTimeEdit(QTime::currentTime());
-
+    titre=new QLineEdit(0, this);
 
     dureeLabel= new QLabel ("Durée",this);
     hDuree=new QSpinBox(this);
@@ -879,14 +895,6 @@ Fenetre10::Fenetre10(QString recp){
     coucheH2->addWidget(titre);
     coucheH2->addWidget(preemptive);
 
-    coucheH3 = new QHBoxLayout;
-    coucheH3->addWidget(dateDebutLabel);
-    coucheH3->addWidget(dateDebut);
-
-    coucheH4 = new QHBoxLayout;
-    coucheH4->addWidget(horaireDebutLabel);
-    coucheH4->addWidget(horaire);
-
     coucheH5 = new QHBoxLayout;
     coucheH5->addWidget(dureeLabel);
     coucheH5->addWidget(hDuree);
@@ -906,8 +914,6 @@ Fenetre10::Fenetre10(QString recp){
 
     couche=new QVBoxLayout;
     couche->addLayout(coucheH2);
-    couche->addLayout(coucheH3);
-    couche->addLayout(coucheH4);
     couche->addLayout(coucheH5);
     couche->addLayout(coucheH6);
     couche->addLayout(coucheH7);
@@ -921,30 +927,26 @@ Fenetre10::Fenetre10(QString recp){
 void Fenetre10::ouvrirFenetre30() {ouvrirFenetre<Fenetre10,Fenetre30>(*this);}
 
 void Fenetre10::sauverTache(){
-    //QMessageBox msg;
-    //msg.setText("ESSAI !!!!!!!!");
-    //msg.exec();
-
-    // condition pour verifier si la tache existe dans le projet
-    /*
-    ProjetManager& p=ProjetManager::getInstance();
-    for (vector<Projet*>::const_iterator it = p.Pbegin(); it != p.Pend(); ++it){
-        if ((*it)->isTacheExistante(titre->accessibleDescription()))
-        QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
-    }*/
-   // if (p.trouverProjetR(p.projet->accessibleDescription()).isTacheExistante(titre->accessibleDescription()))
-    //QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
 
     ProjetManager& p=ProjetManager::getInstance();
     if (preemptive->isChecked()){
-         p.trouverProjetR(nomProjet).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),1);
-        //p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),1);
+         if (!(disponibilite->date().addDays((hDuree->value())/24)>echeance->date())){
+         p.trouverProjetR(nomProjet).creerTache(titre->text(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),1);
          QMessageBox::information(this, "Fenetre10", "Tache Preempte sauvegardée!");
+         ouvrirFenetre<Fenetre10,Fenetre2>(*this);
+         }
+         else QMessageBox::information(this, "Fenetre10", "Date Début + durée > date échéance => ERREUR ");
     } else{
-        p.trouverProjetR(nomProjet).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),0);
-        //p.trouverProjetR(pro->currentText()).creerTache(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),0);
-        QMessageBox::information(this, "Fenetre10", "Tache Non Preempte sauvegardée!");
+        if (!((hDuree->value()>12) ||(hDuree->value()>=12 && mDuree->value()>0))){
+            p.trouverProjetR(nomProjet).creerTache(titre->text(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),0);
+            QMessageBox::information(this, "Fenetre10", "Tache Non Preempte sauvegardée!");
+            ouvrirFenetre<Fenetre10,Fenetre2>(*this);
+        }
+        else
+            QMessageBox::information(this, "Fenetre10", "Tache Non Preempte doit avoir une durée <12h !");
+
     }
+
 }
 
 
@@ -955,17 +957,11 @@ Fenetre27::Fenetre27(QString recp){
     setFixedSize(800,500);
 
     titreLabel=new QLabel("titre", this);
-    titre=new QTextEdit(0, this);
+    titre=new QLineEdit(0, this);
 
     projetLabel=new QLabel("Vous pouvez créer une tache composite a partir de ce formulaire.\n"
                            " Pour y ajouter des taches, retourner au Menu et choisisez l'option :\n"
                            "       - 'Ajouter des taches a un tache Composite'.", this);
-
-    dateDebutLabel= new QLabel ("Date début", this);
-    dateDebut= new QDateEdit(QDate::currentDate());
-
-    horaireDebutLabel= new QLabel ("Horaire début", this);
-    horaire=new QTimeEdit(QTime::currentTime());
 
     dureeLabel= new QLabel ("Durée",this);
     hDuree=new QSpinBox(this);
@@ -995,14 +991,6 @@ Fenetre27::Fenetre27(QString recp){
     coucheH2->addWidget(titreLabel);
     coucheH2->addWidget(titre);
 
-    coucheH3 = new QHBoxLayout;
-    coucheH3->addWidget(dateDebutLabel);
-    coucheH3->addWidget(dateDebut);
-
-    coucheH4 = new QHBoxLayout;
-    coucheH4->addWidget(horaireDebutLabel);
-    coucheH4->addWidget(horaire);
-
     coucheH5 = new QHBoxLayout;
     coucheH5->addWidget(dureeLabel);
     coucheH5->addWidget(hDuree);
@@ -1023,8 +1011,6 @@ Fenetre27::Fenetre27(QString recp){
     couche=new QVBoxLayout;
     couche->addLayout(couche2);
     couche->addLayout(coucheH2);
-    couche->addLayout(coucheH3);
-    couche->addLayout(coucheH4);
     couche->addLayout(coucheH5);
     couche->addLayout(coucheH6);
     couche->addLayout(coucheH7);
@@ -1041,11 +1027,13 @@ void Fenetre27::ouvrirFenetre30() {ouvrirFenetre<Fenetre27,Fenetre30>(*this);}
 
 void Fenetre27::sauverTacheCompo(){
 
-    // condition pour verifier si la tachecompo existe dans le projet
-   ProjetManager& man=ProjetManager::getInstance();
-   TacheComposite* a=new TacheComposite(titre->toPlainText(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()));
-   man.trouverProjetR(nomProjet).ajouterTache(a);
-   QMessageBox::information(this, "Fenetre27", "Tache Composite sauvegardée!");
+    if (!(disponibilite->date().addDays((hDuree->value())/24)>echeance->date())){
+       ProjetManager& man=ProjetManager::getInstance();
+       man.trouverProjetR(nomProjet).creerTache(titre->text(),disponibilite->date(),echeance->date(),Duree(hDuree->value(),mDuree->value()),2);
+       QMessageBox::information(this, "Fenetre27", "Tache Composite sauvegardée!");
+       ouvrirFenetre<Fenetre27,Fenetre2>(*this);
+    }
+    else QMessageBox::information(this, "Fenetre27", "Date Début + durée > date échéance => ERREUR ");
 }
 
 
@@ -1060,7 +1048,7 @@ Fenetre15::Fenetre15(){
 
     dateDebutLabel= new QLabel ("Date début", this);
     dateDebut= new QDateEdit(QDate::currentDate());
-    titre=new QTextEdit(0, this);
+    titre=new QLineEdit(0, this);
 
     echeanceLabel= new QLabel ("Echéance",this);
     echeance = new QDateEdit (QDate::currentDate());
@@ -1104,12 +1092,17 @@ void Fenetre15::sauverProjet(){
 
     ProjetManager& p=ProjetManager::getInstance();
 
-    if (p.isProjetExistant(titre->toPlainText()))
+    if (p.isProjetExistant(titre->text()))
     QMessageBox::warning(this, "Sauvegarde impossible", "Ce titre est deja utilisé!");
     else{
-        p.creerProjet(titre->toPlainText(),QDate(),QDate());
-        QMessageBox::information(this, "Sauvegarde", "Projet sauvegardée!");
+        if (echeance->date()<dateDebut->date()) QMessageBox::information(this, "Sauvegarde", "Il faut que l'échéance soit supérieure ou égale à la date de début!");
+        else {
+            p.creerProjet(titre->text(),dateDebut->date(),echeance->date());
+            QMessageBox::information(this, "Sauvegarde", "Projet sauvegardée!");
+            ouvrirFenetre<Fenetre15,Fenetre2>(*this);
+        }
     }
+
 }
 
 
@@ -1348,15 +1341,19 @@ void Fenetre29::ouvrirFenetre2() {ouvrirFenetre<Fenetre29,Fenetre2>(*this);}
 
 void Fenetre29::sauverTache() {
     Tache& laTache=projCurr.trouverTacheR(tachCurr);
+    QTime a=horaire->time();
+    unsigned int heure=a.hour();
+    unsigned int min=a.minute();
+    Horaire h=Horaire(heure, min);
 
-     EvtManager& m=EvtManager::getInstanceEvt();
-     QTime a=horaire->time();
-     unsigned int heure=a.hour();
-     unsigned int min=a.minute();
-     Horaire h=Horaire(heure, min);
-     Evenement& evt = m.creerEvenementTache(dateDebut->date(),h,laTache);
+    if ((laTache.getDispo()<=dateDebut->date())&&(dateDebut->date().addDays((h.getHeure()+laTache.getDuree().getHeure())/24)<=laTache.getEch())){
+         EvtManager& m=EvtManager::getInstanceEvt();
+         Evenement& evt = m.creerEvenementTache(dateDebut->date(),h,laTache);
+         QMessageBox::information(this, "Fenetre29", "evenement de Tache Preempte sauvegardé!");
+         ouvrirFenetre<Fenetre29,Fenetre2>(*this);
+    }
+    else QMessageBox::information(this, "Fenetre29", "la date ou la durée n'est pas comprise dans la plage de disponibilité de la tache ");
 
-     //ProgrammationTache(dateDebut->date(),h,laTache);
 
 }
 
@@ -1382,7 +1379,6 @@ void Fenetre16::ouvrirFenetre2() {
 }
 
 //Fenêtre 19 :
-//rajouter un test pour n'afficher dans la ComboBox que les taches pas encore programmées
 Fenetre19::Fenetre19(const QString& nomProjet){
     p = ProjetManager::getInstance().trouverProjetP(nomProjet);
     this->setWindowTitle(QString ("Fenetre 19 : Ajout Evenement"));
@@ -1401,13 +1397,14 @@ Fenetre19::Fenetre19(const QString& nomProjet){
 
     QList<QTreeWidgetItem *> items;
     for (vector<Tache*>::const_iterator it = p->getTaches().begin(); it != p->getTaches().end(); ++it){
-        QTreeWidgetItem* mainbranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("tache : %1").arg((*it)->getTitre())));
-        items.append(mainbranch);
-        i++;
-        if (typeid(*(*it))==typeid(TacheComposite))
-            dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(mainbranch,cBox,i);
-        else cBox->insertItem(i,QString("%1").arg((*it)->getTitre()));
-        qDebug()<<"sortie du if";
+        if(!(*it)->getEstCompose()){
+            QTreeWidgetItem* mainbranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("%1").arg((*it)->getTitre())));
+            items.append(mainbranch);
+            i++;
+            if (typeid(*(*it))==typeid(TacheComposite))
+                dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(mainbranch,cBox,i);
+            else if (!(*it)->getProg()) cBox->insertItem(i,QString("%1").arg((*it)->getTitre()));
+    }
     }
     treeWidget->insertTopLevelItems(0, items);
 
@@ -1500,16 +1497,15 @@ Fenetre25::Fenetre25(){
 
     QList<QTreeWidgetItem *> items;
     for(vector<Projet*>::const_iterator mit = m.getProjet().begin(); mit != m.getProjet().end(); ++mit){
-        QTreeWidgetItem* mainBranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("Projet : %1").arg((*mit)->getTitre())));
-        qDebug()<<"5";
+        QTreeWidgetItem* mainBranch = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("%1").arg((*mit)->getTitre())));
         items.append(mainBranch);
-        qDebug()<<"6";
         for (vector<Tache*>::const_iterator it = (*mit)->getTaches().begin(); it != (*mit)->getTaches().end(); ++it){
-            QTreeWidgetItem* newTache = new QTreeWidgetItem(mainBranch, QStringList(QString("tache : %1").arg((*it)->getTitre())));
+            if(!(*it)->getEstCompose()){
+            QTreeWidgetItem* newTache = new QTreeWidgetItem(mainBranch, QStringList(QString("%1").arg((*it)->getTitre())));
             items.append(newTache);
             if (typeid(*(*it))==typeid(TacheComposite))
                 dynamic_cast<TacheComposite*>(*it)->TacheComposite::ajouterTacheComparbre(newTache);
-            qDebug()<<"sortie du if";
+        }
         }
     }
     treeWidget->insertTopLevelItems(0, items);
