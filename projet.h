@@ -42,6 +42,10 @@ class Projet{
 
     //Methodes
     Tache* trouverTacheP(const QString& ti) const;
+
+    //ajoute une Tache dans le projet
+    void ajouterTache(Tache* t);
+
 public:
     //Acceseurs en Lecture ET Ecriture
     const QString& getTitre()const{ return titre; }
@@ -55,7 +59,7 @@ public:
 
     //Methodes
         //creer une Tache a partir d'un formulaire Qt dans le projet
-    Tache& creerTache(const QString& t, const QDate& dispo, const QDate& deadline, const Duree& dur,int a);
+    Tache& creerTache(const QString& t, const QDate& dispo, const QDate& deadline, const Duree& dur,int a=2);
 
         //permet de savoir si la Tache existe ou pas a partir de son titre
     bool isTacheExistante(const QString& ti) const { return trouverTacheP(ti) != 0; }
@@ -63,8 +67,8 @@ public:
         //retrouver une Tache a partir de son titre
     Tache& trouverTacheR(const QString& ti) const;
 
-    //ajoute une Tache dans le projet
-    void ajouterTache(Tache* t);
+    //permet de tester la validité des dates et des horaires pour l'ajout d'une tache
+    bool isValide(const QDate& d, const QDate& dl);
 
         //pour les iterateurs
     vector<Tache*>::const_iterator Tbegin(){return taches.begin();}
