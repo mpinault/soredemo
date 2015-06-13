@@ -6,8 +6,9 @@
  * \brief ActManager, manager des activites
  * \author Alice,Morgane
  * \version 0.1
+ * \date 14 juin 2015
+ *
  */
-
 
 #include "timing.h"
 #include "activite.h"
