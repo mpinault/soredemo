@@ -3,9 +3,10 @@
 
 /*!
  * \file tache.h
- * \brief les differents types des taches
+ * \brief les structures des differentes types de taches
  * \author Alice,Morgane
  * \version 0.1
+ * \date 14 juin 2015
  */
 
 #include <timing.h>
@@ -20,31 +21,31 @@
 #include <QFile>
 #include <QMessageBox>
 #include<algorithm>
+#include <QFileDialog>
+#include<QTreeWidget>
+#include<QComboBox>
 
 using namespace std;
 using namespace TIME;
 
-//=====07/06/15======Morgane============================================================================================
-#include <QFileDialog>
 
-//=====08/06/15======Morgane============================================================================================
-#include<QTreeWidget>
-#include<QComboBox>
 
-//=====Tache==================================================================================================
-//Classe Abstraite
+
+/**
+* \class Tache
+* \brief Classe abstraite représentant une tache
+*/
 class Tache{
 
-    QString titre;
-    QDate dispo;
-    QDate ech;
-    Duree duree;
-    bool prog;
-    //estCompose signifie que la tache est une sous tache d'une tache composite
-    bool estCompose;
+    QString titre; /*!< le titre de la tache*/
+    QDate dispo;/*!< la date de disponibilite de la tache*/
+    QDate ech;/*!< la date de echeance de la tache*/
+    Duree duree;/*!< la duree de la tache*/
+    bool prog;/*!< permet de savoir si la tache est programme (prog=1 si oui)*/
+    bool estCompose;/*!< permet de savoir si la tache est une sous tache d'une tache composite (estCompose=1 si oui)*/
 
-    typedef std::vector<Tache *> pred;
-    pred precede;
+    typedef std::vector<Tache *> pred; /**  \typedef  pred: un vecteur de pointeurs tache*/
+    pred precede;/*!< */
 
 public:
     //Constructuer ET Destructeur
@@ -73,8 +74,13 @@ public:
 
 //definir ajouterTachePrec(Tache& t) dans les classes derives !!
 
-//=====TacheUnitaire====================================================================================
-//Classe Abstraite, herite de la classe "Tache"
+/**
+* \class TacheUnitaire
+* \brief Classe abstraite représentant une tache unitaire
+*
+* La classe TacheUnitaire herite publiquement de la classe Tache.
+*/
+
 class TacheUnitaire : public Tache{
 public:
     //Constructeur ET Destructeur
@@ -83,8 +89,12 @@ public:
 };
 
 
-//=====TacheUnitaireNonPreempte=========================================================================
-//Classe NON Abstraite, herite de la classe "TacheUnitaire"
+/**
+* \class TacheUnitaireNonPreempte
+* \brief Classe non abstraite représentant une tache unitaire non preempte
+*
+* La classe TacheUnitaireNonPreempte herite publiquement de la classe TacheUnitaire.
+*/
 class TacheUnitaireNonPreempte : public TacheUnitaire{
 public:
     //Constructeur ET Destructeur
@@ -101,8 +111,10 @@ public:
 };
 
 
-//=====Partie===========================================================================================
-//Classe NON Abstraite
+/**
+* \class Partie
+* \brief Classe non abstraite représentant une partie d'une tache unitaire preempte
+*/
 class Partie{
     Duree duree;
     Tache* tache;
@@ -118,8 +130,12 @@ public:
 };
 
 
-//=====TacheUnitairePreempte============================================================================
-//Classe NON Abstraite
+/**
+* \class TacheUnitairePremmpte
+* \brief Classe non abstraite représentant une tache unitaire preempte
+*
+* La classe TacheUnitairePreempte herite publiquement de la classe TacheUnitaire.
+*/
 class TacheUnitairePreempte : public TacheUnitaire{
     Duree tpsPasse;
 
@@ -142,8 +158,12 @@ public:
 };
 
 
-//=====TacheComposite=================================================================================
-//Classe NON Abstraite
+/**
+* \class TacheComposite
+* \brief Classe non abstraite représentant une tache composite
+*
+* La classe TacheComposite herite publiquement de la classe Tache.
+*/
 class TacheComposite : public Tache{
 
     typedef std::vector<Tache*> com;
