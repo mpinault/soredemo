@@ -26,10 +26,16 @@ Tache* Projet::trouverTacheP(const QString& ti)const{
     return 0;
 }
 
+bool Projet::isValide(const QDate& d, const QDate& dl){
+        return (d>=getDispo() && dl<=getEch());
+}
+
+
     //creer une Tache a partir d'un formulaire Qt dans le projet
 Tache& Projet::creerTache(const QString& t, const QDate& dispo, const QDate& deadline, const Duree& dur, int a){
-    if (isTacheExistante(t)) throw TimeException("erreur Projet, tache deja existante");
-    if(a==0) {
+    if (!isValide(dispo, deadline)) throw TimeException("erreur Projet, les dates ne conviennent pas");
+    if (isTacheExistante(t)) throw TimeException("erreur Projet, la tache existe déjà");
+        if(a==0) {
         TacheUnitaireNonPreempte* newt = new TacheUnitaireNonPreempte(t, dispo, deadline,dur);
         ajouterTache(newt);
         return *newt;
