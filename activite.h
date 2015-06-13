@@ -141,6 +141,7 @@ public :
     ///***************Accesseurs****************************************
     ProgrammationActTrad * getProgrammationActTrad() const;
     const QString& getTitre()override{return activite->getTitre();}
+    const Duree& getDuree(){return activite->getDuree();}
 
     ///***************Méthodes****************************************
     //Permet d'obtenir l'horaire de fin de la tachce
@@ -165,6 +166,7 @@ public :
     ///***************Accesseurs****************************************
     ProgrammationTache * getProgrammationTache() const;
     const QString& getTitre()override{return tache->getTitre();}
+    const Duree& getDuree(){return tache->getDuree();}
 
     ///***************Méthodes****************************************
     //Permet d'obtenir l'horaire de fin de la tachce
