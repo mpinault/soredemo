@@ -54,12 +54,14 @@ Evenement* EvtManager::trouverEvenementP(const QString& titre)const{
 
 // pour creer une programmation de tache dans evenement
 Evenement& EvtManager::creerEvenementTache(const QDate& d,const Horaire& h,Tache& t){
+
     // si le titre exise deja !
-    if (trouverEvenementP(t.getTitre())) throw TimeException("erreur EvtManager, evenement deja existante");
-    ProgrammationTache* newt = new ProgrammationTache(d,h,t);
+    if (trouverEvenementP(t.getTitre())) throw TimeException("Evenement déjà existant(tâche déjà programmée)");
+
+    else {ProgrammationTache* newt = new ProgrammationTache(d,h,t);
     evt.push_back(newt);
-       // ajouterEvenement(newt);
     return *newt;
+    }
 }
 
 // pour creer une programmation de act dans evenement
